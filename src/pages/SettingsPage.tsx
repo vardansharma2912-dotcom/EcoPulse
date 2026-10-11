@@ -37,19 +37,19 @@ export const SettingsPage: React.FC = () => {
   return (
     <div className="space-y-6 max-w-2xl">
       <PageHeader
-        title="Settings & Preferences"
-        description="Configure your domestic electricity tariff and system preferences."
+        title="Settings & System Configuration"
+        description="Configure your domestic electricity tariff and manage local data storage."
       />
 
-      {/* Main Settings Form */}
+      {/* Main Settings Form on glass-strong */}
       <form onSubmit={handleSave}>
-        <Card className="space-y-5">
+        <Card variant="glass-strong" className="space-y-5">
           <Input
             label="Student / User Display Name"
             value={displayName}
             onChange={(e) => setDisplayName(e.target.value)}
             placeholder="e.g. Vardaan"
-            hint="Used to personalize dashboard greetings and exported reports."
+            hint="Used to personalize dashboard greetings and exported environmental reports."
           />
 
           <Input
@@ -59,16 +59,16 @@ export const SettingsPage: React.FC = () => {
             min="0"
             value={tariff}
             onChange={(e) => setTariff(e.target.value)}
-            hint="Placeholder default is ₹8/unit. Check your latest electricity bill for your exact slab rate."
+            hint="Default is ₹8/unit (placeholder, set from your electricity bill)."
           />
 
-          <div className="flex items-center justify-between pt-4 border-t border-[#222936]">
+          <div className="flex items-center justify-between pt-4 border-t border-emerald-950/10">
             {savedSuccess ? (
-              <span className="text-xs text-emerald-400 flex items-center gap-1.5 font-medium">
-                <ShieldCheck className="w-4 h-4" /> Preferences saved!
+              <span className="text-xs text-emerald-800 flex items-center gap-1.5 font-bold">
+                <ShieldCheck className="w-4 h-4 text-emerald-700" /> Preferences saved!
               </span>
             ) : (
-              <span className="text-xs text-slate-500">Auto-persisted to local browser storage</span>
+              <span className="text-xs text-slate-600 font-medium">Persisted safely to browser localStorage</span>
             )}
 
             <Button type="submit" variant="primary" icon={<Save className="w-4 h-4" />}>
@@ -79,14 +79,14 @@ export const SettingsPage: React.FC = () => {
       </form>
 
       {/* Data Management & Reset Section */}
-      <Card className="border-rose-950/60 bg-rose-950/10">
+      <Card variant="glass" className="border-rose-400/50 bg-rose-50/60">
         <div className="flex items-start justify-between gap-4">
           <div>
-            <h3 className="text-sm font-semibold text-rose-300 flex items-center gap-2">
-              <AlertTriangle className="w-4 h-4" /> Reset Application Data
+            <h3 className="text-sm font-bold text-rose-950 flex items-center gap-2">
+              <AlertTriangle className="w-4 h-4 text-rose-700" /> Reset Application Data
             </h3>
-            <p className="text-xs text-slate-400 mt-1 max-w-md">
-              Restores the default starter reminders, clears completion logs, and resets settings.
+            <p className="text-xs text-slate-700 mt-1 max-w-md font-medium leading-relaxed">
+              Restores the default starter reminders, clears completion logs, and resets settings back to default.
             </p>
           </div>
           <Button
@@ -101,7 +101,7 @@ export const SettingsPage: React.FC = () => {
         </div>
       </Card>
 
-      {/* Reset Confirmation Dialog */}
+      {/* Reset Confirmation Dialog on glass-strong */}
       <Dialog
         open={resetDialogOpen}
         onClose={() => setResetDialogOpen(false)}
@@ -109,10 +109,10 @@ export const SettingsPage: React.FC = () => {
         description="Are you sure you want to reset all EcoPulse data?"
       >
         <div className="space-y-4">
-          <p className="text-sm text-slate-300">
-            This will permanently delete all logged completions and custom reminder modifications, restoring the 6 default starter reminders. This action cannot be undone.
+          <p className="text-sm text-slate-700 leading-relaxed font-normal">
+            This will permanently remove all logged completions and custom modifications, restoring the 6 default starter reminders. This action cannot be undone.
           </p>
-          <div className="flex items-center justify-end gap-3 pt-4 border-t border-[#222936]">
+          <div className="flex items-center justify-end gap-3 pt-4 border-t border-emerald-950/10">
             <Button
               type="button"
               variant="outline"

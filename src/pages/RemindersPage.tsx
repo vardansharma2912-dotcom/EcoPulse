@@ -22,7 +22,7 @@ export const RemindersPage: React.FC = () => {
     <div className="space-y-6">
       <PageHeader
         title="Energy Reminders"
-        description="Daily prompts to power off, unplug, and optimize household and campus appliances."
+        description="Daily prompts to power down, unplug, and optimize household and campus appliances."
         badge={
           <Badge variant="emerald" size="sm">
             {state.reminders.filter((r) => r.active).length} Active
@@ -32,9 +32,9 @@ export const RemindersPage: React.FC = () => {
 
       {state.reminders.length === 0 ? (
         <EmptyState
-          icon={<Bell className="w-6 h-6 text-slate-400" />}
+          icon={<Bell className="w-6 h-6 text-emerald-800" />}
           title="No Reminders Configured"
-          description="You currently have no scheduled energy reminders. Reset to default presets in Settings or add new reminders."
+          description="You currently have no scheduled energy reminders. You can restore the 6 starter reminders anytime via Settings."
         />
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -44,29 +44,28 @@ export const RemindersPage: React.FC = () => {
             return (
               <Card
                 key={reminder.id}
-                className={`transition-colors ${
+                variant="glass"
+                className={`transition-all ${
                   !reminder.active
-                    ? 'opacity-60 bg-[#0d1017]'
+                    ? 'opacity-65 bg-white/40'
                     : completed
-                    ? 'border-emerald-800/40 bg-emerald-950/10'
-                    : ''
+                    ? 'border-emerald-600/40 bg-emerald-50/70 shadow-sm'
+                    : 'hover:bg-white/75'
                 }`}
               >
                 <div className="flex items-start justify-between gap-3 mb-3">
                   <div className="space-y-1">
-                    <div className="flex items-center gap-2">
-                      <span className="font-semibold text-sm text-white">
-                        {reminder.title}
-                      </span>
-                    </div>
-                    <div className="flex items-center gap-3 text-xs text-slate-400">
+                    <h3 className="font-bold text-sm text-[#14301f]">
+                      {reminder.title}
+                    </h3>
+                    <div className="flex items-center gap-3 text-xs text-slate-600 font-medium">
                       <span className="flex items-center gap-1">
-                        <Clock className="w-3.5 h-3.5 text-slate-500" />
+                        <Clock className="w-3.5 h-3.5 text-emerald-800" />
                         {reminder.time} ({reminder.recurrence})
                       </span>
                       {reminder.applianceWatts && (
-                        <span className="flex items-center gap-1 font-mono">
-                          <Zap className="w-3.5 h-3.5 text-emerald-400" />
+                        <span className="flex items-center gap-1 font-mono font-semibold text-emerald-900">
+                          <Zap className="w-3.5 h-3.5 text-emerald-700" />
                           {reminder.applianceWatts}W
                         </span>
                       )}
@@ -77,8 +76,8 @@ export const RemindersPage: React.FC = () => {
                   </Badge>
                 </div>
 
-                <div className="flex items-center justify-between pt-3 border-t border-[#222936] text-xs">
-                  <span className="text-slate-400">
+                <div className="flex items-center justify-between pt-3.5 border-t border-emerald-950/10 text-xs">
+                  <span className="text-slate-600 font-medium">
                     Est. {reminder.avoidedHours ?? 1}h avoided/action
                   </span>
 
@@ -95,7 +94,7 @@ export const RemindersPage: React.FC = () => {
                       <Button
                         variant="secondary"
                         size="sm"
-                        icon={<RotateCcw className="w-3.5 h-3.5 text-slate-400" />}
+                        icon={<RotateCcw className="w-3.5 h-3.5 text-slate-600" />}
                         onClick={() => undoCompletion(reminder.id, today)}
                       >
                         Undo

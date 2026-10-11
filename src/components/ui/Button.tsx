@@ -8,7 +8,7 @@ export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElemen
 
 export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
   ({ variant = 'primary', size = 'md', icon, children, className = '', disabled, ...props }, ref) => {
-    const base = 'inline-flex items-center justify-center font-medium rounded-lg transition-colors focus-visible:outline-2 focus-visible:outline-emerald-500 focus-visible:outline-offset-2 disabled:opacity-50 disabled:pointer-events-none cursor-pointer'
+    const base = 'inline-flex items-center justify-center font-medium rounded-lg transition-all focus-visible:outline-2 focus-visible:outline-emerald-800 focus-visible:outline-offset-2 disabled:opacity-50 disabled:pointer-events-none cursor-pointer'
 
     const sizeClasses = {
       sm: 'text-xs px-2.5 py-1.5 gap-1.5',
@@ -17,11 +17,11 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
     }
 
     const variantClasses = {
-      primary: 'bg-emerald-600 hover:bg-emerald-500 text-white shadow-sm active:bg-emerald-700',
-      secondary: 'bg-[#1a1e28] hover:bg-[#222936] text-slate-200 border border-[#2d3647]',
-      outline: 'border border-[#2d3647] hover:bg-[#12151c] text-slate-300 hover:text-white',
-      ghost: 'hover:bg-[#1a1e28] text-slate-400 hover:text-slate-100',
-      danger: 'bg-rose-950/80 hover:bg-rose-900 border border-rose-800/80 text-rose-200',
+      primary: 'bg-emerald-700 hover:bg-emerald-800 text-white shadow-sm shadow-emerald-950/10 active:scale-[0.98]',
+      secondary: 'bg-white/80 hover:bg-white text-slate-800 border border-emerald-900/15 shadow-sm active:scale-[0.98]',
+      outline: 'border border-emerald-900/25 hover:bg-emerald-800/10 text-emerald-950 font-semibold active:scale-[0.98]',
+      ghost: 'hover:bg-emerald-900/10 text-slate-700 hover:text-emerald-950',
+      danger: 'bg-rose-700 hover:bg-rose-800 text-white shadow-sm shadow-rose-950/10 active:scale-[0.98]',
     }
 
     return (

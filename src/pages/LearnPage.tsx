@@ -12,7 +12,7 @@ export const LearnPage: React.FC = () => {
       />
 
       <EmptyState
-        icon={<BookOpen className="w-6 h-6 text-slate-400" />}
+        icon={<BookOpen className="w-6 h-6 text-emerald-800" />}
         title="Knowledge Modules & Study Material"
         description="Course material on energy efficiency, thermal comfort optimization, and academic references for the CHE110 assignment will be structured here."
       />

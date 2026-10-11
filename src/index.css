@@ -4,47 +4,99 @@
 @theme {
   --font-sans: 'Inter Variable', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
   
-  --color-surface-1: #090b0e;
-  --color-surface-2: #12151c;
-  --color-surface-3: #1a1e28;
+  --color-primary-600: #0f766e;
+  --color-primary-700: #047857;
+  --color-forest: #14301f;
   
-  --color-border-subtle: #222936;
-  --color-border-default: #2d3647;
+  --color-brand-emerald: #059669;
+  --color-brand-dark: #123321;
   
-  --color-emerald-400: #34d399;
-  --color-emerald-500: #10b981;
-  --color-emerald-600: #059669;
-  
-  --color-warning: #f59e0b;
-  --color-danger: #ef4444;
+  --color-warning: #b45309;
+  --color-danger: #b91c1c;
 }
 
 :root {
   font-family: var(--font-sans);
-  color-scheme: dark;
+  color-scheme: light;
 }
 
 body {
   margin: 0;
   min-height: 100vh;
-  background-color: #090b0e;
-  color: #e2e8f0;
+  background-color: #f3faf5;
+  color: #14301f;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-/* Tabular numbers for clean numeric alignments */
+/* Tabular numbers for numbers and monetary data */
 .tabular-nums, input[type="number"], .font-mono {
   font-variant-numeric: tabular-nums;
 }
 
-/* Accessible and visible keyboard focus rings */
+/* High-contrast visible keyboard focus ring for glass surfaces */
 :focus-visible {
-  outline: 2px solid #10b981;
+  outline: 2px solid #047857;
   outline-offset: 2px;
 }
 
-/* Respect user's motion preferences */
+/* Glassmorphism Surface Utility Classes */
+.glass-card {
+  background-color: rgba(255, 255, 255, 0.65);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.7);
+  box-shadow: 
+    0 10px 25px -5px rgba(20, 48, 31, 0.05),
+    0 8px 10px -6px rgba(20, 48, 31, 0.03),
+    inset 0 1px 1px 0 rgba(255, 255, 255, 0.85);
+  border-radius: 1rem;
+}
+
+.glass-panel {
+  background-color: rgba(255, 255, 255, 0.60);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.75);
+  box-shadow: 
+    0 12px 30px -8px rgba(20, 48, 31, 0.07),
+    inset 0 1px 1px 0 rgba(255, 255, 255, 0.9);
+}
+
+.glass-strong {
+  background-color: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.85);
+  box-shadow: 
+    0 20px 35px -10px rgba(20, 48, 31, 0.09),
+    inset 0 1px 1.5px 0 rgba(255, 255, 255, 0.95);
+  border-radius: 1rem;
+}
+
+/* Fallback for browsers without backdrop-filter support */
+@supports not (backdrop-filter: blur(1px)) {
+  .glass-card {
+    background-color: rgba(255, 255, 255, 0.92);
+  }
+  .glass-panel {
+    background-color: rgba(255, 255, 255, 0.94);
+  }
+  .glass-strong {
+    background-color: #ffffff;
+  }
+}
+
+/* Reduced blur on small mobile viewports for battery & performance */
+@media (max-width: 768px) {
+  .glass-card,
+  .glass-panel {
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+  }
+}
+
+/* Respect user motion preferences */
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,

@@ -13,20 +13,20 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
     return (
       <div className="w-full space-y-1.5">
         {label && (
-          <label htmlFor={inputId} className="block text-xs font-medium text-slate-300">
+          <label htmlFor={inputId} className="block text-xs font-semibold text-[#14301f]">
             {label}
           </label>
         )}
         <input
           ref={ref}
           id={inputId}
-          className={`w-full rounded-lg bg-[#090b0e] border px-3 py-2 text-sm text-slate-100 placeholder:text-slate-500 focus-visible:outline-2 focus-visible:outline-emerald-500 focus-visible:outline-offset-1 transition-colors ${
-            error ? 'border-rose-500/80' : 'border-[#2d3647] hover:border-slate-600'
+          className={`w-full rounded-lg bg-white/95 border px-3.5 py-2 text-sm text-[#14301f] placeholder:text-slate-400 focus-visible:outline-2 focus-visible:outline-emerald-800 focus-visible:outline-offset-1 transition-colors shadow-xs ${
+            error ? 'border-rose-600' : 'border-emerald-950/20 hover:border-emerald-800/40'
           } ${className}`}
           {...props}
         />
-        {hint && !error && <p className="text-xs text-slate-500">{hint}</p>}
-        {error && <p className="text-xs text-rose-400">{error}</p>}
+        {hint && !error && <p className="text-xs text-slate-600 leading-relaxed">{hint}</p>}
+        {error && <p className="text-xs text-rose-700 font-medium">{error}</p>}
       </div>
     )
   }

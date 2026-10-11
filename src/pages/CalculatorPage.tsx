@@ -12,9 +12,9 @@ export const CalculatorPage: React.FC = () => {
       />
 
       <EmptyState
-        icon={<Calculator className="w-6 h-6 text-slate-400" />}
+        icon={<Calculator className="w-6 h-6 text-emerald-800" />}
         title="Appliance Audit Module"
-        description="Interactive wattage calculator and appliance payback comparison tools will be built in the next project iteration. Foundation data models and energy math libraries are already initialized."
+        description="Interactive appliance wattage audit and payback estimation tools will be connected in the next phase. Core energy math libraries and data models are already operational."
       />
     </div>
   )

@@ -37,24 +37,24 @@ export const Dialog: React.FC<DialogProps> = ({
     <dialog
       ref={dialogRef}
       onClose={onClose}
-      className="m-auto rounded-2xl bg-[#12151c] text-slate-100 border border-[#2d3647] p-0 shadow-2xl backdrop:bg-black/75 backdrop:backdrop-blur-sm max-w-lg w-[calc(100%-2rem)] focus:outline-none"
+      className="m-auto rounded-2xl glass-strong text-[#14301f] border border-white/80 p-0 shadow-2xl backdrop:bg-emerald-950/30 backdrop:backdrop-blur-sm max-w-lg w-[calc(100%-2rem)] focus:outline-none"
     >
       <div className="p-6">
         <div className="flex items-start justify-between gap-4 mb-4">
           <div>
-            <h2 className="text-lg font-semibold text-white tracking-tight">{title}</h2>
-            {description && <p className="text-xs text-slate-400 mt-1">{description}</p>}
+            <h2 className="text-lg font-bold text-[#14301f] tracking-tight">{title}</h2>
+            {description && <p className="text-xs text-slate-600 mt-1 leading-relaxed">{description}</p>}
           </div>
           <button
             type="button"
             onClick={onClose}
             aria-label="Close dialog"
-            className="p-1 rounded-lg text-slate-400 hover:text-white hover:bg-[#1a1e28] transition-colors cursor-pointer"
+            className="p-1.5 rounded-lg text-slate-600 hover:text-emerald-950 hover:bg-emerald-900/10 transition-colors cursor-pointer"
           >
             <X className="w-5 h-5" />
           </button>
         </div>
-        <div className="mt-2">{children}</div>
+        <div className="mt-2 text-[#14301f]">{children}</div>
       </div>
     </dialog>
   )
