@@ -6,7 +6,6 @@ import {
   computeStreaksFromCompletions,
   groupCompletionsByDate,
   getAchievements,
-  getTrendSeries,
 } from '../analytics'
 import { generateSampleCompletions, hasDemoCompletions } from '../sampleData'
 import { appReducer } from '../../state/reducer'
@@ -265,24 +264,5 @@ describe('Sample Demo Data and Preservation of Real Data', () => {
     expect(state.completions[0].kWh).toBe(0.15)
     expect(state.completions[0].isDemo).toBeUndefined()
     expect(hasDemoCompletions(state.completions)).toBe(false)
-  })
-
-  it('getTrendSeries correctly detects 3+ days threshold and returns trend comparison', () => {
-    const testDate = new Date(2026, 9, 11)
-    const completionsUnder3Days: Completion[] = [
-      { id: '1', reminderId: 'r1', title: 'T1', date: '2026-10-05', completedAt: '', kWh: 0.2, costSaved: 1.6, tariffAtTime: 8 },
-      { id: '2', reminderId: 'r2', title: 'T2', date: '2026-10-06', completedAt: '', kWh: 0.3, costSaved: 2.4, tariffAtTime: 8 },
-    ]
-    expect(getTrendSeries(completionsUnder3Days, testDate).hasTrendData).toBe(false)
-
-    const completionsWith3Days: Completion[] = [
-      ...completionsUnder3Days,
-      { id: '3', reminderId: 'r3', title: 'T3', date: '2026-10-07', completedAt: '', kWh: 0.4, costSaved: 3.2, tariffAtTime: 8 },
-    ]
-    const trendResult = getTrendSeries(completionsWith3Days, testDate)
-    expect(trendResult.hasTrendData).toBe(true)
-    expect(trendResult.data).toHaveLength(7)
-    expect(trendResult.data[0].day).toBe('Mon')
-    expect(trendResult.data[0].kwh).toBe(0.2)
   })
 })

@@ -1,7 +1,7 @@
 import { useContext } from 'react'
-import { ToastContext, type ToastContextType } from './toastTypes'
+import { ToastContext } from './toastCore'
 
-export function useToast(): ToastContextType {
+export function useToast() {
   const context = useContext(ToastContext)
   if (!context) {
     throw new Error('useToast must be used within a ToastProvider')

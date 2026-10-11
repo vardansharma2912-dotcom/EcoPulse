@@ -1,117 +1,112 @@
 import React, { useState, useEffect } from 'react'
-import { motion, AnimatePresence, useReducedMotion } from 'motion/react'
-import { Sparkles, Lightbulb } from 'lucide-react'
+import { motion, AnimatePresence } from 'motion/react'
+import { Lightbulb } from 'lucide-react'
 
 const ENERGY_TIPS = [
   {
-    title: 'Vampire Power',
-    text: 'Unplug chargers and adapters when done. Idle bricks continuously draw 2–5W of phantom power.',
+    title: 'Standby Power Drain',
+    text: 'Switching off appliances at the wall socket eliminates vampire power, saving 5–10% of household energy.',
   },
   {
-    title: 'Convective Cooling',
-    text: 'Ceiling fans cool skin by evaporation, not the room air. Turn them off whenever stepping outside.',
+    title: 'Optimal AC Set-Point',
+    text: 'Setting air conditioning to 24°C instead of 18°C saves ~6% electricity per degree Celsius avoided.',
   },
   {
-    title: 'Natural Daylight',
-    text: 'Study by windows during afternoon hours. Keeping desk lamps switched off saves ~15W hourly.',
+    title: 'Unplug Idle Chargers',
+    text: 'Phone and laptop chargers continuously draw 0.2–0.5W when left plugged in without a connected device.',
   },
   {
-    title: 'AC Setpoints',
-    text: 'Set AC to 24°C instead of 18°C. Each degree higher reduces cooling electricity consumption by ~6%.',
+    title: 'Fume Hood Sash Management',
+    text: 'Pulling down laboratory sash glass reduces exhaust fan ventilation load by up to 50% on campus.',
   },
   {
-    title: 'Computer Sleep',
-    text: 'Configure PC screens to sleep after 10 idle minutes; saves ~40W compared to active idle displays.',
+    title: 'Daylight Harvesting',
+    text: 'Opening natural window blinds and turning off overhead fixtures saves 40–80W per luminaire bank.',
   },
 ]
 
-export const SidebarTipCard: React.FC = () => {
+export const SidebarTipCard: React.FC<{ className?: string }> = ({ className = '' }) => {
   const [index, setIndex] = useState(0)
-  const [isHovered, setIsHovered] = useState(false)
-  const prefersReduced = useReducedMotion()
+  const [isPaused, setIsPaused] = useState(false)
 
   useEffect(() => {
-    if (isHovered || prefersReduced) return
+    if (isPaused) return
 
-    const timer = setInterval(() => {
+    const interval = setInterval(() => {
       setIndex((prev) => (prev + 1) % ENERGY_TIPS.length)
     }, 8000)
 
-    return () => clearInterval(timer)
-  }, [isHovered, prefersReduced])
+    return () => clearInterval(interval)
+  }, [isPaused])
 
-  const current = ENERGY_TIPS[index]
+  const currentTip = ENERGY_TIPS[index]
 
   return (
     <div
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
-      className="relative rounded-2xl bg-[#0a381e] text-white p-4 overflow-hidden border border-emerald-800/60 shadow-lg shadow-emerald-950/20 select-none group"
+      onMouseEnter={() => setIsPaused(true)}
+      onMouseLeave={() => setIsPaused(false)}
+      className={`relative overflow-hidden rounded-2xl bg-[#0a381e] text-white p-4 shadow-md border border-emerald-500/20 select-none ${className}`}
     >
-      {/* Subtle Topographic Contour-Line SVG Background */}
+      {/* Original Topographic Contour-Line SVG Background */}
       <svg
-        className="absolute inset-0 w-full h-full pointer-events-none opacity-20"
-        viewBox="0 0 240 180"
-        preserveAspectRatio="none"
         aria-hidden="true"
+        className="absolute inset-0 w-full h-full pointer-events-none opacity-[0.09]"
+        xmlns="http://www.w3.org/2000/svg"
+        viewBox="0 0 240 160"
+        preserveAspectRatio="none"
       >
         <path
-          d="M -20,40 Q 60,10 120,50 T 260,30"
+          d="M-20,40 C40,20 100,60 160,30 C200,10 240,40 280,30"
           fill="none"
-          stroke="white"
+          stroke="#ffffff"
           strokeWidth="1.2"
         />
         <path
-          d="M -20,70 Q 70,30 130,80 T 260,60"
+          d="M-20,70 C50,50 110,90 170,60 C210,40 250,70 290,60"
           fill="none"
-          stroke="white"
+          stroke="#ffffff"
           strokeWidth="1.2"
         />
         <path
-          d="M -20,100 Q 50,60 140,110 T 260,90"
+          d="M-20,100 C30,90 90,120 150,90 C210,70 240,110 280,100"
           fill="none"
-          stroke="white"
+          stroke="#ffffff"
           strokeWidth="1.2"
         />
         <path
-          d="M -20,130 Q 80,90 150,140 T 260,120"
+          d="M-20,130 C60,110 120,150 180,120 C220,100 250,130 290,130"
           fill="none"
-          stroke="white"
+          stroke="#ffffff"
           strokeWidth="1.2"
         />
         <path
-          d="M -20,160 Q 60,120 160,170 T 260,150"
+          d="M-20,15 C70,5 130,35 190,15 C230,0 260,25 300,15"
           fill="none"
-          stroke="white"
+          stroke="#ffffff"
           strokeWidth="1.2"
         />
-        <circle cx="180" cy="45" r="28" fill="none" stroke="white" strokeWidth="0.8" opacity="0.6" />
-        <circle cx="180" cy="45" r="44" fill="none" stroke="white" strokeWidth="0.8" opacity="0.4" />
       </svg>
 
-      {/* Card Header with Icon & Active Index */}
+      {/* Tip Header */}
       <div className="relative z-10 flex items-center justify-between mb-2">
-        <div className="flex items-center gap-1.5 text-emerald-300 text-[11px] font-bold uppercase tracking-wider">
-          <Lightbulb className="w-3.5 h-3.5 text-amber-300" />
-          <span>Conservation Tip</span>
+        <div className="flex items-center gap-1.5 text-emerald-300">
+          <Lightbulb className="w-3.5 h-3.5" />
+          <span className="text-[10px] font-bold uppercase tracking-wider">Campus Energy Tip</span>
         </div>
         <div className="flex items-center gap-1">
           {ENERGY_TIPS.map((_, i) => (
-            <button
+            <span
               key={i}
-              type="button"
-              onClick={() => setIndex(i)}
-              aria-label={`Go to tip ${i + 1}`}
-              className={`h-1.5 rounded-full transition-all cursor-pointer ${
-                i === index ? 'w-4 bg-emerald-300' : 'w-1.5 bg-white/30 hover:bg-white/60'
+              className={`w-1.5 h-1.5 rounded-full transition-all ${
+                i === index ? 'bg-emerald-400 w-3' : 'bg-white/20'
               }`}
             />
           ))}
         </div>
       </div>
 
-      {/* Rotating Tip Content with Crossfade */}
-      <div className="relative z-10 min-h-[72px]">
+      {/* Tip Content with 8s Rotating Crossfade */}
+      <div className="relative z-10 min-h-[58px]">
         <AnimatePresence mode="wait">
           <motion.div
             key={index}
@@ -121,22 +116,19 @@ export const SidebarTipCard: React.FC = () => {
             transition={{ duration: 0.35, ease: 'easeOut' }}
             className="space-y-1"
           >
-            <p className="text-xs font-bold text-white tracking-tight flex items-center gap-1">
-              <span>{current.title}</span>
-              <Sparkles className="w-3 h-3 text-emerald-300 inline shrink-0" />
-            </p>
-            <p className="text-[11px] text-emerald-100/90 leading-relaxed font-medium">
-              {current.text}
+            <h4 className="text-xs font-bold text-white">{currentTip.title}</h4>
+            <p className="text-[11px] text-emerald-100/90 leading-relaxed font-normal">
+              {currentTip.text}
             </p>
           </motion.div>
         </AnimatePresence>
       </div>
 
-      {/* Footer hover note */}
-      <div className="relative z-10 mt-2 pt-2 border-t border-white/10 flex items-center justify-between text-[10px] text-emerald-200/70">
-        <span>CHE110 Campus Tip</span>
-        <span className="italic">{isHovered ? 'Paused' : 'Every 8s'}</span>
-      </div>
+      {isPaused && (
+        <span className="relative z-10 block text-[9px] text-emerald-300/70 mt-1 italic">
+          Paused on hover
+        </span>
+      )}
     </div>
   )
 }

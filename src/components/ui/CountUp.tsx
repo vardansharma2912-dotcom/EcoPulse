@@ -3,8 +3,8 @@ import { animate, useReducedMotion } from 'motion/react'
 
 export interface CountUpProps {
   value: number
-  format?: (value: number) => string
   decimals?: number
+  format?: (n: number) => string
   prefix?: string
   suffix?: string
   duration?: number
@@ -13,55 +13,56 @@ export interface CountUpProps {
 
 export const CountUp: React.FC<CountUpProps> = ({
   value,
-  format,
   decimals = 0,
+  format,
   prefix = '',
   suffix = '',
   duration = 0.8,
   className = '',
 }) => {
-  const prefersReducedMotion = useReducedMotion()
+  const shouldReduceMotion = useReducedMotion()
+  const prevValueRef = useRef<number>(0)
   const [displayValue, setDisplayValue] = useState<number>(0)
-  const previousValueRef = useRef<number>(0)
-  const isInitialMount = useRef<boolean>(true)
+  const isFirstRender = useRef(true)
 
   useEffect(() => {
-    if (prefersReducedMotion) {
-      previousValueRef.current = value
+    if (shouldReduceMotion) {
+      prevValueRef.current = value
       return
     }
 
-    const start = isInitialMount.current ? 0 : previousValueRef.current
-    isInitialMount.current = false
+    const startVal = isFirstRender.current ? 0 : prevValueRef.current
+    isFirstRender.current = false
 
-    const controls = animate(start, value, {
+    const controls = animate(startVal, value, {
       duration,
       ease: [0.16, 1, 0.3, 1], // smooth easeOut
       onUpdate: (latest) => {
         setDisplayValue(latest)
       },
       onComplete: () => {
-        setDisplayValue(value)
-        previousValueRef.current = value
+        setDisplayValue(value) // Guarantee exact finish
+        prevValueRef.current = value
       },
     })
 
-    return () => {
-      controls.stop()
-    }
-  }, [value, duration, prefersReducedMotion])
+    return () => controls.stop()
+  }, [value, duration, shouldReduceMotion])
 
-  // Instant value render when user prefers reduced motion
-  if (prefersReducedMotion) {
-    const instantFormatted = format
-      ? format(value)
-      : `${prefix}${decimals > 0 ? value.toFixed(decimals) : Math.round(value).toString()}${suffix}`
-    return <span className={className}>{instantFormatted}</span>
-  }
+  // In reduced motion mode, display final target value instantly
+  const effectiveValue = shouldReduceMotion ? value : displayValue
 
   const formatted = format
-    ? format(displayValue)
-    : `${prefix}${decimals > 0 ? displayValue.toFixed(decimals) : Math.round(displayValue).toString()}${suffix}`
+    ? format(effectiveValue)
+    : decimals > 0
+    ? effectiveValue.toFixed(decimals)
+    : Math.round(effectiveValue).toString()
 
-  return <span className={className}>{formatted}</span>
+  return (
+    <span className={`tabular-nums ${className}`}>
+      {prefix}
+      {formatted}
+      {suffix}
+    </span>
+  )
 }

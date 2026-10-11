@@ -1,7 +1,6 @@
 import React, { useState, useCallback, useRef } from 'react'
 import { motion, AnimatePresence } from 'motion/react'
-import { CheckCircle2, RotateCcw } from 'lucide-react'
-import { ToastContext, type ToastItem, type ToastAction } from './toastTypes'
+import { ToastContext, type ToastItem } from './toastCore'
 
 export const ToastProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [toasts, setToasts] = useState<ToastItem[]>([])
@@ -16,73 +15,63 @@ export const ToastProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     }
   }, [])
 
-  const toast = useCallback((message: string, options?: { action?: ToastAction; icon?: React.ReactNode }) => {
-    const id = `toast-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`
-    const newToast: ToastItem = {
-      id,
-      message,
-      action: options?.action,
-      icon: options?.icon,
-    }
+  const showToast = useCallback(
+    (message: string, action?: { label: string; onClick: () => void }) => {
+      const id = `${Date.now()}-${Math.random().toString(36).substring(2, 7)}`
+      const newToast: ToastItem = { id, message, action }
 
-    setToasts((prev) => {
-      // Keep at most 3 stacked
-      const updated = [...prev, newToast]
-      if (updated.length > 3) {
-        const removed = updated.shift()
-        if (removed) {
-          const t = timersRef.current.get(removed.id)
-          if (t) clearTimeout(t)
-          timersRef.current.delete(removed.id)
+      setToasts((prev) => {
+        const next = [...prev, newToast]
+        // Cap to maximum 3 stacked toasts
+        if (next.length > 3) {
+          const removed = next.shift()
+          if (removed) {
+            const timer = timersRef.current.get(removed.id)
+            if (timer) clearTimeout(timer)
+            timersRef.current.delete(removed.id)
+          }
         }
-      }
-      return updated
-    })
+        return next
+      })
 
-    // Auto-dismiss after 2.8s
-    const timer = setTimeout(() => {
-      removeToast(id)
-    }, 2800)
-    timersRef.current.set(id, timer)
-  }, [removeToast])
+      const timer = setTimeout(() => {
+        removeToast(id)
+      }, 2800)
+
+      timersRef.current.set(id, timer)
+    },
+    [removeToast]
+  )
 
   return (
-    <ToastContext.Provider value={{ toast }}>
+    <ToastContext.Provider value={{ showToast }}>
       {children}
-
-      {/* Fixed Bottom-Center Toast Stack */}
+      {/* Bottom-Center Fixed Toast Container */}
       <div
-        className="fixed bottom-6 inset-x-0 z-50 flex flex-col items-center pointer-events-none gap-2 px-4"
         aria-live="polite"
-        role="region"
-        aria-label="Notifications"
+        className="fixed bottom-6 inset-x-0 z-50 flex flex-col items-center gap-2 pointer-events-none px-4"
       >
         <AnimatePresence mode="sync">
-          {toasts.map((item) => (
+          {toasts.map((toast) => (
             <motion.div
-              key={item.id}
-              layout
+              key={toast.id}
               initial={{ opacity: 0, y: 24, scale: 0.96 }}
               animate={{ opacity: 1, y: 0, scale: 1 }}
               exit={{ opacity: 0, y: 16, scale: 0.94, transition: { duration: 0.15 } }}
               transition={{ type: 'spring', stiffness: 350, damping: 28 }}
-              className="pointer-events-auto flex items-center gap-3 px-4 py-2.5 rounded-full bg-[#0a381e] text-white shadow-xl shadow-emerald-950/25 border border-emerald-700/40 text-xs sm:text-sm font-semibold max-w-md"
+              className="pointer-events-auto flex items-center gap-3 px-4 py-2.5 rounded-full bg-[#0a381e] text-white text-xs sm:text-sm font-semibold shadow-xl border border-emerald-500/20 max-w-md"
             >
-              <div className="shrink-0 text-emerald-300">
-                {item.icon || <CheckCircle2 className="w-4 h-4" />}
-              </div>
-              <span className="truncate">{item.message}</span>
-              {item.action && (
+              <span className="truncate">{toast.message}</span>
+              {toast.action && (
                 <button
                   type="button"
                   onClick={() => {
-                    item.action?.onClick()
-                    removeToast(item.id)
+                    toast.action?.onClick()
+                    removeToast(toast.id)
                   }}
-                  className="ml-1 inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-white/20 hover:bg-white/30 text-white font-bold text-xs transition-colors cursor-pointer"
+                  className="px-2.5 py-0.5 rounded-full bg-emerald-700/80 hover:bg-emerald-600 text-white font-bold text-xs uppercase tracking-wider transition-colors cursor-pointer shrink-0"
                 >
-                  <RotateCcw className="w-3 h-3" />
-                  {item.action.label}
+                  {toast.action.label}
                 </button>
               )}
             </motion.div>

@@ -1,242 +1,214 @@
 import React, { useState } from 'react'
-import { motion, useReducedMotion } from 'motion/react'
+import { motion, AnimatePresence } from 'motion/react'
 import type { WeeklyChartDataPoint } from '../../lib/analytics'
-import { todayKey } from '../../lib/dates'
-import { Button } from '../ui/Button'
-import { EmptyState } from '../ui/EmptyState'
-import { Calendar } from 'lucide-react'
+import { todayKey as getTodayKey } from '../../lib/dates'
 
 export interface PillBarChartProps {
   data: WeeklyChartDataPoint[]
   metric: 'kwh' | 'actions'
   onMetricChange?: (metric: 'kwh' | 'actions') => void
+  showToggle?: boolean
   className?: string
+  height?: number
 }
 
 export const PillBarChart: React.FC<PillBarChartProps> = ({
   data,
   metric,
   onMetricChange,
+  showToggle = true,
   className = '',
+  height = 200,
 }) => {
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null)
-  const prefersReduced = useReducedMotion()
-  const today = todayKey()
+  const currentToday = getTodayKey()
 
-  const hasData = data.some((d) => d.kwh > 0 || d.actions > 0)
   const maxVal = Math.max(...data.map((d) => (metric === 'kwh' ? d.kwh : d.actions)), 0)
+  const totalVal = data.reduce((acc, d) => acc + (metric === 'kwh' ? d.kwh : d.actions), 0)
 
-  const getTierColor = (val: number, max: number): string => {
-    if (val <= 0 || max <= 0) return ''
-    const ratio = val / max
-    if (ratio >= 0.75) return '#0a381e' // deep forest
-    if (ratio >= 0.4) return '#196f45' // emerald
-    return '#5aba86' // leaf
+  // Empty state when entire week has 0 data
+  if (totalVal === 0 && maxVal === 0) {
+    return (
+      <div className={`flex flex-col items-center justify-center p-8 text-center rounded-2xl bg-white/40 border border-white/60 ${className}`}>
+        <div className="w-10 h-10 rounded-full bg-emerald-900/10 flex items-center justify-center text-emerald-900 mb-2">
+          <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+          </svg>
+        </div>
+        <p className="text-sm font-bold text-[#0f2819]">No Activity Logged This Week</p>
+        <p className="text-xs text-[#1e3f2b] max-w-xs mt-1">
+          Complete energy-saving reminders to see your daily conservation pills grow here.
+        </p>
+      </div>
+    )
   }
-
-  const getBarHeight = (val: number, max: number): number => {
-    if (max <= 0 || val <= 0) return 0
-    return Math.max(14, Math.round((val / max) * 100))
-  }
-
-  const ariaDescription = `Weekly activity chart displaying ${data
-    .map((d) => `${d.day}: ${d.actions} actions, ${d.kwh.toFixed(2)} kWh`)
-    .join('; ')}`
 
   return (
-    <div className={`space-y-4 ${className}`}>
-      {/* Metric Toggle & Header Controls */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-        <div className="flex items-center gap-2">
-          <span className="text-xs font-bold uppercase tracking-wider text-[#14301f]">
-            Activity by Day
-          </span>
-          <span className="text-xs font-medium text-[#1e3f2b]">
-            (Mon – Sun)
-          </span>
-        </div>
+    <div className={`space-y-4 ${className}`} role="region" aria-label="Weekly Energy Conservation Chart">
+      {/* Top Header & Optional Metric Toggle */}
+      {showToggle && onMetricChange && (
+        <div className="flex items-center justify-between gap-3">
+          <div className="flex items-center gap-2">
+            <span className="text-xs font-bold uppercase tracking-wider text-[#14301f]">Weekly Activity</span>
+            <span className="text-[11px] font-semibold text-emerald-800 bg-emerald-100/60 px-2 py-0.5 rounded-full">
+              {metric === 'kwh' ? 'kWh Avoided' : 'Actions Completed'}
+            </span>
+          </div>
 
-        {onMetricChange && (
-          <div className="flex items-center gap-1 p-1 bg-white/60 rounded-xl border border-white/80 shrink-0">
-            <Button
+          <div className="inline-flex rounded-xl bg-white/70 p-1 border border-white/80 shadow-xs">
+            <button
               type="button"
-              variant={metric === 'kwh' ? 'primary' : 'ghost'}
-              size="sm"
               onClick={() => onMetricChange('kwh')}
-              className={metric === 'kwh' ? 'shadow-xs' : 'text-[#14301f]'}
+              className={`rounded-lg px-2.5 py-1 text-xs font-semibold transition-all cursor-pointer ${
+                metric === 'kwh'
+                  ? 'bg-[#0a381e] text-white shadow-xs'
+                  : 'text-[#1e3f2b] hover:text-[#0f2819]'
+              }`}
             >
-              Energy Saved (kWh)
-            </Button>
-            <Button
+              kWh
+            </button>
+            <button
               type="button"
-              variant={metric === 'actions' ? 'primary' : 'ghost'}
-              size="sm"
               onClick={() => onMetricChange('actions')}
-              className={metric === 'actions' ? 'shadow-xs' : 'text-[#14301f]'}
+              className={`rounded-lg px-2.5 py-1 text-xs font-semibold transition-all cursor-pointer ${
+                metric === 'actions'
+                  ? 'bg-[#0a381e] text-white shadow-xs'
+                  : 'text-[#1e3f2b] hover:text-[#0f2819]'
+              }`}
             >
-              Actions Completed
-            </Button>
-          </div>
-        )}
-      </div>
-
-      {!hasData ? (
-        <EmptyState
-          icon={<Calendar className="w-6 h-6 text-emerald-800" />}
-          title="No Conservation Activity Logged This Week"
-          description="Complete your daily reminders or log actions to populate your weekly energy savings chart."
-        />
-      ) : (
-        <div
-          role="img"
-          aria-label={ariaDescription}
-          className="relative pt-8 pb-2 focus:outline-none"
-        >
-          {/* Visually Hidden Data Table for Accessibility */}
-          <table className="sr-only">
-            <caption>Weekly Energy Conservation Activity</caption>
-            <thead>
-              <tr>
-                <th scope="col">Day</th>
-                <th scope="col">Date</th>
-                <th scope="col">Actions</th>
-                <th scope="col">kWh Saved</th>
-              </tr>
-            </thead>
-            <tbody>
-              {data.map((d) => (
-                <tr key={d.dateKey}>
-                  <td>{d.day}</td>
-                  <td>{d.fullDate}</td>
-                  <td>{d.actions}</td>
-                  <td>{d.kwh.toFixed(2)}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-
-          {/* Bar Chart Container */}
-          <div className="h-56 flex items-end justify-between gap-2 sm:gap-4 px-1 sm:px-4">
-            {data.map((d, index) => {
-              const val = metric === 'kwh' ? d.kwh : d.actions
-              const heightPct = getBarHeight(val, maxVal)
-              const isToday = d.dateKey === today
-              const isZero = val === 0
-              const tierColor = getTierColor(val, maxVal)
-              const isHovered = hoveredIndex === index
-              const isDimmed = hoveredIndex !== null && !isHovered
-
-              return (
-                <div
-                  key={d.dateKey}
-                  tabIndex={0}
-                  role="button"
-                  aria-label={`${d.day} (${d.fullDate}): ${d.actions} actions, ${d.kwh.toFixed(2)} kWh`}
-                  onMouseEnter={() => setHoveredIndex(index)}
-                  onMouseLeave={() => setHoveredIndex(null)}
-                  onFocus={() => setHoveredIndex(index)}
-                  onBlur={() => setHoveredIndex(null)}
-                  className="group flex-1 flex flex-col items-center h-full justify-end relative cursor-pointer outline-none select-none"
-                >
-                  {/* Floating Pill Tooltip */}
-                  {isHovered && (
-                    <motion.div
-                      initial={{ opacity: 0, y: 6, scale: 0.95 }}
-                      animate={{ opacity: 1, y: 0, scale: 1 }}
-                      exit={{ opacity: 0, y: 4, scale: 0.95 }}
-                      transition={{ duration: 0.15 }}
-                      className="absolute -top-10 z-20 whitespace-nowrap px-2.5 py-1 rounded-full bg-white text-[#0f2819] text-xs font-bold shadow-lg shadow-emerald-950/20 border border-emerald-900/15 pointer-events-none"
-                    >
-                      <span>{d.actions} {d.actions === 1 ? 'action' : 'actions'} · {d.kwh.toFixed(2)} kWh</span>
-                    </motion.div>
-                  )}
-
-                  {/* The Pill Bar Track / Fill */}
-                  <div
-                    className="w-full max-w-[42px] sm:max-w-[48px] h-full flex items-end justify-center rounded-full p-1"
-                    style={{
-                      transition: 'opacity 0.2s ease, transform 0.2s cubic-bezier(0.2, 0.9, 0.4, 1)',
-                      opacity: isDimmed ? 0.6 : 1,
-                      transform: isHovered ? 'translateY(-3px)' : 'translateY(0)',
-                    }}
-                  >
-                    {isZero ? (
-                      /* Hatched Pill for zero or inactive day */
-                      <div
-                        className="w-full h-8 rounded-full border border-[#8fa398]/40"
-                        style={{
-                          backgroundColor: '#f4f8f5',
-                          backgroundImage:
-                            'repeating-linear-gradient(45deg, transparent, transparent 3.8px, #8fa398 3.8px, #8fa398 5px)',
-                        }}
-                      />
-                    ) : (
-                      /* Solid Tier-Coloured Pill Bar with bottom-origin growth */
-                      <motion.div
-                        initial={prefersReduced ? { height: `${heightPct}%` } : { height: '0%' }}
-                        animate={{ height: `${heightPct}%` }}
-                        transition={{
-                          delay: prefersReduced ? 0 : index * 0.07,
-                          type: 'spring',
-                          stiffness: 220,
-                          damping: 20,
-                        }}
-                        style={{
-                          backgroundColor: tierColor,
-                        }}
-                        className="w-full rounded-full shadow-sm"
-                      />
-                    )}
-                  </div>
-
-                  {/* Day Label Underneath */}
-                  <div className="mt-2 text-center">
-                    <span
-                      className={`text-xs block ${
-                        isToday
-                          ? 'font-black text-[#0a381e]'
-                          : 'font-semibold text-slate-600 group-hover:text-[#0f2819]'
-                      }`}
-                    >
-                      {d.day}
-                    </span>
-                    <span className="text-[10px] text-slate-400 block sm:inline">
-                      {d.fullDate.split(' ')[0]}
-                    </span>
-                  </div>
-                </div>
-              )
-            })}
-          </div>
-
-          {/* Color Legend */}
-          <div className="flex flex-wrap items-center justify-center gap-4 pt-4 mt-2 border-t border-emerald-950/10 text-xs font-semibold text-[#1e3f2b]">
-            <div className="flex items-center gap-1.5">
-              <span className="w-3 h-3 rounded-full bg-[#0a381e]" />
-              <span>High (≥75% max)</span>
-            </div>
-            <div className="flex items-center gap-1.5">
-              <span className="w-3 h-3 rounded-full bg-[#196f45]" />
-              <span>Medium (40-75%)</span>
-            </div>
-            <div className="flex items-center gap-1.5">
-              <span className="w-3 h-3 rounded-full bg-[#5aba86]" />
-              <span>Low (&lt;40%)</span>
-            </div>
-            <div className="flex items-center gap-1.5">
-              <span
-                className="w-3 h-3 rounded-full border border-[#8fa398]/50"
-                style={{
-                  backgroundColor: '#f4f8f5',
-                  backgroundImage:
-                    'repeating-linear-gradient(45deg, transparent, transparent 3.8px, #8fa398 3.8px, #8fa398 5px)',
-                }}
-              />
-              <span>Zero / Future</span>
-            </div>
+              Actions
+            </button>
           </div>
         </div>
       )}
+
+      {/* Visually Hidden Accessible Table for Screen Readers */}
+      <table className="sr-only">
+        <caption>Weekly Energy Conservation Breakdown</caption>
+        <thead>
+          <tr>
+            <th scope="col">Day</th>
+            <th scope="col">Date</th>
+            <th scope="col">Estimated kWh</th>
+            <th scope="col">Actions Done</th>
+          </tr>
+        </thead>
+        <tbody>
+          {data.map((d) => (
+            <tr key={d.dateKey}>
+              <td>{d.day}</td>
+              <td>{d.fullDate}</td>
+              <td>{d.kwh.toFixed(2)}</td>
+              <td>{d.actions}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+
+      {/* Graphic Chart Container */}
+      <div
+        role="img"
+        aria-label={`Weekly pill bar chart from Monday to Sunday. Peak value: ${maxVal.toFixed(1)} ${metric === 'kwh' ? 'kWh' : 'actions'}.`}
+        className="relative pt-8 pb-2 select-none"
+      >
+        <div className="grid grid-cols-7 gap-2 sm:gap-3.5 items-end justify-items-center" style={{ height: `${height}px` }}>
+          {data.map((d, index) => {
+            const val = metric === 'kwh' ? d.kwh : d.actions
+            const isZero = val <= 0
+            const ratio = maxVal > 0 ? val / maxVal : 0
+
+            // Tier colors relative to week's max
+            let barColor = '#5aba86' // <40%
+            if (ratio >= 0.75) {
+              barColor = '#0a381e' // >=75% deep forest
+            } else if (ratio >= 0.4) {
+              barColor = '#196f45' // 40-75% emerald
+            }
+
+            // Height scaling (min 14% for non-zero to show pill curve)
+            const heightPct = isZero ? 10 : Math.max(16, Math.round(ratio * 100))
+            const isToday = d.dateKey === currentToday
+            const isHovered = hoveredIndex === index
+            const isDimmed = hoveredIndex !== null && !isHovered
+
+            return (
+              <div
+                key={d.dateKey}
+                className="relative flex flex-col items-center justify-end w-full h-full group outline-none"
+                tabIndex={0}
+                onMouseEnter={() => setHoveredIndex(index)}
+                onMouseLeave={() => setHoveredIndex(null)}
+                onFocus={() => setHoveredIndex(index)}
+                onBlur={() => setHoveredIndex(null)}
+                aria-label={`${d.day} (${d.fullDate}): ${d.actions} actions, ${d.kwh.toFixed(2)} kWh`}
+              >
+                {/* Floating Tooltip Pill */}
+                <AnimatePresence>
+                  {isHovered && (
+                    <motion.div
+                      initial={{ opacity: 0, y: 4, scale: 0.95 }}
+                      animate={{ opacity: 1, y: -8, scale: 1 }}
+                      exit={{ opacity: 0, y: 2, scale: 0.95 }}
+                      transition={{ duration: 0.15 }}
+                      className="absolute bottom-full z-30 pointer-events-none whitespace-nowrap px-2.5 py-1 rounded-full bg-white text-[#0a381e] text-[11px] font-bold shadow-md border border-stone-200/80"
+                    >
+                      {d.actions} action{d.actions === 1 ? '' : 's'} · {d.kwh.toFixed(2)} kWh
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+
+                {/* Pill Bar */}
+                <motion.div
+                  initial={{ scaleY: 0 }}
+                  animate={{
+                    scaleY: 1,
+                    y: isHovered ? -3 : 0,
+                    opacity: isDimmed ? 0.6 : 1,
+                  }}
+                  transition={{
+                    scaleY: {
+                      type: 'spring',
+                      stiffness: 240,
+                      damping: 22,
+                      delay: index * 0.07,
+                    },
+                    y: { type: 'spring', stiffness: 400, damping: 25 },
+                    opacity: { duration: 0.15 },
+                  }}
+                  style={{
+                    height: `${heightPct}%`,
+                    transformOrigin: 'bottom',
+                    backgroundColor: isZero ? '#f4f8f5' : barColor,
+                    backgroundImage: isZero
+                      ? 'repeating-linear-gradient(45deg, #f4f8f5, #f4f8f5 4px, #8fa398 4.2px, #8fa398 5.4px)'
+                      : undefined,
+                  }}
+                  className={`w-full max-w-[28px] sm:max-w-[36px] rounded-full transition-shadow ${
+                    isZero
+                      ? 'border border-[#8fa398]/30 shadow-none'
+                      : isHovered
+                      ? 'shadow-lg shadow-emerald-950/20 ring-2 ring-emerald-700/30'
+                      : 'shadow-sm shadow-emerald-950/10'
+                  }`}
+                />
+
+                {/* Day Label Underneath */}
+                <div className="mt-2 text-center">
+                  <span
+                    className={`block text-[11px] sm:text-xs transition-colors ${
+                      isToday
+                        ? 'font-extrabold text-[#0a381e] underline decoration-emerald-600 decoration-2 underline-offset-2'
+                        : 'font-semibold text-[#1e3f2b]/80'
+                    }`}
+                  >
+                    {d.day}
+                  </span>
+                </div>
+              </div>
+            )
+          })}
+        </div>
+      </div>
     </div>
   )
 }

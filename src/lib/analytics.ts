@@ -81,57 +81,6 @@ export function getWeeklyChartData(
  */
 export const weeklySeries = getWeeklyChartData
 
-export interface TrendDataPoint {
-  day: string
-  dateKey: string
-  kwh: number
-  previousKwh: number
-}
-
-/**
- * Derives daily trend data comparing this 7-day period against the previous 7-day period.
- * Requires at least 3 distinct days of completions to be considered active.
- */
-export function getTrendSeries(
-  completions: Completion[],
-  baseDate: Date = new Date()
-): { data: TrendDataPoint[]; hasTrendData: boolean } {
-  const uniqueDays = new Set(completions.map((c) => c.date))
-  const hasTrendData = uniqueDays.size >= 3
-
-  const monday = startOfWeek(baseDate, 1)
-  const dayNames = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
-
-  const thisWeekMap = new Map<string, number>()
-  const lastWeekMap = new Map<string, number>()
-
-  const thisWeekMonday = monday
-  const lastWeekMonday = addDays(monday, -7)
-
-  for (const c of completions) {
-    const kwh = c.kWh || 0
-    thisWeekMap.set(c.date, (thisWeekMap.get(c.date) || 0) + kwh)
-    lastWeekMap.set(c.date, (lastWeekMap.get(c.date) || 0) + kwh)
-  }
-
-  const data: TrendDataPoint[] = []
-  for (let i = 0; i < 7; i++) {
-    const thisDay = addDays(thisWeekMonday, i)
-    const lastDay = addDays(lastWeekMonday, i)
-    const thisKey = todayKey(thisDay)
-    const lastKey = todayKey(lastDay)
-
-    data.push({
-      day: dayNames[i],
-      dateKey: thisKey,
-      kwh: Math.round((thisWeekMap.get(thisKey) || 0) * 100) / 100,
-      previousKwh: Math.round((lastWeekMap.get(lastKey) || 0) * 100) / 100,
-    })
-  }
-
-  return { data, hasTrendData }
-}
-
 /**
  * Compares current Monday-Sunday week with previous Monday-Sunday week.
  */

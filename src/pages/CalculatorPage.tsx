@@ -3,18 +3,17 @@ import { Link } from 'react-router-dom'
 import { motion } from 'motion/react'
 import { PageHeader } from '../components/layout/PageHeader'
 import { Card } from '../components/ui/Card'
-import { staggerContainerVariant, cardEntranceVariant } from '../lib/motionVariants'
 import { Button } from '../components/ui/Button'
 import { Input } from '../components/ui/Input'
 import { Badge } from '../components/ui/Badge'
 import { CountUp } from '../components/ui/CountUp'
-import { useAppState } from '../state'
 import { useToast } from '../context/useToast'
+import { useAppState } from '../state'
 import { calculateKwh, calculateCost } from '../lib/energy'
+import { containerVariants, cardVariants } from '../lib/motionVariants'
 import { ReminderFormDialog } from '../components/reminders/ReminderFormDialog'
 import type { Reminder, ReminderCategory } from '../types'
 import {
-  Calculator as CalcIcon,
   Zap,
   Clock,
   Calendar,
@@ -46,7 +45,7 @@ const PRESETS: AppliancePreset[] = [
 
 export const CalculatorPage: React.FC = () => {
   const { state, addReminder } = useAppState()
-  const { toast } = useToast()
+  const { showToast } = useToast()
   const tariff = state.settings.tariffPerKwh
 
   const [selectedPreset, setSelectedPreset] = useState<string>('Ceiling fan (75 W)')
@@ -67,29 +66,29 @@ export const CalculatorPage: React.FC = () => {
   const handlePresetChange = (presetName: string) => {
     setSelectedPreset(presetName)
     const preset = PRESETS.find((p) => p.name === presetName)
-    if (preset) {
-      setWatts(preset.watts.toString())
-      setHours(preset.typicalHours.toString())
-      setErrors({})
+    if (preset && preset.name !== 'Custom') {
+      setWatts(String(preset.watts))
+      setHours(String(preset.typicalHours))
+      setErrors((prev) => ({ ...prev, watts: undefined, hours: undefined }))
     }
   }
 
-  // Parse and sanitize numeric inputs
+  // Parse & validate values
   const numWatts = parseFloat(watts)
   const numHours = parseFloat(hours)
   const numDays = parseFloat(days)
 
-  const isWattsValid = !isNaN(numWatts) && numWatts >= 0 && numWatts <= 10000
-  const isHoursValid = !isNaN(numHours) && numHours >= 0 && numHours <= 24
-  const isDaysValid = !isNaN(numDays) && numDays >= 1 && numDays <= 365
+  const isValidWatts = !isNaN(numWatts) && numWatts >= 0 && numWatts <= 10000
+  const isValidHours = !isNaN(numHours) && numHours >= 0 && numHours <= 24
+  const isValidDays = !isNaN(numDays) && numDays >= 1 && numDays <= 365
 
-  const isValid = isWattsValid && isHoursValid && isDaysValid
+  const isValid = isValidWatts && isValidHours && isValidDays
 
-  const safeWatts = isWattsValid ? numWatts : 0
-  const safeHours = isHoursValid ? numHours : 0
-  const safeDays = isDaysValid ? numDays : 1
+  // Calculation Math using pure energy.ts functions
+  const safeWatts = isValidWatts ? numWatts : 0
+  const safeHours = isValidHours ? numHours : 0
+  const safeDays = isValidDays ? numDays : 1
 
-  // Projections
   const dailyKwh = calculateKwh(safeWatts, safeHours)
   const dailyCost = calculateCost(dailyKwh, tariff)
 
@@ -108,74 +107,77 @@ export const CalculatorPage: React.FC = () => {
   const handleOpenReminderDialog = () => {
     const preset = PRESETS.find((p) => p.name === selectedPreset)
     setPrefilledReminder({
-      title: preset ? preset.title : `Turn off ${safeWatts}W appliance`,
+      title: preset ? preset.title : `Turn off ${watts}W appliance`,
       category: preset ? preset.category : 'other',
       time: '18:00',
       recurrence: 'daily',
-      active: true,
       applianceWatts: safeWatts,
       avoidedHours: safeHours,
+      active: true,
     })
     setFormDialogOpen(true)
   }
 
+  const handleSaveReminder = (data: Omit<Reminder, 'id' | 'createdAt'> | Reminder) => {
+    if (!('id' in data)) {
+      addReminder(data)
+      showToast('Reminder created from calculator!')
+    }
+  }
+
   return (
-    <div className="space-y-6">
+    <motion.div
+      variants={containerVariants}
+      initial="hidden"
+      animate="visible"
+      className="space-y-6"
+    >
       <PageHeader
         title="Appliance Energy Calculator"
-        description="Calculate estimated kilowatt-hours (kWh) and domestic cost saved by turning off appliances."
+        description="Estimate electrical energy (kWh) and bill savings (₹) by turning off or unplugging specific appliances."
       />
 
-      {/* Honest Scientific Disclaimer */}
-      <div className="rounded-xl border border-emerald-950/10 bg-white/40 p-3.5 text-xs text-[#14301f] flex items-start gap-2.5">
-        <HelpCircle className="w-4 h-4 text-emerald-800 shrink-0 mt-0.5" />
-        <p className="leading-relaxed">
-          <strong className="text-emerald-950 font-bold">Calculation basis:</strong> All values are calculated using standard physics formulas (1 kWh = 1000 Watt-hours). Actual savings vary with appliance efficiency, ambient room temperature, and local utility slabs.
-        </p>
-      </div>
-
-      <motion.div
-        variants={staggerContainerVariant}
-        initial="hidden"
-        animate="show"
-        className="grid grid-cols-1 lg:grid-cols-12 gap-6"
-      >
-        {/* Left Column: Inputs & Presets (7 cols) */}
-        <div className="lg:col-span-7 space-y-4">
-          <motion.div variants={cardEntranceVariant}>
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+        {/* Left Column: Form & Math Formulas (7 cols) */}
+        <div className="lg:col-span-7 space-y-5">
+          <motion.div variants={cardVariants}>
             <Card variant="glass-strong" className="space-y-4">
-              <h2 className="text-sm font-bold text-[#14301f] uppercase tracking-wider flex items-center gap-2">
-                <CalcIcon className="w-4 h-4 text-emerald-800" /> Appliance Configuration
+              <h2 className="text-base font-bold text-[#14301f]">
+                Interactive Calculator
               </h2>
 
               {/* Preset Selector */}
-              <div className="space-y-1.5">
-                <div className="flex items-center justify-between">
-                  <label htmlFor="preset-select" className="block text-xs font-semibold text-[#14301f]">
-                    Appliance Preset
-                  </label>
-                  <span className="text-[11px] text-[#1e3f2b]">typical values, check your appliance label</span>
+              <div>
+                <label className="block text-xs font-bold text-[#14301f] uppercase tracking-wider mb-1.5">
+                  Choose an appliance preset
+                </label>
+                <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
+                  {PRESETS.map((preset) => {
+                    const isSelected = selectedPreset === preset.name
+                    return (
+                      <button
+                        key={preset.name}
+                        type="button"
+                        onClick={() => handlePresetChange(preset.name)}
+                        className={`text-left p-2.5 rounded-xl text-xs font-semibold transition-all border ${
+                          isSelected
+                            ? 'bg-emerald-800 text-white border-emerald-900 shadow-sm'
+                            : 'bg-white/60 hover:bg-white text-[#183624] border-white/80'
+                        }`}
+                      >
+                        <p className="truncate">{preset.name}</p>
+                      </button>
+                    )
+                  })}
                 </div>
-                <select
-                  id="preset-select"
-                  value={selectedPreset}
-                  onChange={(e) => handlePresetChange(e.target.value)}
-                  className="w-full rounded-lg bg-white/95 border border-emerald-950/20 px-3.5 py-2 text-sm text-[#14301f] focus-visible:outline-2 focus-visible:outline-emerald-800 font-medium"
-                >
-                  {PRESETS.map((p) => (
-                    <option key={p.name} value={p.name}>
-                      {p.name}
-                    </option>
-                  ))}
-                </select>
               </div>
 
-              {/* Inputs Grid */}
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3.5">
+              {/* Number Inputs */}
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-2">
                 <Input
-                  label="Rated Power (Watts) *"
+                  label="Power (Watts) *"
                   type="number"
-                  step="1"
+                  step="any"
                   min="0"
                   max="10000"
                   value={watts}
@@ -189,13 +191,13 @@ export const CalculatorPage: React.FC = () => {
                     }
                   }}
                   error={errors.watts}
-                  hint="Editable wattage"
+                  hint="Appliance power rating"
                 />
 
                 <Input
-                  label="Avoided Usage (Hours/day) *"
+                  label="Avoided (Hours/day) *"
                   type="number"
-                  step="0.5"
+                  step="any"
                   min="0"
                   max="24"
                   value={hours}
@@ -262,7 +264,7 @@ export const CalculatorPage: React.FC = () => {
           </motion.div>
 
           {/* Mathematical Formula Breakdown Card */}
-          <motion.div variants={cardEntranceVariant}>
+          <motion.div variants={cardVariants}>
             <Card variant="glass" className="space-y-3">
               <h3 className="text-xs font-bold uppercase tracking-wider text-[#14301f] flex items-center gap-1.5">
                 <Sparkles className="w-3.5 h-3.5 text-emerald-800" /> Formula Breakdown with Your Values
@@ -285,9 +287,9 @@ export const CalculatorPage: React.FC = () => {
           </motion.div>
         </div>
 
-        {/* Right Column: Projection Estimates (5 cols) */}
+        {/* Right Column: Projection Estimates with CountUp (5 cols) */}
         <div className="lg:col-span-5 space-y-4">
-          <motion.div variants={cardEntranceVariant}>
+          <motion.div variants={cardVariants}>
             <Card variant="glass-strong" className="space-y-4">
               <div className="flex items-center justify-between">
                 <h2 className="text-sm font-bold text-[#14301f] uppercase tracking-wider">
@@ -298,14 +300,14 @@ export const CalculatorPage: React.FC = () => {
                 </Badge>
               </div>
 
-              {/* Selected Days Box */}
+              {/* Selected Days Box with CountUp */}
               <div className="p-4 rounded-xl bg-emerald-800 text-white shadow-sm space-y-1">
                 <p className="text-xs text-emerald-100 font-semibold uppercase tracking-wider">
                   For Selected {safeDays} Day{safeDays === 1 ? '' : 's'}
                 </p>
                 <div className="flex items-baseline justify-between pt-1">
                   <span className="text-3xl font-extrabold tabular-nums tracking-tight">
-                    <CountUp value={selectedPeriodKwh} decimals={2} suffix=" kWh" />
+                    <CountUp value={selectedPeriodKwh} decimals={2} /> <span className="text-base font-normal">kWh</span>
                   </span>
                   <span className="text-2xl font-extrabold tabular-nums tracking-tight">
                     <CountUp value={selectedPeriodCost} decimals={2} prefix="₹" />
@@ -313,7 +315,7 @@ export const CalculatorPage: React.FC = () => {
                 </div>
               </div>
 
-              {/* Horizon Timeline Projections */}
+              {/* Horizon Timeline Projections with CountUp */}
               <div className="space-y-2.5 pt-1">
                 {/* Daily */}
                 <div className="flex items-center justify-between p-3 rounded-xl bg-white/70 border border-emerald-900/10 text-xs">
@@ -379,33 +381,39 @@ export const CalculatorPage: React.FC = () => {
                   </div>
                 </div>
               </div>
+            </Card>
+          </motion.div>
 
-              <p className="text-[11px] text-[#1e3f2b] italic text-center font-medium">
-                Carbon and cost reductions depend on your regional energy grid and tariff bracket.
+          {/* Practical Assumptions & FAQ */}
+          <motion.div variants={cardVariants}>
+            <Card variant="glass" className="space-y-2 p-4 text-xs">
+              <h3 className="font-bold text-[#14301f] flex items-center gap-1.5">
+                <HelpCircle className="w-3.5 h-3.5 text-emerald-800" /> Calculation Assumptions
+              </h3>
+              <p className="text-[#1e3f2b] leading-relaxed">
+                1 unit of electricity equals 1 kilowatt-hour (1 kWh = 1000 Watt-hours).
+                Calculations represent potential avoided consumption. Real savings depend on continuous appliance operation and seasonal duty cycles.
               </p>
             </Card>
           </motion.div>
         </div>
-      </motion.div>
+      </div>
 
-      {/* Reminder Right Drawer prefilled from calculator */}
-      {prefilledReminder && (
-        <ReminderFormDialog
-          open={formDialogOpen}
-          onClose={() => setFormDialogOpen(false)}
-          onSave={(data) => {
-            if (!('id' in data)) {
-              addReminder(data)
-              toast(`Created reminder "${data.title}"`)
-            }
-          }}
-          initialReminder={{
-            ...prefilledReminder,
-            id: 'new-from-calc',
-            createdAt: createdTimestamp,
-          }}
-        />
-      )}
-    </div>
+      {/* Modal / Drawer for creating reminder */}
+      <ReminderFormDialog
+        open={formDialogOpen}
+        onClose={() => setFormDialogOpen(false)}
+        onSave={handleSaveReminder}
+        initialReminder={
+          prefilledReminder
+            ? {
+                ...prefilledReminder,
+                id: 'new',
+                createdAt: createdTimestamp,
+              }
+            : null
+        }
+      />
+    </motion.div>
   )
 }

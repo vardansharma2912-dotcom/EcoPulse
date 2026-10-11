@@ -13,8 +13,8 @@ import { SettingsPage } from './pages/SettingsPage'
 
 export default function App(): React.JSX.Element {
   return (
-    <MotionConfig reducedMotion="user">
-      <AppStateProvider>
+    <AppStateProvider>
+      <MotionConfig reducedMotion="user">
         <ToastProvider>
           <HashRouter>
             <Routes>
@@ -30,7 +30,7 @@ export default function App(): React.JSX.Element {
             </Routes>
           </HashRouter>
         </ToastProvider>
-      </AppStateProvider>
-    </MotionConfig>
+      </MotionConfig>
+    </AppStateProvider>
   )
 }
