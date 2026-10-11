@@ -9,6 +9,7 @@ import { EmptyState } from '../components/ui/EmptyState'
 import { CountUp } from '../components/ui/CountUp'
 import { SemiCircleGauge } from '../components/charts/SemiCircleGauge'
 import { PillBarChart } from '../components/charts/PillBarChart'
+import { TimeTrackerCard } from '../components/charts/TimeTrackerCard'
 import { useToast } from '../context/useToast'
 import { useAppState } from '../state'
 import { todayKey } from '../lib/dates'
@@ -148,83 +149,241 @@ export const DashboardPage: React.FC = () => {
 
       <DemoBanner />
 
-      {/* Grid of Key Metrics Cards with CountUp */}
+      {/* Grid of Key Metrics Cards with CountUp - Forest Hero Card in Position 1 */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3.5">
-        {/* Due Today */}
-        <motion.div variants={cardVariants}>
-          <Card variant="glass" className="p-4 group">
-            <div className="flex items-center justify-between text-[#14301f] mb-1">
-              <span className="text-xs font-bold uppercase tracking-wider">Due Today</span>
-              <div className="flex items-center gap-1 text-emerald-800">
-                <Calendar className="w-4 h-4" />
-                <ArrowUpRight className="w-3 h-3 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+        {/* Card 1: Highlighted Solid Deep Forest Hero Metric Card */}
+        <motion.div variants={highlightCardVariants}>
+          <div className="h-full rounded-2xl p-4 sm:p-4.5 bg-[#0a381e] text-white shadow-xl border border-emerald-500/20 group relative overflow-hidden transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl hover:shadow-emerald-950/30 flex flex-col justify-between">
+            <div>
+              <div className="flex items-center justify-between text-emerald-100 mb-1">
+                <span className="text-xs font-bold uppercase tracking-wider text-emerald-300">Energy Saved Today</span>
+                <div className="flex items-center gap-1 text-emerald-300">
+                  <Zap className="w-4 h-4 text-emerald-400" />
+                  <ArrowUpRight className="w-3 h-3 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+                </div>
               </div>
+              <p className="text-2xl sm:text-3xl font-extrabold text-white tabular-nums tracking-tight">
+                <CountUp value={kwhSavedToday} decimals={2} /> <span className="text-sm font-bold text-emerald-300">kWh</span>
+              </p>
             </div>
-            <p className="text-2xl sm:text-3xl font-extrabold text-[#0f2819] tabular-nums tracking-tight">
-              <CountUp value={totalDueToday} />
-            </p>
+            <div className="flex items-center gap-1.5 mt-2 text-[11px] text-emerald-200 font-semibold">
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse shrink-0" />
+              <span>{completedTodayCount} action{completedTodayCount === 1 ? '' : 's'} logged today</span>
+            </div>
+          </div>
+        </motion.div>
+
+        {/* Card 2: Due Today */}
+        <motion.div variants={cardVariants}>
+          <Card variant="glass" className="p-4 group h-full flex flex-col justify-between">
+            <div>
+              <div className="flex items-center justify-between text-[#14301f] mb-1">
+                <span className="text-xs font-bold uppercase tracking-wider">Due Today</span>
+                <div className="flex items-center gap-1 text-emerald-800">
+                  <Calendar className="w-4 h-4" />
+                  <ArrowUpRight className="w-3 h-3 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+                </div>
+              </div>
+              <p className="text-2xl sm:text-3xl font-extrabold text-[#0f2819] tabular-nums tracking-tight">
+                <CountUp value={totalDueToday} />
+              </p>
+            </div>
             <p className="text-[11px] text-[#1e3f2b] font-medium mt-1">Scheduled for today</p>
           </Card>
         </motion.div>
 
-        {/* Completed Today */}
+        {/* Card 3: Completed Today */}
         <motion.div variants={cardVariants}>
-          <Card variant="glass" className="p-4 group">
-            <div className="flex items-center justify-between text-[#14301f] mb-1">
-              <span className="text-xs font-bold uppercase tracking-wider">Completed Today</span>
-              <div className="flex items-center gap-1 text-emerald-700">
-                <CheckCircle2 className="w-4 h-4" />
-                <ArrowUpRight className="w-3 h-3 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+          <Card variant="glass" className="p-4 group h-full flex flex-col justify-between">
+            <div>
+              <div className="flex items-center justify-between text-[#14301f] mb-1">
+                <span className="text-xs font-bold uppercase tracking-wider">Completed Today</span>
+                <div className="flex items-center gap-1 text-emerald-700">
+                  <CheckCircle2 className="w-4 h-4" />
+                  <ArrowUpRight className="w-3 h-3 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+                </div>
               </div>
+              <p className="text-2xl sm:text-3xl font-extrabold text-[#0f2819] tabular-nums tracking-tight">
+                <CountUp value={completedTodayCount} />
+              </p>
             </div>
-            <p className="text-2xl sm:text-3xl font-extrabold text-[#0f2819] tabular-nums tracking-tight">
-              <CountUp value={completedTodayCount} />
-            </p>
             <p className="text-[11px] text-[#1e3f2b] font-medium mt-1">
               <CountUp value={pendingTodayCount} /> pending action{pendingTodayCount === 1 ? '' : 's'}
             </p>
           </Card>
         </motion.div>
 
-        {/* Action Streak */}
+        {/* Card 4: Action Streak */}
         <motion.div variants={cardVariants}>
-          <Card variant="glass" className="p-4 group">
-            <div className="flex items-center justify-between text-[#14301f] mb-1">
-              <span className="text-xs font-bold uppercase tracking-wider">Action Streak</span>
-              <div className="flex items-center gap-1 text-amber-700">
-                <Flame className="w-4 h-4" />
-                <ArrowUpRight className="w-3 h-3 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+          <Card variant="glass" className="p-4 group h-full flex flex-col justify-between">
+            <div>
+              <div className="flex items-center justify-between text-[#14301f] mb-1">
+                <span className="text-xs font-bold uppercase tracking-wider">Action Streak</span>
+                <div className="flex items-center gap-1 text-amber-700">
+                  <Flame className="w-4 h-4" />
+                  <ArrowUpRight className="w-3 h-3 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+                </div>
               </div>
+              <p className="text-2xl sm:text-3xl font-extrabold text-amber-900 tabular-nums tracking-tight flex items-baseline gap-1">
+                <CountUp value={currentStreak} />
+                <span className="text-sm font-semibold text-[#1e3f2b]">day{currentStreak === 1 ? '' : 's'}</span>
+              </p>
             </div>
-            <p className="text-2xl sm:text-3xl font-extrabold text-amber-900 tabular-nums tracking-tight flex items-baseline gap-1">
-              <CountUp value={currentStreak} />
-              <span className="text-sm font-semibold text-[#1e3f2b]">day{currentStreak === 1 ? '' : 's'}</span>
-            </p>
             <p className="text-[11px] text-[#1e3f2b] font-medium mt-1">Consecutive days active</p>
-          </Card>
-        </motion.div>
-
-        {/* Highlighted Forest Metric Card with Shadow Bloom */}
-        <motion.div variants={highlightCardVariants}>
-          <Card variant="glass-strong" className="p-4 border-emerald-600/30 group">
-            <div className="flex items-center justify-between text-[#14301f] mb-1">
-              <span className="text-xs font-bold uppercase tracking-wider text-emerald-950">Energy Saved Today</span>
-              <div className="flex items-center gap-1 text-emerald-800">
-                <Zap className="w-4 h-4" />
-                <ArrowUpRight className="w-3 h-3 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
-              </div>
-            </div>
-            <p className="text-2xl sm:text-3xl font-extrabold text-[#0a381e] tabular-nums tracking-tight">
-              <CountUp value={kwhSavedToday} decimals={2} /> <span className="text-sm font-bold text-[#1b4332]">kWh</span>
-            </p>
-            <p className="text-[11px] text-emerald-900 font-semibold mt-1">From completed checks</p>
           </Card>
         </motion.div>
       </div>
 
-      {/* Row with Today's Progress Semi-Circle Ring Gauge and Savings Cards */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
-        {/* Semi-Circle Ring Gauge (Item 5) */}
+      {/* Row 2: Project Analytics (PillBarChart) + Featured Reminders Card (Side-by-Side) */}
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-5">
+        {/* Project Analytics Pill Bar Chart (7 cols on lg) */}
+        <motion.div variants={cardVariants} className="lg:col-span-7 xl:col-span-8">
+          <Card variant="glass-strong" className="p-5 sm:p-6 h-full flex flex-col justify-between">
+            <PillBarChart
+              data={weeklyData}
+              metric={chartMetric}
+              onMetricChange={setChartMetric}
+              height={195}
+            />
+          </Card>
+        </motion.div>
+
+        {/* Featured Reminders Card (5 cols on lg) */}
+        <motion.div variants={cardVariants} className="lg:col-span-5 xl:col-span-4">
+          <Card variant="glass-strong" className="p-5 h-full flex flex-col justify-between space-y-4">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <Clock className="w-4 h-4 text-emerald-800" />
+                <h3 className="text-sm font-bold text-[#14301f]">Today's Reminders</h3>
+              </div>
+              <Badge variant="emerald" size="sm">
+                {completedTodayCount}/{totalDueToday} Done
+              </Badge>
+            </div>
+
+            {dueTodayReminders.length === 0 ? (
+              <div className="p-5 rounded-2xl bg-white/50 border border-white/70 text-center space-y-2">
+                <p className="text-xs font-bold text-[#102819]">No Reminders Due Today</p>
+                <p className="text-[11px] text-[#1e3f2b]">All quiet! You can add custom schedules anytime.</p>
+                <Button
+                  variant="primary"
+                  size="sm"
+                  icon={<Plus className="w-3.5 h-3.5" />}
+                  onClick={() => setAddDialogOpen(true)}
+                  className="mx-auto"
+                >
+                  Add Reminder
+                </Button>
+              </div>
+            ) : (() => {
+              const pendingItem = dueTodayReminders.find((r) => !isReminderDoneToday(r.id))
+              if (!pendingItem) {
+                return (
+                  <div className="p-5 rounded-2xl bg-emerald-50/80 border border-emerald-300 text-center space-y-2">
+                    <CheckCircle2 className="w-6 h-6 text-emerald-700 mx-auto" />
+                    <p className="text-xs font-bold text-emerald-950">All Caught Up for Today!</p>
+                    <p className="text-[11px] text-emerald-900">
+                      Great job completing all {totalDueToday} scheduled energy checks today.
+                    </p>
+                  </div>
+                )
+              }
+              return (
+                <div className="p-4 rounded-2xl bg-white/70 border border-emerald-900/10 space-y-3 shadow-xs">
+                  <div className="flex items-start justify-between gap-2">
+                    <div>
+                      <span className="text-[10px] font-bold uppercase tracking-wider text-emerald-800 bg-emerald-100/70 px-2 py-0.5 rounded-full">
+                        Next Up • {pendingItem.time}
+                      </span>
+                      <h4 className="text-sm font-bold text-[#0f2819] mt-1.5 leading-snug">
+                        {pendingItem.title}
+                      </h4>
+                    </div>
+                  </div>
+
+                  <div className="flex items-center gap-2 text-xs text-[#1e3f2b] font-medium">
+                    {pendingItem.applianceWatts && (
+                      <span className="flex items-center gap-1 font-mono text-[11px]">
+                        <Zap className="w-3 h-3 text-emerald-700" />
+                        {pendingItem.applianceWatts}W
+                      </span>
+                    )}
+                    <span>• Est. {pendingItem.avoidedHours ?? 1}h avoided</span>
+                  </div>
+
+                  <Button
+                    variant="primary"
+                    size="sm"
+                    className="w-full justify-center"
+                    icon={
+                      <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.5}>
+                        <path d="M5 13l4 4L19 7" strokeLinecap="round" strokeLinejoin="round" />
+                      </svg>
+                    }
+                    onClick={() => handleComplete(pendingItem)}
+                  >
+                    Complete Check
+                  </Button>
+                </div>
+              )
+            })()}
+
+            {/* Quick Link to all reminders */}
+            <div className="pt-2 border-t border-emerald-900/10 flex items-center justify-between text-xs">
+              <span className="text-[11px] text-[#1e3f2b] font-medium">
+                {pendingTodayCount} remaining check{pendingTodayCount === 1 ? '' : 's'}
+              </span>
+              <button
+                type="button"
+                onClick={() => navigate('/reminders')}
+                className="font-bold text-emerald-800 hover:text-emerald-950 underline cursor-pointer"
+              >
+                View all schedules →
+              </button>
+            </div>
+          </Card>
+        </motion.div>
+      </div>
+
+      {/* Row 3: Active Device Habits + SemiCircleGauge + TimeTrackerCard */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+        {/* Card 1: Appliance Conservation Status (Matching Team Collaboration from video) */}
+        <motion.div variants={cardVariants}>
+          <Card variant="glass-strong" className="p-5 flex flex-col justify-between h-full space-y-3">
+            <div className="flex items-center justify-between">
+              <h3 className="text-sm font-bold text-[#14301f]">Conservation Habits</h3>
+              <Badge variant="neutral" size="sm">Active</Badge>
+            </div>
+
+            <div className="space-y-2.5">
+              {[
+                { name: 'Air Conditioning Set-Point', category: 'Cooling', status: '24°C Optimal', watts: '1500W' },
+                { name: 'Computer Workstation Standby', category: 'Computing', status: 'Unplugged', watts: '250W' },
+                { name: 'Fume Hood Sash Glass', category: 'Laboratory', status: 'Lowered', watts: '300W' },
+                { name: 'Daylight Harvesting', category: 'Lighting', status: 'Lights Off', watts: '80W' },
+              ].map((habit) => (
+                <div
+                  key={habit.name}
+                  className="p-2.5 rounded-xl bg-white/60 border border-emerald-950/5 flex items-center justify-between text-xs hover:bg-white/85 transition-colors"
+                >
+                  <div className="min-w-0 pr-2">
+                    <p className="font-bold text-[#102819] truncate">{habit.name}</p>
+                    <span className="text-[10px] text-[#1e3f2b]">{habit.category} · {habit.watts}</span>
+                  </div>
+                  <span className="shrink-0 px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-900 border border-emerald-200">
+                    {habit.status}
+                  </span>
+                </div>
+              ))}
+            </div>
+
+            <p className="text-[11px] text-[#1e3f2b] font-medium pt-1">
+              Top monitored appliances on campus & home
+            </p>
+          </Card>
+        </motion.div>
+
+        {/* Card 2: Today's Progress Semi-Circle Ring Gauge */}
         <motion.div variants={cardVariants}>
           <Card variant="glass-strong" className="p-5 flex flex-col items-center justify-between h-full">
             <div className="w-full flex items-center justify-between mb-2">
@@ -246,55 +405,11 @@ export const DashboardPage: React.FC = () => {
           </Card>
         </motion.div>
 
-        {/* Cumulative Savings Cards (2 Cols) */}
-        <motion.div variants={cardVariants} className="lg:col-span-2 grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <Card variant="glass" className="p-5 flex flex-col justify-between">
-            <div>
-              <div className="flex items-center justify-between text-[#14301f] mb-2">
-                <span className="text-xs font-bold uppercase tracking-wider">All-Time Energy Saved</span>
-                <div className="w-8 h-8 rounded-xl bg-emerald-800/15 flex items-center justify-center text-emerald-900">
-                  <TrendingUp className="w-4 h-4" />
-                </div>
-              </div>
-              <p className="text-3xl font-extrabold text-[#0f2819] tabular-nums tracking-tight">
-                <CountUp value={kwhSavedAllTime} decimals={2} /> <span className="text-sm font-bold text-[#1b4332]">kWh</span>
-              </p>
-            </div>
-            <p className="text-[11px] text-[#1e3f2b] font-semibold mt-3">
-              Cumulative total across all logged actions
-            </p>
-          </Card>
-
-          <Card variant="glass" className="p-5 flex flex-col justify-between">
-            <div>
-              <div className="flex items-center justify-between text-[#14301f] mb-2">
-                <span className="text-xs font-bold uppercase tracking-wider">Estimated Bill Savings</span>
-                <div className="w-8 h-8 rounded-xl bg-emerald-800/15 flex items-center justify-center text-emerald-900">
-                  <CheckCircle2 className="w-4 h-4" />
-                </div>
-              </div>
-              <p className="text-3xl font-extrabold text-[#0f2819] tabular-nums tracking-tight">
-                <CountUp value={costSavedAllTime} decimals={2} prefix="₹" />
-              </p>
-            </div>
-            <p className="text-[11px] text-[#1e3f2b] font-semibold mt-3">
-              Estimated at ₹{state.settings.tariffPerKwh}/kWh (set in Settings)
-            </p>
-          </Card>
+        {/* Card 3: The Iconic Time Tracker Card from the Reference Video */}
+        <motion.div variants={cardVariants}>
+          <TimeTrackerCard className="h-full min-h-[220px]" />
         </motion.div>
       </div>
-
-      {/* Pill Bar Chart on Dashboard (Item 4) */}
-      <motion.div variants={cardVariants}>
-        <Card variant="glass-strong" className="p-5 sm:p-6">
-          <PillBarChart
-            data={weeklyData}
-            metric={chartMetric}
-            onMetricChange={setChartMetric}
-            height={190}
-          />
-        </Card>
-      </motion.div>
 
       {/* Two Column Layout: Today's Reminders & Recent Activity Feed */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -421,6 +536,21 @@ export const DashboardPage: React.FC = () => {
               Last {recentCompletions.length}
             </span>
           </div>
+
+          {/* All-Time Impact Snapshot */}
+          <Card variant="glass" className="p-3.5 space-y-1.5">
+            <div className="flex items-center justify-between text-xs font-bold text-[#102819]">
+              <span className="flex items-center gap-1.5">
+                <TrendingUp className="w-3.5 h-3.5 text-emerald-800" /> All-Time Impact
+              </span>
+              <span className="text-emerald-900 font-extrabold tabular-nums">
+                <CountUp value={kwhSavedAllTime} decimals={2} /> kWh
+              </span>
+            </div>
+            <p className="text-[11px] text-[#1e3f2b] font-medium">
+              Total ₹<CountUp value={costSavedAllTime} decimals={2} /> avoided across all recorded actions.
+            </p>
+          </Card>
 
           {recentCompletions.length === 0 ? (
             <EmptyState

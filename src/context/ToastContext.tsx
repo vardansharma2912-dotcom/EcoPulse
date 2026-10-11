@@ -1,5 +1,6 @@
 import React, { useState, useCallback, useRef } from 'react'
 import { motion, AnimatePresence } from 'motion/react'
+import { CheckCircle2 } from 'lucide-react'
 import { ToastContext, type ToastItem } from './toastCore'
 
 export const ToastProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
@@ -61,6 +62,7 @@ export const ToastProvider: React.FC<{ children: React.ReactNode }> = ({ childre
               transition={{ type: 'spring', stiffness: 350, damping: 28 }}
               className="pointer-events-auto flex items-center gap-3 px-4 py-2.5 rounded-full bg-[#0a381e] text-white text-xs sm:text-sm font-semibold shadow-xl border border-emerald-500/20 max-w-md"
             >
+              <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
               <span className="truncate">{toast.message}</span>
               {toast.action && (
                 <button

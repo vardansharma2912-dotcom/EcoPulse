@@ -32,11 +32,13 @@ const DOCK_TABS: DockTab[] = [
   { to: '/learn', label: 'Learn', icon: BookOpen },
 ]
 
-function computeNotchPath(w: number, h: number, r: number, x: number, sw = 36, d = 20): string {
+function computeNotchPath(w: number, h: number, r: number, x: number, sw = 48, d = 34): string {
   const leftShoulder = Math.max(r, x - sw)
   const rightShoulder = Math.min(w - r, x + sw)
+  const cpX = Math.round(sw * 0.58)
+  const troughCpX = Math.round(sw * 0.46)
 
-  return `M ${r} 0 L ${leftShoulder} 0 C ${x - 22} 0, ${x - 18} ${d}, ${x} ${d} C ${x + 18} ${d}, ${x + 22} 0, ${rightShoulder} 0 L ${w - r} 0 A ${r} ${r} 0 0 1 ${w} ${r} L ${w} ${h - r} A ${r} ${r} 0 0 1 ${w - r} ${h} L ${r} ${h} A ${r} ${r} 0 0 1 0 ${h - r} L 0 ${r} A ${r} ${r} 0 0 1 ${r} 0 Z`
+  return `M ${r} 0 L ${leftShoulder} 0 C ${x - cpX} 0, ${x - troughCpX} ${d}, ${x} ${d} C ${x + troughCpX} ${d}, ${x + cpX} 0, ${rightShoulder} 0 L ${w - r} 0 A ${r} ${r} 0 0 1 ${w} ${r} L ${w} ${h - r} A ${r} ${r} 0 0 1 ${w - r} ${h} L ${r} ${h} A ${r} ${r} 0 0 1 0 ${h - r} L 0 ${r} A ${r} ${r} 0 0 1 ${r} 0 Z`
 }
 
 /**
@@ -59,8 +61,8 @@ export const NotchDock: React.FC = () => {
   const barHeight = isLandscapePhone ? 52 : 64
   const cornerRadius = isLandscapePhone ? 16 : 20
   const beadDiameter = isLandscapePhone ? 44 : 52
-  const notchDepth = isLandscapePhone ? 16 : 20
-  const notchShoulder = isLandscapePhone ? 30 : 36
+  const notchDepth = isLandscapePhone ? 28 : 34
+  const notchShoulder = isLandscapePhone ? 40 : 48
 
   // Find active index
   const activeIndex = useMemo(() => {
@@ -299,7 +301,7 @@ export const NotchDock: React.FC = () => {
               aria-current={isActive ? 'page' : undefined}
               className="flex-1 h-full flex flex-col items-center justify-center text-center relative focus-visible:ring-2 focus-visible:ring-emerald-600 focus-visible:outline-none rounded-2xl"
               style={{
-                paddingTop: isActive && !isLandscapePhone ? '24px' : '0px',
+                paddingTop: isActive && !isLandscapePhone ? '36px' : '0px',
               }}
             >
               {!isActive && (
