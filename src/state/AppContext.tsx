@@ -1,0 +1,69 @@
+import React, { useReducer, useEffect } from 'react'
+import type { Reminder, Settings } from '../types'
+import { appReducer } from './reducer'
+import { loadState, saveState, getDefaultState } from '../lib/storage'
+import { AppContext, type AppContextValue } from './context'
+
+export const AppStateProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  const [state, dispatch] = useReducer(appReducer, undefined, () => {
+    return loadState() || getDefaultState()
+  })
+
+  // Sync to localStorage on every state change
+  useEffect(() => {
+    saveState(state)
+  }, [state])
+
+  const addReminder = (reminder: Omit<Reminder, 'id' | 'createdAt'>) => {
+    dispatch({ type: 'ADD_REMINDER', payload: reminder })
+  }
+
+  const editReminder = (reminder: Reminder) => {
+    dispatch({ type: 'EDIT_REMINDER', payload: reminder })
+  }
+
+  const deleteReminder = (id: string) => {
+    dispatch({ type: 'DELETE_REMINDER', payload: { id } })
+  }
+
+  const toggleActive = (id: string) => {
+    dispatch({ type: 'TOGGLE_ACTIVE', payload: { id } })
+  }
+
+  const completeReminder = (reminderId: string, date?: string) => {
+    dispatch({ type: 'COMPLETE_REMINDER', payload: { reminderId, date } })
+  }
+
+  const undoCompletion = (reminderId: string, date?: string) => {
+    dispatch({ type: 'UNDO_COMPLETION', payload: { reminderId, date } })
+  }
+
+  const snoozeReminder = (id: string, minutes: number) => {
+    dispatch({ type: 'SNOOZE_REMINDER', payload: { id, minutes } })
+  }
+
+  const updateSettings = (settings: Partial<Settings>) => {
+    dispatch({ type: 'UPDATE_SETTINGS', payload: settings })
+  }
+
+  const resetData = () => {
+    dispatch({ type: 'RESET_DATA' })
+  }
+
+  const value: AppContextValue = {
+    state,
+    dispatch,
+    addReminder,
+    editReminder,
+    deleteReminder,
+    toggleActive,
+    completeReminder,
+    undoCompletion,
+    snoozeReminder,
+    updateSettings,
+    resetData,
+  }
+
+  return <AppContext.Provider value={value}>{children}</AppContext.Provider>
+}
+
