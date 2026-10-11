@@ -54,6 +54,14 @@ export const AppStateProvider: React.FC<{ children: React.ReactNode }> = ({ chil
     dispatch({ type: 'RESET_DATA' })
   }
 
+  const loadSampleData = () => {
+    dispatch({ type: 'LOAD_SAMPLE_DATA' })
+  }
+
+  const removeSampleData = () => {
+    dispatch({ type: 'REMOVE_SAMPLE_DATA' })
+  }
+
   const value: AppContextValue = {
     state,
     dispatch,
@@ -65,6 +73,8 @@ export const AppStateProvider: React.FC<{ children: React.ReactNode }> = ({ chil
     undoCompletion,
     snoozeReminder,
     updateSettings,
+    loadSampleData,
+    removeSampleData,
     resetData,
   }
 

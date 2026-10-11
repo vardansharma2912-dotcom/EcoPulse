@@ -2,6 +2,7 @@ import type { AppState, Completion, Reminder, Settings } from '../types'
 
 export const STORAGE_KEY = 'ecopulse_app_state_v2'
 export const PREVIOUS_STORAGE_KEY = 'ecopulse_app_state_v1'
+export const ALERTED_KEYS_STORAGE_KEY = 'ecopulse_alerted_keys_v1'
 export const CURRENT_VERSION = 2
 
 export const DEFAULT_SETTINGS: Settings = {
@@ -126,6 +127,7 @@ export function migrateCompletions(
       kWh: typeof c.kWh === 'number' && !isNaN(c.kWh) ? c.kWh : 0,
       costSaved: typeof c.costSaved === 'number' && !isNaN(c.costSaved) ? c.costSaved : 0,
       tariffAtTime: typeof c.tariffAtTime === 'number' && !isNaN(c.tariffAtTime) ? c.tariffAtTime : 8,
+      ...(c.isDemo ? { isDemo: true } : {}),
     }
   })
 }
@@ -203,6 +205,7 @@ export function clearState(): void {
   try {
     localStorage.removeItem(STORAGE_KEY)
     localStorage.removeItem(PREVIOUS_STORAGE_KEY)
+    localStorage.removeItem(ALERTED_KEYS_STORAGE_KEY)
   } catch (err) {
     console.error('[EcoPulse] Failed to clear localStorage:', err)
   }

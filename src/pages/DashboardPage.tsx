@@ -9,6 +9,7 @@ import { useAppState } from '../state'
 import { todayKey } from '../lib/dates'
 import { isDueOn, computeStreak } from '../lib/schedule'
 import { ReminderFormDialog } from '../components/reminders/ReminderFormDialog'
+import { DemoBanner } from '../components/layout/DemoBanner'
 import type { Reminder } from '../types'
 import {
   Zap,
@@ -101,6 +102,8 @@ export const DashboardPage: React.FC = () => {
           </div>
         }
       />
+
+      <DemoBanner />
 
       {/* Grid of Key Metrics Cards */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3.5">

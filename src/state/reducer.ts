@@ -2,6 +2,7 @@ import type { AppState, Completion, Reminder, Settings } from '../types'
 import { calculateKwh, calculateCost } from '../lib/energy'
 import { getDefaultState } from '../lib/storage'
 import { todayKey } from '../lib/dates'
+import { generateSampleCompletions } from '../lib/sampleData'
 
 export type AppAction =
   | { type: 'ADD_REMINDER'; payload: Omit<Reminder, 'id' | 'createdAt'> }
@@ -12,6 +13,8 @@ export type AppAction =
   | { type: 'UNDO_COMPLETION'; payload: { reminderId: string; date?: string } }
   | { type: 'SNOOZE_REMINDER'; payload: { id: string; minutes?: number; until?: string } }
   | { type: 'UPDATE_SETTINGS'; payload: Partial<Settings> }
+  | { type: 'LOAD_SAMPLE_DATA' }
+  | { type: 'REMOVE_SAMPLE_DATA' }
   | { type: 'RESET_DATA' }
 
 export function appReducer(state: AppState, action: AppAction): AppState {
@@ -119,6 +122,27 @@ export function appReducer(state: AppState, action: AppAction): AppState {
           ...state.settings,
           ...action.payload,
         },
+      }
+    }
+
+    case 'LOAD_SAMPLE_DATA': {
+      // Remove any existing demo entries first to avoid stacking duplicates
+      const nonDemoCompletions = state.completions.filter((c) => !c.isDemo)
+      const samples = generateSampleCompletions(
+        state.reminders,
+        new Date(),
+        state.settings.tariffPerKwh
+      )
+      return {
+        ...state,
+        completions: [...samples, ...nonDemoCompletions],
+      }
+    }
+
+    case 'REMOVE_SAMPLE_DATA': {
+      return {
+        ...state,
+        completions: state.completions.filter((c) => !c.isDemo),
       }
     }
 

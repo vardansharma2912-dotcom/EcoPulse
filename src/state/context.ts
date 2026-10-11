@@ -13,6 +13,8 @@ export interface AppContextValue {
   undoCompletion: (reminderId: string, date?: string) => void
   snoozeReminder: (id: string, options: { minutes?: number; until?: string } | number) => void
   updateSettings: (settings: Partial<Settings>) => void
+  loadSampleData: () => void
+  removeSampleData: () => void
   resetData: () => void
 }
 

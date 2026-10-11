@@ -33,6 +33,7 @@ export interface Completion {
   kWh: number
   costSaved: number
   tariffAtTime: number
+  isDemo?: boolean // Flag indicating sample/demo data
 }
 
 export interface Settings {
