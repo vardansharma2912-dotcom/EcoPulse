@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { motion, AnimatePresence } from 'motion/react'
 import { X } from 'lucide-react'
 
@@ -10,6 +10,12 @@ export interface DrawerProps {
   children: React.ReactNode
 }
 
+/**
+ * Drawer
+ * Responsive drawer component:
+ * - Desktop (>= 1024px): Right drawer sliding in from x: 100%
+ * - Mobile / Tablet (< 1024px): Bottom sheet sliding in from y: 100%, rounded-t-3xl, max-h-[90dvh], drag handle
+ */
 export const Drawer: React.FC<DrawerProps> = ({
   open,
   onClose,
@@ -19,6 +25,17 @@ export const Drawer: React.FC<DrawerProps> = ({
 }) => {
   const previousActiveElement = useRef<HTMLElement | null>(null)
   const drawerRef = useRef<HTMLDivElement>(null)
+  const [isDesktop, setIsDesktop] = useState(() => {
+    return typeof window !== 'undefined' ? window.innerWidth >= 1024 : true
+  })
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsDesktop(window.innerWidth >= 1024)
+    }
+    window.addEventListener('resize', handleResize)
+    return () => window.removeEventListener('resize', handleResize)
+  }, [])
 
   useEffect(() => {
     if (open) {
@@ -30,12 +47,14 @@ export const Drawer: React.FC<DrawerProps> = ({
         }
       }
       window.addEventListener('keydown', handleKeyDown)
-      // Lock body scroll
+      // Lock body scroll & signal modal state for NotchDock
       document.body.style.overflow = 'hidden'
+      document.body.setAttribute('data-modal-open', 'true')
 
       return () => {
         window.removeEventListener('keydown', handleKeyDown)
         document.body.style.overflow = ''
+        document.body.removeAttribute('data-modal-open')
         if (previousActiveElement.current && typeof previousActiveElement.current.focus === 'function') {
           previousActiveElement.current.focus()
         }
@@ -46,7 +65,11 @@ export const Drawer: React.FC<DrawerProps> = ({
   return (
     <AnimatePresence>
       {open && (
-        <div className="fixed inset-0 z-50 flex justify-end">
+        <div
+          className={`fixed inset-0 z-50 flex ${
+            isDesktop ? 'justify-end' : 'items-end justify-center'
+          }`}
+        >
           {/* Backdrop with fade and blur(2px) */}
           <motion.div
             initial={{ opacity: 0 }}
@@ -58,26 +81,37 @@ export const Drawer: React.FC<DrawerProps> = ({
             aria-hidden="true"
           />
 
-          {/* Drawer Panel Sliding in from Right (x: 100%) */}
+          {/* Panel: Bottom sheet (<1024px) or Right drawer (>=1024px) */}
           <motion.div
             ref={drawerRef}
             role="dialog"
             aria-modal="true"
             aria-labelledby="drawer-title"
-            initial={{ x: '100%' }}
-            animate={{ x: 0 }}
-            exit={{ x: '100%' }}
+            initial={isDesktop ? { x: '100%' } : { y: '100%' }}
+            animate={isDesktop ? { x: 0 } : { y: 0 }}
+            exit={isDesktop ? { x: '100%' } : { y: '100%' }}
             transition={{ type: 'spring', stiffness: 300, damping: 32 }}
-            className="relative z-10 w-full sm:w-[480px] md:w-[520px] max-w-full h-full glass-strong border-l border-white/80 shadow-2xl flex flex-col overflow-y-auto"
+            className={`relative z-10 w-full glass-strong shadow-2xl flex flex-col ${
+              isDesktop
+                ? 'sm:w-[480px] md:w-[520px] max-w-full h-full border-l border-white/80 overflow-y-auto'
+                : 'rounded-t-3xl max-h-[90dvh] border-t border-white/80 overflow-hidden'
+            }`}
           >
+            {/* Mobile Drag Handle */}
+            {!isDesktop && (
+              <div className="pt-3 pb-1 flex justify-center shrink-0">
+                <div className="w-12 h-1.5 bg-emerald-950/25 rounded-full" />
+              </div>
+            )}
+
             {/* Header */}
-            <div className="flex items-start justify-between gap-4 p-6 border-b border-emerald-900/10">
+            <div className="flex items-start justify-between gap-4 px-6 py-4 sm:py-5 border-b border-emerald-900/10 shrink-0">
               <div>
-                <h2 id="drawer-title" className="text-lg font-bold text-[#14301f] tracking-tight">
+                <h2 id="drawer-title" className="text-base sm:text-lg font-bold text-[#14301f] tracking-tight">
                   {title}
                 </h2>
                 {description && (
-                  <p className="text-xs text-[#1e3f2b] mt-1 leading-relaxed font-medium">
+                  <p className="text-xs text-[#1e3f2b] mt-0.5 leading-relaxed font-medium">
                     {description}
                   </p>
                 )}
@@ -92,7 +126,7 @@ export const Drawer: React.FC<DrawerProps> = ({
               </button>
             </div>
 
-            {/* Content with staggered entrance */}
+            {/* Content with staggered entrance and inner scroll on mobile */}
             <motion.div
               initial="hidden"
               animate="visible"
@@ -103,7 +137,7 @@ export const Drawer: React.FC<DrawerProps> = ({
                   transition: { staggerChildren: 0.05, delayChildren: 0.1 },
                 },
               }}
-              className="p-6 flex-1 text-[#14301f]"
+              className="p-6 flex-1 text-[#14301f] overflow-y-auto"
             >
               {children}
             </motion.div>

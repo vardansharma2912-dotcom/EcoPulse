@@ -312,17 +312,36 @@ export const LearnPage: React.FC = () => {
 
         {/* 3D / Reduced-Motion Carousel Container */}
         {prefersReducedMotion || isNarrowScreen ? (
-          /* Reduced-Motion / Mobile Fallback: Horizontal Centered Card with Adjacent Peeks */
-          <div className="flex items-center justify-center px-4">
+          /* Mobile / Narrow Screen: One Centered Card with Peeking Neighbours and touch-action: pan-y */
+          <div
+            className="relative flex items-center justify-center overflow-hidden px-2 py-3 select-none"
+            style={{ touchAction: 'pan-y' }}
+          >
+            {/* Left Peeking Neighbour */}
+            <div
+              onClick={prevSlide}
+              className="hidden xs:block absolute -left-16 sm:-left-12 w-64 rounded-2xl bg-white/45 backdrop-blur-md border border-white/60 p-4 shadow-sm opacity-50 scale-90 cursor-pointer pointer-events-auto shrink-0 select-none transition-transform active:scale-85"
+              aria-hidden="true"
+            >
+              <div className="flex items-center gap-2 mb-2">
+                <div className="w-8 h-8 rounded-lg bg-emerald-700/15 text-emerald-800 flex items-center justify-center shrink-0">
+                  {React.createElement(CARDS[(currentIndex - 1 + totalCards) % totalCards].icon, { className: 'w-4 h-4' })}
+                </div>
+                <p className="text-xs font-bold text-[#0f2819] truncate">
+                  {CARDS[(currentIndex - 1 + totalCards) % totalCards].title}
+                </p>
+              </div>
+            </div>
+
+            {/* Centered Active Card */}
             <div
               role="group"
               aria-roledescription="slide"
               aria-label={`Slide ${currentIndex + 1} of ${totalCards}: ${currentCard.title}`}
-              className="w-full max-w-md rounded-[20px] bg-white/75 backdrop-blur-xl border border-white/80 p-5 shadow-lg transition-all"
+              className="w-full max-w-sm rounded-[22px] bg-white/85 backdrop-blur-xl border border-white/90 p-5 shadow-xl relative z-10 transition-all"
             >
               {/* Illustration Area */}
               <div className="relative mb-4 flex h-36 w-full items-center justify-center overflow-hidden rounded-2xl bg-gradient-to-br from-emerald-100/80 via-emerald-50/50 to-teal-100/70 p-4 border border-white/60">
-                {/* Subtle SVG Leaf in background */}
                 <svg
                   className="absolute -right-6 -bottom-6 h-36 w-36 text-emerald-800/10 pointer-events-none"
                   viewBox="0 0 24 24"
@@ -371,6 +390,22 @@ export const LearnPage: React.FC = () => {
                     Expand
                   </Button>
                 </div>
+              </div>
+            </div>
+
+            {/* Right Peeking Neighbour */}
+            <div
+              onClick={nextSlide}
+              className="hidden xs:block absolute -right-16 sm:-right-12 w-64 rounded-2xl bg-white/45 backdrop-blur-md border border-white/60 p-4 shadow-sm opacity-50 scale-90 cursor-pointer pointer-events-auto shrink-0 select-none transition-transform active:scale-85"
+              aria-hidden="true"
+            >
+              <div className="flex items-center gap-2 mb-2">
+                <div className="w-8 h-8 rounded-lg bg-emerald-700/15 text-emerald-800 flex items-center justify-center shrink-0">
+                  {React.createElement(CARDS[(currentIndex + 1) % totalCards].icon, { className: 'w-4 h-4' })}
+                </div>
+                <p className="text-xs font-bold text-[#0f2819] truncate">
+                  {CARDS[(currentIndex + 1) % totalCards].title}
+                </p>
               </div>
             </div>
           </div>

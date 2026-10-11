@@ -111,7 +111,7 @@ export const PillBarChart: React.FC<PillBarChartProps> = ({
         aria-label={`Weekly pill bar chart from Monday to Sunday. Peak value: ${maxVal.toFixed(1)} ${metric === 'kwh' ? 'kWh' : 'actions'}.`}
         className="relative pt-8 pb-2 select-none"
       >
-        <div className="grid grid-cols-7 gap-2 sm:gap-3.5 items-end justify-items-center" style={{ height: `${height}px` }}>
+        <div className="grid grid-cols-7 gap-1 sm:gap-2.5 md:gap-3.5 items-end justify-items-center" style={{ height: `${height}px` }}>
           {data.map((d, index) => {
             const val = metric === 'kwh' ? d.kwh : d.actions
             const isZero = val <= 0
@@ -150,7 +150,7 @@ export const PillBarChart: React.FC<PillBarChartProps> = ({
                       animate={{ opacity: 1, y: -8, scale: 1 }}
                       exit={{ opacity: 0, y: 2, scale: 0.95 }}
                       transition={{ duration: 0.15 }}
-                      className="absolute bottom-full z-30 pointer-events-none whitespace-nowrap px-2.5 py-1 rounded-full bg-white text-[#0a381e] text-[11px] font-bold shadow-md border border-stone-200/80"
+                      className="absolute bottom-full z-30 pointer-events-none whitespace-nowrap px-2 py-0.5 sm:px-2.5 sm:py-1 rounded-full bg-white text-[#0a381e] text-[10px] sm:text-[11px] font-bold shadow-md border border-stone-200/80"
                     >
                       {d.actions} action{d.actions === 1 ? '' : 's'} · {d.kwh.toFixed(2)} kWh
                     </motion.div>
@@ -183,7 +183,7 @@ export const PillBarChart: React.FC<PillBarChartProps> = ({
                       ? 'repeating-linear-gradient(45deg, #f4f8f5, #f4f8f5 4px, #8fa398 4.2px, #8fa398 5.4px)'
                       : undefined,
                   }}
-                  className={`w-full max-w-[28px] sm:max-w-[36px] rounded-full transition-shadow ${
+                  className={`w-full max-w-[24px] sm:max-w-[36px] rounded-full transition-shadow ${
                     isZero
                       ? 'border border-[#8fa398]/30 shadow-none'
                       : isHovered
@@ -193,9 +193,9 @@ export const PillBarChart: React.FC<PillBarChartProps> = ({
                 />
 
                 {/* Day Label Underneath */}
-                <div className="mt-2 text-center">
+                <div className="mt-1.5 text-center">
                   <span
-                    className={`block text-[11px] sm:text-xs transition-colors ${
+                    className={`block text-[10px] sm:text-xs transition-colors ${
                       isToday
                         ? 'font-extrabold text-[#0a381e] underline decoration-emerald-600 decoration-2 underline-offset-2'
                         : 'font-semibold text-[#1e3f2b]/80'

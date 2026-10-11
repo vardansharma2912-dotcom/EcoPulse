@@ -22,7 +22,7 @@ export const InAppAlertBanner: React.FC<InAppAlertBannerProps> = ({
     <aside
       aria-label="Reminder Alerts"
       aria-live="polite"
-      className="fixed top-4 right-4 left-4 sm:left-auto sm:w-96 z-50 space-y-2.5 pointer-events-auto"
+      className="fixed top-16 lg:top-4 right-4 left-4 lg:left-auto lg:w-96 z-50 space-y-2.5 pointer-events-auto"
     >
       {alerts.map((reminder) => (
         <div

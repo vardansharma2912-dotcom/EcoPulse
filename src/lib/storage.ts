@@ -3,12 +3,33 @@ import type { AppState, Completion, Reminder, Settings } from '../types'
 export const STORAGE_KEY = 'ecopulse_app_state_v2'
 export const PREVIOUS_STORAGE_KEY = 'ecopulse_app_state_v1'
 export const ALERTED_KEYS_STORAGE_KEY = 'ecopulse_alerted_keys_v1'
+export const WELCOME_FLAG_KEY = 'ecopulse_welcome_handled_v1'
 export const CURRENT_VERSION = 2
 
 export const DEFAULT_SETTINGS: Settings = {
-  displayName: 'College Student',
+  displayName: '', // Empty on first launch to trigger Welcome Screen
   tariffPerKwh: 8, // ₹8 per kWh (placeholder from typical domestic slab)
   notificationsEnabled: false,
+}
+
+export function isWelcomeHandled(): boolean {
+  try {
+    return localStorage.getItem(WELCOME_FLAG_KEY) === 'true'
+  } catch {
+    return false
+  }
+}
+
+export function setWelcomeHandled(handled = true): void {
+  try {
+    if (handled) {
+      localStorage.setItem(WELCOME_FLAG_KEY, 'true')
+    } else {
+      localStorage.removeItem(WELCOME_FLAG_KEY)
+    }
+  } catch (err) {
+    console.error('[EcoPulse] Failed to write welcome handled flag:', err)
+  }
 }
 
 export const INITIAL_REMINDERS: Reminder[] = [
@@ -206,6 +227,7 @@ export function clearState(): void {
     localStorage.removeItem(STORAGE_KEY)
     localStorage.removeItem(PREVIOUS_STORAGE_KEY)
     localStorage.removeItem(ALERTED_KEYS_STORAGE_KEY)
+    localStorage.removeItem(WELCOME_FLAG_KEY)
   } catch (err) {
     console.error('[EcoPulse] Failed to clear localStorage:', err)
   }

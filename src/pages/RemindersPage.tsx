@@ -26,6 +26,7 @@ import {
   BellOff,
   AlertCircle,
   XCircle,
+  MoreVertical,
 } from 'lucide-react'
 
 const CATEGORY_LABELS: Record<ReminderCategory, string> = {
@@ -100,6 +101,7 @@ export const RemindersPage: React.FC = () => {
   const [statusFilter, setStatusFilter] = useState<StatusFilter>('all')
   const [categoryFilter, setCategoryFilter] = useState<string>('all')
   const [searchQuery, setSearchQuery] = useState('')
+  const [menuOpenId, setMenuOpenId] = useState<string | null>(null)
 
   const [currentDate] = useState(() => new Date())
 
@@ -310,48 +312,53 @@ export const RemindersPage: React.FC = () => {
           </div>
         </div>
 
-        {/* Status Filter Tabs with Shared Sliding Pill (Item 6) */}
-        <div className="flex flex-wrap items-center gap-1.5 pt-1 border-t border-emerald-900/10">
-          {(
-            [
-              { id: 'all', label: 'All' },
-              { id: 'due', label: 'Due Today' },
-              { id: 'done', label: 'Done' },
-              { id: 'snoozed', label: 'Snoozed' },
-              { id: 'inactive', label: 'Inactive' },
-            ] as const
-          ).map((tab) => {
-            const isActive = statusFilter === tab.id
-            return (
-              <button
-                key={tab.id}
-                type="button"
-                onClick={() => setStatusFilter(tab.id)}
-                className={`relative px-3 py-1 text-xs font-semibold rounded-lg transition-colors cursor-pointer select-none ${
-                  isActive ? 'text-white' : 'text-[#183624] hover:text-[#0f2819] hover:bg-white/60'
-                }`}
-              >
-                {isActive && (
-                  <motion.div
-                    layoutId="activeFilterPill"
-                    className="absolute inset-0 bg-emerald-700 rounded-lg -z-10 shadow-xs"
-                    transition={{ type: 'spring', stiffness: 380, damping: 30 }}
-                  />
-                )}
-                <span>{tab.label}</span>
-              </button>
-            )
-          })}
+        {/* Status Filter Tabs in Horizontally Scrollable Snap Row with Edge Fade */}
+        <div className="relative pt-1 border-t border-emerald-900/10">
+          <div className="pointer-events-none absolute left-0 top-1 bottom-0 w-3 bg-gradient-to-r from-white/90 to-transparent z-10" />
+          <div className="pointer-events-none absolute right-0 top-1 bottom-0 w-4 bg-gradient-to-l from-white/90 to-transparent z-10" />
 
-          {hasActiveFilters && (
-            <button
-              type="button"
-              onClick={handleClearFilters}
-              className="ml-auto text-xs font-semibold text-emerald-800 hover:text-emerald-950 underline cursor-pointer"
-            >
-              Clear filters
-            </button>
-          )}
+          <div className="flex items-center gap-1.5 overflow-x-auto snap-x scrollbar-thin py-1 px-1">
+            {(
+              [
+                { id: 'all', label: 'All' },
+                { id: 'due', label: 'Due Today' },
+                { id: 'done', label: 'Done' },
+                { id: 'snoozed', label: 'Snoozed' },
+                { id: 'inactive', label: 'Inactive' },
+              ] as const
+            ).map((tab) => {
+              const isActive = statusFilter === tab.id
+              return (
+                <button
+                  key={tab.id}
+                  type="button"
+                  onClick={() => setStatusFilter(tab.id)}
+                  className={`relative px-3 py-1.5 text-xs font-semibold rounded-lg transition-colors cursor-pointer select-none snap-start shrink-0 ${
+                    isActive ? 'text-white' : 'text-[#183624] hover:text-[#0f2819] hover:bg-white/60'
+                  }`}
+                >
+                  {isActive && (
+                    <motion.div
+                      layoutId="activeFilterPill"
+                      className="absolute inset-0 bg-emerald-700 rounded-lg -z-10 shadow-xs"
+                      transition={{ type: 'spring', stiffness: 380, damping: 30 }}
+                    />
+                  )}
+                  <span>{tab.label}</span>
+                </button>
+              )
+            })}
+
+            {hasActiveFilters && (
+              <button
+                type="button"
+                onClick={handleClearFilters}
+                className="ml-auto text-xs font-semibold text-emerald-800 hover:text-emerald-950 underline cursor-pointer shrink-0 snap-end pl-2"
+              >
+                Clear filters
+              </button>
+            )}
+          </div>
         </div>
       </div>
 
@@ -407,7 +414,7 @@ export const RemindersPage: React.FC = () => {
                     <div>
                       {/* Top Header: Title, Category & Status Badge */}
                       <div className="flex items-start justify-between gap-3 mb-2.5">
-                        <div className="space-y-1">
+                        <div className="space-y-1 flex-1">
                           <h3 className="font-bold text-base text-[#102819] leading-snug">
                             {reminder.title}
                           </h3>
@@ -427,26 +434,6 @@ export const RemindersPage: React.FC = () => {
                               </motion.div>
                             </AnimatePresence>
                           </div>
-                        </div>
-
-                        {/* Quick Menu Icons: Edit & Delete */}
-                        <div className="flex items-center gap-1 shrink-0">
-                          <button
-                            type="button"
-                            onClick={() => handleOpenEdit(reminder)}
-                            aria-label={`Edit ${reminder.title}`}
-                            className="p-1.5 rounded-lg text-slate-600 hover:text-emerald-950 hover:bg-emerald-900/10 transition-colors cursor-pointer"
-                          >
-                            <Edit2 className="w-4 h-4" />
-                          </button>
-                          <button
-                            type="button"
-                            onClick={() => setDeleteTarget(reminder)}
-                            aria-label={`Delete ${reminder.title}`}
-                            className="p-1.5 rounded-lg text-slate-600 hover:text-rose-700 hover:bg-rose-900/10 transition-colors cursor-pointer"
-                          >
-                            <Trash2 className="w-4 h-4" />
-                          </button>
                         </div>
                       </div>
 
@@ -471,28 +458,90 @@ export const RemindersPage: React.FC = () => {
                       </div>
                     </div>
 
-                    {/* Bottom Actions Row: Active toggle, Snooze & Mark Done / Undo */}
-                    <div className="flex items-center justify-between pt-2 text-xs">
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => handleToggleActive(reminder)}
-                      >
-                        {reminder.active ? 'Deactivate' : 'Activate'}
-                      </Button>
+                    {/* Bottom Actions Row: Primary Done Button + "..." Menu (Snooze, Edit, Delete) */}
+                    <div className="flex items-center justify-between pt-2.5 text-xs relative">
+                      {/* "..." More Menu (Snooze, Edit, Delete, Toggle Active) */}
+                      <div className="relative">
+                        <button
+                          type="button"
+                          onClick={() => setMenuOpenId(menuOpenId === reminder.id ? null : reminder.id)}
+                          aria-label={`More options for ${reminder.title}`}
+                          aria-haspopup="menu"
+                          aria-expanded={menuOpenId === reminder.id}
+                          className="p-2 rounded-xl text-slate-600 hover:text-emerald-950 hover:bg-emerald-900/10 transition-colors border border-emerald-950/10 bg-white/70"
+                        >
+                          <MoreVertical className="w-4 h-4" />
+                        </button>
 
+                        <AnimatePresence>
+                          {menuOpenId === reminder.id && (
+                            <>
+                              <div
+                                className="fixed inset-0 z-30"
+                                onClick={() => setMenuOpenId(null)}
+                              />
+                              <motion.div
+                                initial={{ opacity: 0, scale: 0.95, y: -4 }}
+                                animate={{ opacity: 1, scale: 1, y: 0 }}
+                                exit={{ opacity: 0, scale: 0.95 }}
+                                transition={{ duration: 0.12 }}
+                                className="absolute left-0 bottom-full mb-1.5 z-40 w-44 rounded-xl glass-strong shadow-xl border border-white/90 p-1.5 space-y-1 text-xs font-semibold text-[#14301f]"
+                              >
+                                {reminder.active && !isDone && (
+                                  <button
+                                    type="button"
+                                    onClick={() => {
+                                      setMenuOpenId(null)
+                                      setSnoozeTarget(reminder)
+                                    }}
+                                    className="w-full flex items-center gap-2 px-2.5 py-1.5 rounded-lg hover:bg-emerald-800/10 text-left transition-colors"
+                                  >
+                                    <BellOff className="w-3.5 h-3.5 text-amber-700" />
+                                    <span>Snooze reminder</span>
+                                  </button>
+                                )}
+                                <button
+                                  type="button"
+                                  onClick={() => {
+                                    setMenuOpenId(null)
+                                    handleOpenEdit(reminder)
+                                  }}
+                                  className="w-full flex items-center gap-2 px-2.5 py-1.5 rounded-lg hover:bg-emerald-800/10 text-left transition-colors"
+                                >
+                                  <Edit2 className="w-3.5 h-3.5 text-emerald-800" />
+                                  <span>Edit reminder</span>
+                                </button>
+                                <button
+                                  type="button"
+                                  onClick={() => {
+                                    setMenuOpenId(null)
+                                    handleToggleActive(reminder)
+                                  }}
+                                  className="w-full flex items-center gap-2 px-2.5 py-1.5 rounded-lg hover:bg-emerald-800/10 text-left transition-colors"
+                                >
+                                  <Clock className="w-3.5 h-3.5 text-slate-600" />
+                                  <span>{reminder.active ? 'Deactivate' : 'Activate'}</span>
+                                </button>
+                                <div className="h-px bg-emerald-900/10 my-0.5" />
+                                <button
+                                  type="button"
+                                  onClick={() => {
+                                    setMenuOpenId(null)
+                                    setDeleteTarget(reminder)
+                                  }}
+                                  className="w-full flex items-center gap-2 px-2.5 py-1.5 rounded-lg hover:bg-rose-900/10 text-rose-700 text-left transition-colors"
+                                >
+                                  <Trash2 className="w-3.5 h-3.5" />
+                                  <span>Delete reminder</span>
+                                </button>
+                              </motion.div>
+                            </>
+                          )}
+                        </AnimatePresence>
+                      </div>
+
+                      {/* Primary Action Button: "Done" with Animated Checkmark */}
                       <div className="flex items-center gap-2">
-                        {reminder.active && !isDone && (
-                          <Button
-                            variant="secondary"
-                            size="sm"
-                            icon={<BellOff className="w-3.5 h-3.5 text-slate-700" />}
-                            onClick={() => setSnoozeTarget(reminder)}
-                          >
-                            Snooze
-                          </Button>
-                        )}
-
                         {isDone ? (
                           <Button
                             variant="secondary"
@@ -519,7 +568,7 @@ export const RemindersPage: React.FC = () => {
                             }
                             onClick={() => handleComplete(reminder)}
                           >
-                            Mark Done
+                            Done
                           </Button>
                         )}
                       </div>

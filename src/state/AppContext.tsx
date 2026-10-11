@@ -1,7 +1,7 @@
 import React, { useReducer, useEffect } from 'react'
 import type { Reminder, Settings } from '../types'
 import { appReducer } from './reducer'
-import { loadState, saveState, getDefaultState } from '../lib/storage'
+import { loadState, saveState, getDefaultState, setWelcomeHandled } from '../lib/storage'
 import { AppContext, type AppContextValue } from './context'
 
 export const AppStateProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
@@ -52,6 +52,7 @@ export const AppStateProvider: React.FC<{ children: React.ReactNode }> = ({ chil
 
   const resetData = () => {
     dispatch({ type: 'RESET_DATA' })
+    setWelcomeHandled(false)
   }
 
   const loadSampleData = () => {

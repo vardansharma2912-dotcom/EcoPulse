@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react'
+import React, { useMemo, useState } from 'react'
 import { NavLink, Outlet, useLocation } from 'react-router-dom'
 import { motion, AnimatePresence } from 'motion/react'
 import {
@@ -9,15 +9,22 @@ import {
   BookOpen,
   Settings as SettingsIcon,
   Leaf,
+  Search,
 } from 'lucide-react'
 import { LeafBackground } from './LeafBackground'
 import { useReminderAlerts } from '../../lib/useReminderAlerts'
 import { InAppAlertBanner } from './InAppAlertBanner'
 import { SidebarTipCard } from './SidebarTipCard'
+import { MobileSearchSheet } from './MobileSearchSheet'
+import { MobileAlertsPopover } from './MobileAlertsPopover'
+import { NotchDock } from '../navigation/NotchDock'
+import { ScrollThumb } from '../ui/ScrollThumb'
+import { WelcomeScreen } from '../welcome/WelcomeScreen'
 import { useAppState } from '../../state'
 import { todayKey } from '../../lib/dates'
 import { isDueOn } from '../../lib/schedule'
 import { CountUp } from '../ui/CountUp'
+import { isWelcomeHandled } from '../../lib/storage'
 
 const navItems = [
   { to: '/', label: 'Dashboard', icon: LayoutDashboard },
@@ -34,6 +41,31 @@ export const AppLayout: React.FC = () => {
   const location = useLocation()
   const today = todayKey()
 
+  const [searchOpen, setSearchOpen] = useState(false)
+  const [alertsPopoverOpen, setAlertsPopoverOpen] = useState(false)
+  const [welcomeDismissed, setWelcomeDismissed] = useState(false)
+
+  // Welcome screen is shown once on first launch or after reset when displayName is empty
+  const showWelcome = !welcomeDismissed && !isWelcomeHandled() && !state.settings.displayName
+
+  // Page title for compact mobile header
+  const pageTitle = useMemo(() => {
+    const path = location.pathname
+    if (path === '/') return 'Dashboard'
+    if (path.startsWith('/reminders')) return 'Reminders'
+    if (path.startsWith('/calculator')) return 'Calculator'
+    if (path.startsWith('/analytics')) return 'Analytics'
+    if (path.startsWith('/learn')) return 'Learn'
+    if (path.startsWith('/settings')) return 'Settings'
+    return 'EcoPulse'
+  }, [location.pathname])
+
+  // User initials for mobile avatar chip
+  const userInitial = useMemo(() => {
+    const name = state.settings.displayName?.trim()
+    return name ? name.charAt(0).toUpperCase() : 'G'
+  }, [state.settings.displayName])
+
   // Compute pending reminders due today for the nav badge
   const pendingTodayCount = useMemo(() => {
     const dueToday = state.reminders.filter((r) => isDueOn(r, today))
@@ -43,9 +75,19 @@ export const AppLayout: React.FC = () => {
   }, [state.reminders, state.completions, today])
 
   return (
-    <div className="min-h-screen text-[#14301f] flex flex-col lg:flex-row relative">
+    <div className="min-h-[100dvh] text-[#14301f] flex flex-col lg:flex-row relative">
       {/* Fixed Botanical Background Layer */}
       <LeafBackground />
+
+      {/* Touch Custom Scrollbar Indicator */}
+      <ScrollThumb />
+
+      {/* First-Launch Welcome Screen (Not Authentication) */}
+      <AnimatePresence>
+        {showWelcome && (
+          <WelcomeScreen onComplete={() => setWelcomeDismissed(true)} />
+        )}
+      </AnimatePresence>
 
       {/* Global In-App Alert Toasts */}
       <InAppAlertBanner
@@ -53,6 +95,18 @@ export const AppLayout: React.FC = () => {
         onMarkDone={markAlertDone}
         onSnooze={snoozeAlert}
         onDismiss={dismissAlert}
+      />
+
+      {/* Mobile Search Sheet Modal */}
+      <MobileSearchSheet
+        isOpen={searchOpen}
+        onClose={() => setSearchOpen(false)}
+      />
+
+      {/* Mobile Alerts Popover Dropdown */}
+      <MobileAlertsPopover
+        isOpen={alertsPopoverOpen}
+        onClose={() => setAlertsPopoverOpen(false)}
       />
 
       {/* Desktop Floating Glass Sidebar (lg+) */}
@@ -147,23 +201,63 @@ export const AppLayout: React.FC = () => {
         </div>
       </aside>
 
-      {/* Main Content Area */}
-      <div className="flex-1 flex flex-col min-w-0 pb-20 lg:pb-0 z-10">
-        {/* Mobile Glass Header */}
-        <header className="lg:hidden glass-panel border-b border-white/60 px-4 py-3 flex items-center justify-between sticky top-0 z-40 backdrop-blur-md">
-          <div className="flex items-center gap-2.5">
-            <div className="w-8 h-8 rounded-lg bg-emerald-700 text-white flex items-center justify-center shadow-xs">
-              <Leaf className="w-4 h-4" />
+      {/* Main Content Area: Document itself scrolls below 1024px */}
+      <div className="flex-1 flex flex-col min-w-0 z-10 pb-[calc(64px+env(safe-area-inset-bottom,0px)+24px)] lg:pb-8">
+        {/* Mobile Compact Glass Header (< 1024px) */}
+        <header className="lg:hidden glass-panel border-b border-white/60 px-3.5 py-2.5 flex items-center justify-between sticky top-0 z-30 backdrop-blur-md">
+          {/* Left: Logo & Current Page Title */}
+          <div className="flex items-center gap-2 min-w-0">
+            <div className="w-7 h-7 rounded-lg bg-emerald-700 text-white flex items-center justify-center shadow-xs shrink-0">
+              <Leaf className="w-3.5 h-3.5" />
             </div>
-            <span className="font-bold text-sm text-[#14301f]">EcoPulse</span>
+            <div className="min-w-0">
+              <h1 className="font-bold text-sm text-[#14301f] leading-tight truncate">
+                {pageTitle}
+              </h1>
+              <p className="text-[10px] text-emerald-900 font-semibold leading-none">
+                EcoPulse
+              </p>
+            </div>
           </div>
-          <span className="text-[11px] font-semibold text-emerald-900 px-2 py-0.5 rounded-md bg-white/80 border border-emerald-900/15">
-            CHE110
-          </span>
+
+          {/* Right: Search, Bell Popover, and Settings Avatar Chip */}
+          <div className="flex items-center gap-1.5 shrink-0">
+            {/* Search Trigger */}
+            <button
+              type="button"
+              onClick={() => setSearchOpen(true)}
+              aria-label="Open search sheet"
+              className="p-2 rounded-xl text-[#14301f] hover:bg-emerald-800/10 active:scale-95 transition-all"
+            >
+              <Search className="w-4 h-4" />
+            </button>
+
+            {/* Bell Trigger */}
+            <button
+              type="button"
+              onClick={() => setAlertsPopoverOpen((prev) => !prev)}
+              aria-label="Toggle notifications popover"
+              className="relative p-2 rounded-xl text-[#14301f] hover:bg-emerald-800/10 active:scale-95 transition-all"
+            >
+              <Bell className="w-4 h-4" />
+              {pendingTodayCount > 0 && (
+                <span className="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-amber-500 ring-2 ring-white" />
+              )}
+            </button>
+
+            {/* Avatar Chip linking to Settings */}
+            <NavLink
+              to="/settings"
+              aria-label="Settings"
+              className="w-8 h-8 rounded-full bg-emerald-800 text-white font-extrabold text-xs flex items-center justify-center border-2 border-white/90 shadow-xs hover:bg-emerald-900 active:scale-95 transition-all"
+            >
+              {userInitial}
+            </NavLink>
+          </div>
         </header>
 
-        {/* Page Container with Route AnimatePresence Transitions */}
-        <main className="flex-1 p-4 sm:p-6 lg:p-8 max-w-6xl w-full mx-auto">
+        {/* Page Content with Route AnimatePresence Transitions */}
+        <main className="flex-1 p-3.5 sm:p-5 lg:p-8 max-w-6xl w-full mx-auto">
           <AnimatePresence mode="wait">
             <motion.div
               key={location.pathname}
@@ -193,47 +287,8 @@ export const AppLayout: React.FC = () => {
         </main>
       </div>
 
-      {/* Mobile Glass Bottom Tab Bar (< lg) with layoutId Pill */}
-      <nav
-        className="lg:hidden fixed bottom-0 inset-x-0 glass-panel border-t border-white/75 z-50 px-2 py-1.5 flex justify-around backdrop-blur-md shadow-lg"
-        aria-label="Mobile Navigation"
-      >
-        {navItems.map((item) => {
-          const Icon = item.icon
-          const isActive =
-            item.to === '/'
-              ? location.pathname === '/'
-              : location.pathname.startsWith(item.to)
-
-          return (
-            <NavLink
-              key={item.to}
-              to={item.to}
-              end={item.to === '/'}
-              className={`relative flex flex-col items-center justify-center py-1 px-2.5 rounded-lg text-[10px] font-semibold transition-colors ${
-                isActive ? 'text-emerald-900 font-bold' : 'text-slate-600 hover:text-[#14301f]'
-              }`}
-            >
-              {isActive && (
-                <motion.div
-                  layoutId="activeMobileNavPill"
-                  className="absolute inset-0 bg-emerald-700/15 rounded-lg -z-10 border border-emerald-700/20"
-                  transition={{ type: 'spring', stiffness: 380, damping: 30 }}
-                />
-              )}
-              <div className="relative">
-                <Icon className="w-4 h-4 mb-0.5" />
-                {item.to === '/reminders' && pendingTodayCount > 0 && (
-                  <span className="absolute -top-1 -right-2 w-3.5 h-3.5 rounded-full bg-emerald-800 text-white text-[9px] font-extrabold flex items-center justify-center">
-                    {pendingTodayCount}
-                  </span>
-                )}
-              </div>
-              <span>{item.label}</span>
-            </NavLink>
-          )
-        })}
-      </nav>
+      {/* Floating Notch Dock: Fixed at Root, Replaces Bottom Tab Bar below 1024px */}
+      <NotchDock />
     </div>
   )
 }

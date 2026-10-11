@@ -30,10 +30,12 @@ export const Dialog: React.FC<DialogProps> = ({
       }
       window.addEventListener('keydown', handleKeyDown)
       document.body.style.overflow = 'hidden'
+      document.body.setAttribute('data-modal-open', 'true')
 
       return () => {
         window.removeEventListener('keydown', handleKeyDown)
         document.body.style.overflow = ''
+        document.body.removeAttribute('data-modal-open')
         if (previousActiveElement.current && typeof previousActiveElement.current.focus === 'function') {
           previousActiveElement.current.focus()
         }
@@ -56,7 +58,7 @@ export const Dialog: React.FC<DialogProps> = ({
             aria-hidden="true"
           />
 
-          {/* Dialog Container */}
+          {/* Dialog Container: max-height 90dvh with inner scroll */}
           <motion.div
             role="dialog"
             aria-modal="true"
@@ -65,9 +67,9 @@ export const Dialog: React.FC<DialogProps> = ({
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.96, y: 8 }}
             transition={{ type: 'spring', stiffness: 350, damping: 28 }}
-            className="relative z-10 w-full max-w-lg rounded-2xl glass-strong text-[#14301f] border border-white/80 p-0 shadow-2xl overflow-hidden"
+            className="relative z-10 w-full max-w-lg max-h-[90dvh] flex flex-col rounded-2xl glass-strong text-[#14301f] border border-white/80 p-0 shadow-2xl overflow-hidden"
           >
-            <div className="p-6">
+            <div className="p-6 flex flex-col max-h-[90dvh] overflow-y-auto">
               <div className="flex items-start justify-between gap-4 mb-4">
                 <div>
                   <h2 id="dialog-title" className="text-lg font-bold text-[#14301f] tracking-tight">

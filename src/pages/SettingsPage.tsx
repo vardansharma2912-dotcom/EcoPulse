@@ -155,8 +155,8 @@ export const SettingsPage: React.FC = () => {
     e.preventDefault()
 
     let hasErrors = false
-    if (!displayName.trim()) {
-      setNameError('Display name cannot be empty')
+    if (displayName.trim().length > 40) {
+      setNameError('Display name must be 40 characters or fewer')
       hasErrors = true
     } else {
       setNameError(null)
@@ -194,7 +194,7 @@ export const SettingsPage: React.FC = () => {
     resetData()
     setResetDialogOpen(false)
     setResetConfirmInput('')
-    setDisplayName('College Student')
+    setDisplayName('')
     setTariff('8')
     setNameError(null)
     setTariffError(null)
