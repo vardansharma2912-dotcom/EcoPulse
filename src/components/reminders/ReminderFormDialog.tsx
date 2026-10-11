@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { Dialog } from '../ui/Dialog'
+import { Drawer } from '../ui/Drawer'
 import { Button } from '../ui/Button'
 import { Input } from '../ui/Input'
 import type { Reminder, ReminderCategory, RecurrenceType } from '../../types'
@@ -325,7 +325,7 @@ export const ReminderFormDialog: React.FC<ReminderFormDialogProps> = ({
   initialReminder,
 }) => {
   return (
-    <Dialog
+    <Drawer
       open={open}
       onClose={onClose}
       title={initialReminder ? 'Edit Energy Reminder' : 'Create New Energy Reminder'}
@@ -339,6 +339,6 @@ export const ReminderFormDialog: React.FC<ReminderFormDialogProps> = ({
           onClose={onClose}
         />
       )}
-    </Dialog>
+    </Drawer>
   )
 }

@@ -1,6 +1,8 @@
 import React from 'react'
 import { HashRouter, Routes, Route, Navigate } from 'react-router-dom'
+import { MotionConfig } from 'motion/react'
 import { AppStateProvider } from './state'
+import { ToastProvider } from './context/ToastContext'
 import { AppLayout } from './components/layout/AppLayout'
 import { DashboardPage } from './pages/DashboardPage'
 import { RemindersPage } from './pages/RemindersPage'
@@ -11,20 +13,24 @@ import { SettingsPage } from './pages/SettingsPage'
 
 export default function App(): React.JSX.Element {
   return (
-    <AppStateProvider>
-      <HashRouter>
-        <Routes>
-          <Route element={<AppLayout />}>
-            <Route index element={<DashboardPage />} />
-            <Route path="reminders" element={<RemindersPage />} />
-            <Route path="calculator" element={<CalculatorPage />} />
-            <Route path="analytics" element={<AnalyticsPage />} />
-            <Route path="learn" element={<LearnPage />} />
-            <Route path="settings" element={<SettingsPage />} />
-            <Route path="*" element={<Navigate to="/" replace />} />
-          </Route>
-        </Routes>
-      </HashRouter>
-    </AppStateProvider>
+    <MotionConfig reducedMotion="user">
+      <AppStateProvider>
+        <ToastProvider>
+          <HashRouter>
+            <Routes>
+              <Route element={<AppLayout />}>
+                <Route index element={<DashboardPage />} />
+                <Route path="reminders" element={<RemindersPage />} />
+                <Route path="calculator" element={<CalculatorPage />} />
+                <Route path="analytics" element={<AnalyticsPage />} />
+                <Route path="learn" element={<LearnPage />} />
+                <Route path="settings" element={<SettingsPage />} />
+                <Route path="*" element={<Navigate to="/" replace />} />
+              </Route>
+            </Routes>
+          </HashRouter>
+        </ToastProvider>
+      </AppStateProvider>
+    </MotionConfig>
   )
 }

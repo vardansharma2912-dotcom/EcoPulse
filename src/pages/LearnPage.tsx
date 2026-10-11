@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react'
 import { PageHeader } from '../components/layout/PageHeader'
 import { Card } from '../components/ui/Card'
+import { staggerContainerVariant, cardEntranceVariant } from '../lib/motionVariants'
 import { Badge } from '../components/ui/Badge'
 import { Button } from '../components/ui/Button'
 import { Dialog } from '../components/ui/Dialog'
@@ -267,25 +268,34 @@ export const LearnPage: React.FC = () => {
         description="Practical habits and conservation principles for college dormitories and campus living."
       />
 
-      {/* Accessible Intro Note */}
-      <Card variant="glass" className="p-4 sm:p-5">
-        <div className="flex items-start gap-3">
-          <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-emerald-800/10 text-emerald-800 mt-0.5">
-            <Info className="h-4 w-4" />
-          </div>
-          <div>
-            <h2 className="text-sm font-bold text-[#0f2819]">
-              Mindful Energy Elimination in Everyday Campus Life
-            </h2>
-            <p className="text-xs text-[#1e3f2b] mt-1 leading-relaxed">
-              Conserving electricity does not require self-deprivation or sacrificing academic productivity. It centers on mindful elimination of passive waste: turning off appliances when vacating spaces, isolating standby loads, and utilizing natural daylight.
-            </p>
-          </div>
-        </div>
-      </Card>
+      <motion.div
+        variants={staggerContainerVariant}
+        initial="hidden"
+        animate="show"
+        className="space-y-6"
+      >
+        {/* Accessible Intro Note */}
+        <motion.div variants={cardEntranceVariant}>
+          <Card variant="glass" className="p-4 sm:p-5">
+            <div className="flex items-start gap-3">
+              <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-emerald-800/10 text-emerald-800 mt-0.5">
+                <Info className="h-4 w-4" />
+              </div>
+              <div>
+                <h2 className="text-sm font-bold text-[#0f2819]">
+                  Mindful Energy Elimination in Everyday Campus Life
+                </h2>
+                <p className="text-xs text-[#1e3f2b] mt-1 leading-relaxed">
+                  Conserving electricity does not require self-deprivation or sacrificing academic productivity. It centers on mindful elimination of passive waste: turning off appliances when vacating spaces, isolating standby loads, and utilizing natural daylight.
+                </p>
+              </div>
+            </div>
+          </Card>
+        </motion.div>
 
-      {/* 3D Glassy Carousel Section */}
-      <section
+        {/* 3D Glassy Carousel Section */}
+        <motion.div variants={cardEntranceVariant}>
+          <section
         ref={carouselRef}
         role="region"
         aria-roledescription="carousel"
@@ -563,6 +573,8 @@ export const LearnPage: React.FC = () => {
           </div>
         </div>
       </section>
+    </motion.div>
+  </motion.div>
 
       {/* Expanded Card Glass Dialog */}
       {expandedCard && (

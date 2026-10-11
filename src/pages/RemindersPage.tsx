@@ -1,10 +1,12 @@
 import React, { useState, useMemo } from 'react'
+import { motion, AnimatePresence } from 'motion/react'
 import { PageHeader } from '../components/layout/PageHeader'
 import { Card } from '../components/ui/Card'
 import { Badge } from '../components/ui/Badge'
 import { Button } from '../components/ui/Button'
 import { EmptyState } from '../components/ui/EmptyState'
 import { useAppState } from '../state'
+import { useToast } from '../context/useToast'
 import { todayKey } from '../lib/dates'
 import { todayStatus, type ReminderStatus } from '../lib/schedule'
 import { ReminderFormDialog } from '../components/reminders/ReminderFormDialog'
@@ -13,7 +15,6 @@ import { SnoozeDialog } from '../components/reminders/SnoozeDialog'
 import type { Reminder, ReminderCategory } from '../types'
 import {
   Bell,
-  Check,
   RotateCcw,
   Clock,
   Zap,
@@ -25,6 +26,7 @@ import {
   BellOff,
   AlertCircle,
   XCircle,
+  CheckCircle2,
 } from 'lucide-react'
 
 const CATEGORY_LABELS: Record<ReminderCategory, string> = {
@@ -84,12 +86,14 @@ export const RemindersPage: React.FC = () => {
     snoozeReminder,
     toggleActive,
   } = useAppState()
+  const { toast } = useToast()
 
   const today = todayKey()
 
   // Dialog State
   const [formOpen, setFormOpen] = useState(false)
   const [editingReminder, setEditingReminder] = useState<Reminder | null>(null)
+  const [justCompletedId, setJustCompletedId] = useState<string | null>(null)
 
   const [deleteTarget, setDeleteTarget] = useState<Reminder | null>(null)
   const [snoozeTarget, setSnoozeTarget] = useState<Reminder | null>(null)
@@ -168,9 +172,34 @@ export const RemindersPage: React.FC = () => {
   const handleSaveReminder = (data: Omit<Reminder, 'id' | 'createdAt'> | Reminder) => {
     if ('id' in data) {
       editReminder(data)
+      toast(`Updated reminder "${data.title}"`)
     } else {
       addReminder(data)
+      toast(`Created reminder "${data.title}"`)
     }
+  }
+
+  const handleDeleteReminder = (reminder: Reminder) => {
+    deleteReminder(reminder.id)
+    toast(`Deleted reminder "${reminder.title}"`)
+    setDeleteTarget(null)
+  }
+
+  const handleComplete = (reminder: Reminder) => {
+    setJustCompletedId(reminder.id)
+    completeReminder(reminder.id, today)
+    toast(`Marked "${reminder.title}" done`, {
+      action: {
+        label: 'Undo',
+        onClick: () => undoCompletion(reminder.id, today),
+      },
+    })
+    setTimeout(() => setJustCompletedId(null), 1200)
+  }
+
+  const handleUndo = (reminder: Reminder) => {
+    undoCompletion(reminder.id, today)
+    toast(`Restored "${reminder.title}" to pending`)
   }
 
   const handleClearFilters = () => {
@@ -238,7 +267,7 @@ export const RemindersPage: React.FC = () => {
               <button
                 type="button"
                 onClick={() => setSearchQuery('')}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-700"
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-700 cursor-pointer"
               >
                 <XCircle className="w-4 h-4" />
               </button>
@@ -264,7 +293,7 @@ export const RemindersPage: React.FC = () => {
           </div>
         </div>
 
-        {/* Status Filter Tabs */}
+        {/* Status Filter Tabs with Shared Sliding Pill (layoutId) */}
         <div className="flex flex-wrap items-center gap-1.5 pt-1 border-t border-emerald-900/10">
           {(
             [
@@ -274,20 +303,29 @@ export const RemindersPage: React.FC = () => {
               { id: 'snoozed', label: 'Snoozed' },
               { id: 'inactive', label: 'Inactive' },
             ] as const
-          ).map((tab) => (
-            <button
-              key={tab.id}
-              type="button"
-              onClick={() => setStatusFilter(tab.id)}
-              className={`px-3 py-1 text-xs font-semibold rounded-lg transition-all cursor-pointer ${
-                statusFilter === tab.id
-                  ? 'bg-emerald-700 text-white shadow-xs'
-                  : 'bg-white/60 text-[#183624] hover:bg-white/90 border border-transparent hover:border-emerald-900/10'
-              }`}
-            >
-              {tab.label}
-            </button>
-          ))}
+          ).map((tab) => {
+            const isSelected = statusFilter === tab.id
+
+            return (
+              <button
+                key={tab.id}
+                type="button"
+                onClick={() => setStatusFilter(tab.id)}
+                className="relative px-3.5 py-1.5 text-xs font-semibold rounded-xl transition-colors cursor-pointer select-none text-slate-700 hover:text-[#0f2819]"
+              >
+                {isSelected && (
+                  <motion.div
+                    layoutId="reminder-status-pill"
+                    className="absolute inset-0 rounded-xl bg-emerald-700 shadow-sm shadow-emerald-950/15"
+                    transition={{ type: 'spring', stiffness: 380, damping: 28 }}
+                  />
+                )}
+                <span className={`relative z-10 transition-colors ${isSelected ? 'text-white font-bold' : ''}`}>
+                  {tab.label}
+                </span>
+              </button>
+            )
+          })}
 
           {hasActiveFilters && (
             <button
@@ -301,7 +339,7 @@ export const RemindersPage: React.FC = () => {
         </div>
       </div>
 
-      {/* Main List of Reminders */}
+      {/* Main List of Reminders with popLayout Gliding Transitions */}
       {state.reminders.length === 0 ? (
         <EmptyState
           icon={<Bell className="w-6 h-6 text-emerald-800" />}
@@ -325,130 +363,185 @@ export const RemindersPage: React.FC = () => {
           }
         />
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {filteredReminders.map(({ reminder, status }) => {
-            const isDone = status === 'done'
+        <motion.div layout className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <AnimatePresence mode="popLayout">
+            {filteredReminders.map(({ reminder, status }) => {
+              const isDone = status === 'done'
+              const isPulsing = justCompletedId === reminder.id
 
-            return (
-              <Card
-                key={reminder.id}
-                variant="glass"
-                className={`transition-all flex flex-col justify-between ${
-                  !reminder.active
-                    ? 'opacity-65 bg-white/40'
-                    : isDone
-                    ? 'border-emerald-600/40 bg-emerald-50/70 shadow-sm'
-                    : 'hover:bg-white/75'
-                }`}
-              >
-                <div>
-                  {/* Top Header: Title, Category & Status Badge */}
-                  <div className="flex items-start justify-between gap-3 mb-2.5">
-                    <div className="space-y-1">
-                      <h3 className="font-bold text-base text-[#102819] leading-snug">
-                        {reminder.title}
-                      </h3>
-                      <div className="flex items-center gap-2">
-                        <Badge variant="neutral" size="sm">
-                          {CATEGORY_LABELS[reminder.category]}
-                        </Badge>
-                        {renderStatusBadge(status, reminder.active)}
+              return (
+                <motion.div
+                  key={reminder.id}
+                  layout
+                  initial={{ opacity: 0, scale: 0.96, y: 12 }}
+                  animate={
+                    isPulsing
+                      ? {
+                          opacity: 1,
+                          scale: [1, 1.015, 1],
+                          y: 0,
+                          backgroundColor: ['rgba(255,255,255,0.7)', 'rgba(16,185,129,0.25)', 'rgba(236,253,245,0.8)'],
+                        }
+                      : { opacity: 1, scale: 1, y: 0 }
+                  }
+                  exit={{ opacity: 0, scale: 0.96, transition: { duration: 0.15 } }}
+                  transition={{ type: 'spring', stiffness: 280, damping: 25 }}
+                  className="rounded-2xl"
+                >
+                  <Card
+                    interactive
+                    variant="glass"
+                    className={`transition-all flex flex-col justify-between h-full ${
+                      !reminder.active
+                        ? 'opacity-65 bg-white/40'
+                        : isDone
+                        ? 'border-emerald-600/40 bg-emerald-50/70 shadow-sm'
+                        : 'hover:bg-white/75'
+                    }`}
+                  >
+                    <div>
+                      {/* Top Header: Title, Category & Status Badge with Crossfade */}
+                      <div className="flex items-start justify-between gap-3 mb-2.5">
+                        <div className="space-y-1">
+                          <h3 className={`font-bold text-base leading-snug ${isDone ? 'line-through text-slate-500' : 'text-[#102819]'}`}>
+                            {reminder.title}
+                          </h3>
+                          <div className="flex items-center gap-2">
+                            <Badge variant="neutral" size="sm">
+                              {CATEGORY_LABELS[reminder.category]}
+                            </Badge>
+                            <AnimatePresence mode="wait">
+                              <motion.div
+                                key={status}
+                                initial={{ opacity: 0, scale: 0.85 }}
+                                animate={{ opacity: 1, scale: 1 }}
+                                exit={{ opacity: 0, scale: 0.85 }}
+                                transition={{ duration: 0.2 }}
+                              >
+                                {renderStatusBadge(status, reminder.active)}
+                              </motion.div>
+                            </AnimatePresence>
+                          </div>
+                        </div>
+
+                        {/* Quick Menu Icons: Edit & Delete */}
+                        <div className="flex items-center gap-1 shrink-0">
+                          <button
+                            type="button"
+                            onClick={() => handleOpenEdit(reminder)}
+                            aria-label={`Edit ${reminder.title}`}
+                            className="p-1.5 rounded-lg text-slate-600 hover:text-emerald-950 hover:bg-emerald-900/10 transition-colors cursor-pointer"
+                          >
+                            <Edit2 className="w-4 h-4" />
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => setDeleteTarget(reminder)}
+                            aria-label={`Delete ${reminder.title}`}
+                            className="p-1.5 rounded-lg text-slate-600 hover:text-rose-700 hover:bg-rose-900/10 transition-colors cursor-pointer"
+                          >
+                            <Trash2 className="w-4 h-4" />
+                          </button>
+                        </div>
+                      </div>
+
+                      {/* Metadata Row: Time, Recurrence & Energy Estimate */}
+                      <div className="space-y-1.5 py-2 text-xs text-[#183a26] font-semibold border-y border-emerald-900/10 my-2">
+                        <div className="flex items-center justify-between">
+                          <span className="flex items-center gap-1.5">
+                            <Clock className="w-3.5 h-3.5 text-emerald-800" />
+                            {reminder.time} • {formatRecurrence(reminder)}
+                          </span>
+                          {reminder.snoozedUntil && status === 'snoozed' && (
+                            <span className="text-[11px] text-amber-900 font-bold flex items-center gap-1">
+                              <BellOff className="w-3 h-3" />
+                              Snoozed until {new Date(reminder.snoozedUntil).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                            </span>
+                          )}
+                        </div>
+                        <div className="flex items-center gap-1.5 text-[11px] text-[#1b4332]">
+                          <Zap className="w-3.5 h-3.5 text-emerald-700 shrink-0" />
+                          <span>{formatEnergyEstimate(reminder)}</span>
+                        </div>
                       </div>
                     </div>
 
-                    {/* Quick Menu Icons: Edit & Delete */}
-                    <div className="flex items-center gap-1 shrink-0">
-                      <button
-                        type="button"
-                        onClick={() => handleOpenEdit(reminder)}
-                        aria-label={`Edit ${reminder.title}`}
-                        className="p-1.5 rounded-lg text-slate-600 hover:text-emerald-950 hover:bg-emerald-900/10 transition-colors cursor-pointer"
-                      >
-                        <Edit2 className="w-4 h-4" />
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => setDeleteTarget(reminder)}
-                        aria-label={`Delete ${reminder.title}`}
-                        className="p-1.5 rounded-lg text-slate-600 hover:text-rose-700 hover:bg-rose-900/10 transition-colors cursor-pointer"
-                      >
-                        <Trash2 className="w-4 h-4" />
-                      </button>
-                    </div>
-                  </div>
-
-                  {/* Metadata Row: Time, Recurrence & Energy Estimate */}
-                  <div className="space-y-1.5 py-2 text-xs text-[#183a26] font-semibold border-y border-emerald-900/10 my-2">
-                    <div className="flex items-center justify-between">
-                      <span className="flex items-center gap-1.5">
-                        <Clock className="w-3.5 h-3.5 text-emerald-800" />
-                        {reminder.time} • {formatRecurrence(reminder)}
-                      </span>
-                      {reminder.snoozedUntil && status === 'snoozed' && (
-                        <span className="text-[11px] text-amber-900 font-bold flex items-center gap-1">
-                          <BellOff className="w-3 h-3" />
-                          Snoozed until {new Date(reminder.snoozedUntil).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-                        </span>
-                      )}
-                    </div>
-                    <div className="flex items-center gap-1.5 text-[11px] text-[#1b4332]">
-                      <Zap className="w-3.5 h-3.5 text-emerald-700 shrink-0" />
-                      <span>{formatEnergyEstimate(reminder)}</span>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Bottom Actions Row: Active toggle, Snooze & Mark Done / Undo */}
-                <div className="flex items-center justify-between pt-2 text-xs">
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => toggleActive(reminder.id)}
-                  >
-                    {reminder.active ? 'Deactivate' : 'Activate'}
-                  </Button>
-
-                  <div className="flex items-center gap-2">
-                    {reminder.active && !isDone && (
+                    {/* Bottom Actions Row: Active toggle, Snooze & Mark Done / Undo */}
+                    <div className="flex items-center justify-between pt-2 text-xs">
                       <Button
-                        variant="secondary"
+                        variant="ghost"
                         size="sm"
-                        icon={<BellOff className="w-3.5 h-3.5 text-slate-700" />}
-                        onClick={() => setSnoozeTarget(reminder)}
+                        onClick={() => {
+                          toggleActive(reminder.id)
+                          toast(`${reminder.active ? 'Deactivated' : 'Activated'} "${reminder.title}"`)
+                        }}
                       >
-                        Snooze
+                        {reminder.active ? 'Deactivate' : 'Activate'}
                       </Button>
-                    )}
 
-                    {isDone ? (
-                      <Button
-                        variant="secondary"
-                        size="sm"
-                        icon={<RotateCcw className="w-3.5 h-3.5 text-slate-700" />}
-                        onClick={() => undoCompletion(reminder.id, today)}
-                      >
-                        Undo Done
-                      </Button>
-                    ) : (
-                      <Button
-                        variant="primary"
-                        size="sm"
-                        disabled={!reminder.active}
-                        icon={<Check className="w-3.5 h-3.5" />}
-                        onClick={() => completeReminder(reminder.id, today)}
-                      >
-                        Mark Done
-                      </Button>
-                    )}
-                  </div>
-                </div>
-              </Card>
-            )
-          })}
-        </div>
+                      <div className="flex items-center gap-2">
+                        {reminder.active && !isDone && (
+                          <Button
+                            variant="secondary"
+                            size="sm"
+                            icon={<BellOff className="w-3.5 h-3.5 text-slate-700" />}
+                            onClick={() => setSnoozeTarget(reminder)}
+                          >
+                            Snooze
+                          </Button>
+                        )}
+
+                        {isDone ? (
+                          <div className="flex items-center gap-2">
+                            {/* Animated Drawn Checkmark */}
+                            <svg
+                              className="w-5 h-5 text-emerald-700"
+                              viewBox="0 0 24 24"
+                              fill="none"
+                              stroke="currentColor"
+                              strokeWidth="2.5"
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                            >
+                              <motion.polyline
+                                points="20 6 9 17 4 12"
+                                initial={{ pathLength: 0 }}
+                                animate={{ pathLength: 1 }}
+                                transition={{ duration: 0.25, ease: 'easeOut' }}
+                              />
+                            </svg>
+
+                            <Button
+                              variant="secondary"
+                              size="sm"
+                              icon={<RotateCcw className="w-3.5 h-3.5 text-slate-700" />}
+                              onClick={() => handleUndo(reminder)}
+                            >
+                              Undo Done
+                            </Button>
+                          </div>
+                        ) : (
+                          <Button
+                            variant="primary"
+                            size="sm"
+                            disabled={!reminder.active}
+                            icon={<CheckCircle2 className="w-3.5 h-3.5" />}
+                            onClick={() => handleComplete(reminder)}
+                          >
+                            Mark Done
+                          </Button>
+                        )}
+                      </div>
+                    </div>
+                  </Card>
+                </motion.div>
+              )
+            })}
+          </AnimatePresence>
+        </motion.div>
       )}
 
-      {/* Add / Edit Dialog */}
+      {/* Add / Edit Drawer */}
       <ReminderFormDialog
         open={formOpen}
         onClose={() => setFormOpen(false)}
@@ -461,9 +554,7 @@ export const RemindersPage: React.FC = () => {
         <DeleteConfirmDialog
           open={Boolean(deleteTarget)}
           onClose={() => setDeleteTarget(null)}
-          onConfirm={() => {
-            if (deleteTarget) deleteReminder(deleteTarget.id)
-          }}
+          onConfirm={() => handleDeleteReminder(deleteTarget)}
           reminderTitle={deleteTarget.title}
         />
       )}
@@ -474,7 +565,12 @@ export const RemindersPage: React.FC = () => {
           open={Boolean(snoozeTarget)}
           onClose={() => setSnoozeTarget(null)}
           onSnooze={(options) => {
-            if (snoozeTarget) snoozeReminder(snoozeTarget.id, options)
+            if (snoozeTarget) {
+              snoozeReminder(snoozeTarget.id, options)
+              const minutes = typeof options === 'number' ? options : 15
+              const snoozeTime = new Date(Date.now() + minutes * 60000).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' })
+              toast(`Snoozed until ${snoozeTime}`)
+            }
           }}
           reminderTitle={snoozeTarget.title}
         />
