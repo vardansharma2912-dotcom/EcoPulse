@@ -77,6 +77,11 @@ export function getWeeklyChartData(
 }
 
 /**
+ * Alias for getWeeklyChartData for weekly series consumption.
+ */
+export const weeklySeries = getWeeklyChartData
+
+/**
  * Compares current Monday-Sunday week with previous Monday-Sunday week.
  */
 export function getWeekComparison(

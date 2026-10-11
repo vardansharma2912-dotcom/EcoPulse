@@ -189,4 +189,54 @@ describe('Storage v1 to v2 Migration & Persistence', () => {
     expect(parsedV2.completions[0].title).toBe('Turn off monitor before class')
     expect(parsedV2.completions[1].title).toBe('Deleted reminder')
   })
+
+  it('persists isDemo flags through storage and preserves authentic completions after demo removal', () => {
+    const mixedState = {
+      reminders: [],
+      completions: [
+        {
+          id: 'real-1',
+          reminderId: 'rem-1',
+          title: 'Authentic Action',
+          date: '2026-10-11',
+          completedAt: '2026-10-11T10:00:00Z',
+          kWh: 0.2,
+          costSaved: 1.6,
+          tariffAtTime: 8,
+          // authentic, isDemo undefined
+        },
+        {
+          id: 'demo-1',
+          reminderId: 'rem-1',
+          title: 'Sample Demo Action',
+          date: '2026-10-10',
+          completedAt: '2026-10-10T10:00:00Z',
+          kWh: 0.15,
+          costSaved: 1.2,
+          tariffAtTime: 8,
+          isDemo: true,
+        },
+      ],
+      settings: {
+        displayName: 'Student',
+        tariffPerKwh: 8,
+        notificationsEnabled: false,
+      },
+      lastUpdated: new Date().toISOString(),
+    }
+
+    // Save and reload
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(mixedState))
+    const loaded = loadState()
+
+    expect(loaded.completions).toHaveLength(2)
+    expect(loaded.completions.find((c) => c.id === 'real-1')?.isDemo).toBeUndefined()
+    expect(loaded.completions.find((c) => c.id === 'demo-1')?.isDemo).toBe(true)
+
+    // Simulate removing demo completions
+    const filteredCompletions = loaded.completions.filter((c) => !c.isDemo)
+    expect(filteredCompletions).toHaveLength(1)
+    expect(filteredCompletions[0].id).toBe('real-1')
+    expect(filteredCompletions[0].title).toBe('Authentic Action')
+  })
 })

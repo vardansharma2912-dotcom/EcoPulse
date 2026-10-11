@@ -30,7 +30,7 @@ Because individual students rarely see real-time utility bills or metering data,
   - Habit streak counter (current active streak and all-time record).
   - Dynamic milestone achievement badges (never stored, derived live from activity).
   - Reverse-chronological action history grouped by date with "Show more" pagination.
-- **Practical Learning Hub:** 10 honest conservation habit cards explaining principles of vampire draw, AC temperature set-points, daylight integration, and plug-level switching without invented statistics.
+- **Interactive 3D Learn Hub:** Glassy 3D carousel powered by `motion` springs, perspective depth, wrap-around navigation, control pill with play/pause, touch drag, keyboard navigation, and dialog expansions for 9 practical conservation habits.
 - **Presentation Demo Data:** Settings toggle to load ~14 days of realistic demonstration completions clearly flagged as `isDemo: true`, allowing complete evaluation without compromising authentic user history.
 - **Local Client Storage:** Pure browser `localStorage` persistence with backward-compatible schema migration (v1 to v2) and full data reset controls.
 
@@ -41,6 +41,7 @@ Because individual students rarely see real-time utility bills or metering data,
 - **Framework:** React 19 + TypeScript
 - **Build Tool:** Vite 8
 - **Styling:** Tailwind CSS v4 + Vanilla CSS glassmorphic tokens
+- **Animations:** Motion 14 (spring physics & 3D carousel transforms)
 - **Data Visualization:** Recharts 3
 - **Icons:** Lucide React
 - **Typography:** Inter Variable font

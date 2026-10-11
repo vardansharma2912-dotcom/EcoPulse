@@ -1,6 +1,7 @@
 import { describe, it, expect } from 'vitest'
 import {
   getWeeklyChartData,
+  weeklySeries,
   getWeekComparison,
   computeStreaksFromCompletions,
   groupCompletionsByDate,
@@ -62,6 +63,8 @@ describe('Pure Analytics Functions', () => {
     expect(chartData[6].dateKey).toBe('2026-10-11')
     expect(chartData[6].actions).toBe(1)
     expect(chartData[6].kwh).toBe(0.12)
+    // weeklySeries alias verification
+    expect(weeklySeries(mockCompletions, baseDate)).toEqual(chartData)
   })
 
   it('getWeekComparison correctly calculates this week vs last week and flags hasLastWeekData', () => {

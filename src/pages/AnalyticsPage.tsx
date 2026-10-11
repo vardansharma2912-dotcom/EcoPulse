@@ -7,7 +7,7 @@ import { EmptyState } from '../components/ui/EmptyState'
 import { DemoBanner } from '../components/layout/DemoBanner'
 import { useAppState } from '../state'
 import {
-  getWeeklyChartData,
+  weeklySeries,
   getWeekComparison,
   computeStreaksFromCompletions,
   groupCompletionsByDate,
@@ -43,7 +43,7 @@ export const AnalyticsPage: React.FC = () => {
 
   // Purely computed metrics
   const [now] = useState(() => new Date())
-  const weeklyData = useMemo(() => getWeeklyChartData(state.completions, now), [state.completions, now])
+  const weeklyData = useMemo(() => weeklySeries(state.completions, now), [state.completions, now])
   const weekComparison = useMemo(() => getWeekComparison(state.completions, now), [state.completions, now])
   const streaks = useMemo(() => computeStreaksFromCompletions(state.completions, now), [state.completions, now])
   const groupedHistory = useMemo(() => groupCompletionsByDate(state.completions), [state.completions])
@@ -225,8 +225,8 @@ export const AnalyticsPage: React.FC = () => {
                   <Bar
                     dataKey={chartMetric === 'kwh' ? 'kwh' : 'actions'}
                     fill="#15803d"
-                    radius={[6, 6, 0, 0]}
-                    maxBarSize={48}
+                    radius={[999, 999, 999, 999]}
+                    maxBarSize={32}
                   />
                 </BarChart>
               </ResponsiveContainer>
