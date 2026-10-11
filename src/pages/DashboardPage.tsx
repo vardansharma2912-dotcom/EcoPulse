@@ -357,10 +357,10 @@ export const DashboardPage: React.FC = () => {
 
             <div className="space-y-2.5">
               {[
-                { name: 'Air Conditioning Set-Point', category: 'Cooling', status: '24°C Optimal', watts: '1500W' },
-                { name: 'Computer Workstation Standby', category: 'Computing', status: 'Unplugged', watts: '250W' },
-                { name: 'Fume Hood Sash Glass', category: 'Laboratory', status: 'Lowered', watts: '300W' },
-                { name: 'Daylight Harvesting', category: 'Lighting', status: 'Lights Off', watts: '80W' },
+                { name: 'Air Conditioning Set-Point', category: 'Cooling', status: 'Moderate Setting', impact: 'Compressor load reduced' },
+                { name: 'Computer Workstation Standby', category: 'Computing', status: 'Unplugged at Wall', impact: 'Phantom load isolated' },
+                { name: 'Fume Hood Sash Glass', category: 'Laboratory', status: 'Lowered', impact: 'Ventilation exhaust saved' },
+                { name: 'Daylight Harvesting', category: 'Lighting', status: 'Lamps Off', impact: 'Natural daylight used' },
               ].map((habit) => (
                 <div
                   key={habit.name}
@@ -368,7 +368,7 @@ export const DashboardPage: React.FC = () => {
                 >
                   <div className="min-w-0 pr-2">
                     <p className="font-bold text-[#102819] truncate">{habit.name}</p>
-                    <span className="text-[10px] text-[#1e3f2b]">{habit.category} · {habit.watts}</span>
+                    <span className="text-[10px] text-[#1e3f2b]">{habit.category} · {habit.impact}</span>
                   </div>
                   <span className="shrink-0 px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-900 border border-emerald-200">
                     {habit.status}

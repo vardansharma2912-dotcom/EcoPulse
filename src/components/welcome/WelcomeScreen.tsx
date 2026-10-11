@@ -1,14 +1,13 @@
 import React, { useState } from 'react'
-import { motion } from 'motion/react'
-import { Leaf, ShieldCheck, ArrowRight } from 'lucide-react'
+import { motion, useReducedMotion } from 'motion/react'
+import type { Variants } from 'motion/react'
+import { Leaf, Bell, Zap, Flame, ShieldCheck } from 'lucide-react'
 import { Button } from '../ui/Button'
-import { Input } from '../ui/Input'
 import { useAppState } from '../../state'
-import { useToast } from '../../context/useToast'
 import { setWelcomeHandled } from '../../lib/storage'
 
 export interface WelcomeScreenProps {
-  onComplete: () => void
+  onComplete: (name?: string) => void
 }
 
 /**
@@ -18,13 +17,15 @@ export interface WelcomeScreenProps {
  */
 export const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ onComplete }) => {
   const { updateSettings } = useAppState()
-  const { showToast } = useToast()
+  const isReducedMotion = useReducedMotion()
   const [name, setName] = useState('')
   const [error, setError] = useState<string | null>(null)
 
+  const trimmed = name.trim()
+  const previewGreeting = trimmed ? `Hi, ${trimmed}` : 'Hi there'
+
   const handleContinue = (e?: React.FormEvent) => {
     if (e) e.preventDefault()
-    const trimmed = name.trim()
 
     if (trimmed.length === 0) {
       setError("Please enter your name or click 'Skip for now'")
@@ -39,92 +40,165 @@ export const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ onComplete }) => {
     setError(null)
     updateSettings({ displayName: trimmed })
     setWelcomeHandled(true)
-    showToast(`Welcome, ${trimmed}!`)
-    onComplete()
+    onComplete(trimmed)
   }
 
   const handleSkip = () => {
     setError(null)
     setWelcomeHandled(true)
-    showToast('Welcome, Guest!')
     onComplete()
   }
 
-  return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 min-h-[100dvh]">
-      <motion.div
-        initial={{ opacity: 0, y: 16, scale: 0.97 }}
-        animate={{ opacity: 1, y: 0, scale: 1 }}
-        exit={{ opacity: 0, scale: 0.96 }}
-        transition={{ type: 'spring', stiffness: 260, damping: 24 }}
-        className="glass-strong max-w-md w-full p-6 sm:p-8 rounded-3xl shadow-2xl border border-white/80 space-y-6 text-center"
-      >
-        {/* Brand Icon Badge */}
-        <div className="w-14 h-14 mx-auto rounded-2xl bg-emerald-700 text-white flex items-center justify-center shadow-lg shadow-emerald-950/20">
-          <Leaf className="w-7 h-7" />
-        </div>
+  // Animation variants
+  const containerVariants: Variants = {
+    hidden: {
+      opacity: 0,
+      y: isReducedMotion ? 0 : 20,
+      filter: isReducedMotion ? 'none' : 'blur(6px)',
+      scale: isReducedMotion ? 1 : 0.98,
+    },
+    visible: {
+      opacity: 1,
+      y: 0,
+      filter: 'blur(0px)',
+      scale: 1,
+      transition: {
+        duration: isReducedMotion ? 0 : 0.4,
+        ease: [0.22, 1, 0.36, 1],
+        staggerChildren: isReducedMotion ? 0 : 0.06,
+        delayChildren: isReducedMotion ? 0 : 0.05,
+      },
+    },
+    exit: {
+      opacity: 0,
+      y: isReducedMotion ? 0 : -12,
+      filter: isReducedMotion ? 'none' : 'blur(4px)',
+      scale: isReducedMotion ? 1 : 0.98,
+      transition: { duration: isReducedMotion ? 0 : 0.25 },
+    },
+  }
 
-        {/* Headings */}
-        <div className="space-y-1.5">
-          <h1 className="text-2xl sm:text-3xl font-extrabold text-[#14301f] tracking-tight">
+  const itemVariants: Variants = {
+    hidden: { opacity: 0, y: isReducedMotion ? 0 : 10 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: { duration: isReducedMotion ? 0 : 0.3, ease: 'easeOut' },
+    },
+  }
+
+  return (
+    <div className="w-full flex flex-col items-center justify-center p-2 sm:p-4 my-auto">
+      <motion.div
+        variants={containerVariants}
+        initial="hidden"
+        animate="visible"
+        exit="exit"
+        className="glass-strong max-w-[420px] sm:max-w-[440px] w-full p-5 sm:p-6 rounded-3xl shadow-2xl border border-white/80 space-y-4 text-center select-none"
+      >
+        {/* Leaf Logo Mark (gently scales in) */}
+        <motion.div
+          variants={itemVariants}
+          className="w-11 h-11 sm:w-12 sm:h-12 mx-auto rounded-2xl bg-emerald-700 text-white flex items-center justify-center shadow-lg shadow-emerald-950/20"
+        >
+          <motion.div
+            initial={{ scale: isReducedMotion ? 1 : 0.8 }}
+            animate={{ scale: 1 }}
+            transition={{ type: 'spring', stiffness: 350, damping: 22 }}
+          >
+            <Leaf className="w-6 h-6 sm:w-6.5 sm:h-6.5" />
+          </motion.div>
+        </motion.div>
+
+        {/* Header & Tagline */}
+        <motion.div variants={itemVariants} className="space-y-1">
+          <h1 className="text-xl sm:text-2xl font-extrabold text-[#14301f] tracking-tight">
             Welcome to EcoPulse
           </h1>
-          <p className="text-xs sm:text-sm text-slate-700 font-medium">
-            Smart energy conservation companion for campus and daily life.
+          <p className="text-xs sm:text-sm text-slate-600 font-medium">
+            Small habits, tracked honestly.
           </p>
-        </div>
+        </motion.div>
 
-        {/* Input Form */}
-        <form onSubmit={handleContinue} className="space-y-4 text-left">
-          <div>
-            <label
-              htmlFor="welcome-name"
-              className="block text-xs sm:text-sm font-semibold text-[#14301f] mb-1.5"
-            >
-              What should we call you?
-            </label>
-            <Input
+        {/* Live Greeting Preview Badge */}
+        <motion.div variants={itemVariants}>
+          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-100/70 border border-emerald-300/40 text-xs sm:text-sm font-bold text-emerald-900 tracking-tight">
+            <span>{previewGreeting}</span>
+          </div>
+        </motion.div>
+
+        {/* Name Input Form */}
+        <motion.form variants={itemVariants} onSubmit={handleContinue} className="space-y-3.5 text-left">
+          <div className="space-y-1">
+            <input
               id="welcome-name"
               type="text"
-              placeholder="e.g. Alex, Sam, Priyanshu"
+              placeholder="What should we call you?"
               value={name}
               onChange={(e) => {
                 setName(e.target.value)
                 if (error) setError(null)
               }}
-              error={error || undefined}
               maxLength={40}
               autoFocus
-              className="bg-white/80"
+              className="w-full px-3.5 py-2 sm:py-2.5 text-sm rounded-xl bg-white/90 border border-emerald-950/20 text-[#14301f] placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-700/50 transition-all font-medium"
             />
+            {error && (
+              <p className="text-[11px] text-rose-700 font-semibold px-1 pt-0.5">
+                {error}
+              </p>
+            )}
           </div>
 
-          <div className="space-y-2.5 pt-2">
+          <div className="space-y-2 pt-0.5">
             <Button
               type="submit"
               variant="primary"
-              size="lg"
-              className="w-full"
-              icon={<ArrowRight className="w-4 h-4" />}
+              size="md"
+              className="w-full justify-center"
             >
               Continue
             </Button>
-            <Button
-              type="button"
-              variant="ghost"
-              size="md"
-              className="w-full"
-              onClick={handleSkip}
-            >
-              Skip for now
-            </Button>
+            <div className="text-center">
+              <button
+                type="button"
+                onClick={handleSkip}
+                className="text-xs text-slate-500 hover:text-emerald-950 transition-colors font-medium underline underline-offset-2 cursor-pointer"
+              >
+                Skip for now
+              </button>
+            </div>
           </div>
-        </form>
+        </motion.form>
 
-        {/* Honest Privacy Notice */}
-        <div className="pt-2 border-t border-emerald-900/10 flex items-center justify-center gap-1.5 text-[11px] sm:text-xs text-emerald-900/75 font-semibold">
-          <ShieldCheck className="w-4 h-4 text-emerald-700 shrink-0" />
+        {/* Privacy Note */}
+        <motion.div
+          variants={itemVariants}
+          className="pt-2 border-t border-emerald-900/10 flex items-center justify-center gap-1.5 text-[11px] text-emerald-900/75 font-semibold"
+        >
+          <ShieldCheck className="w-3.5 h-3.5 text-emerald-700 shrink-0" />
           <span>Saved only in this browser. No account needed.</span>
+        </motion.div>
+      </motion.div>
+
+      {/* Feature Chips Under the Card */}
+      <motion.div
+        initial={{ opacity: 0, y: isReducedMotion ? 0 : 12 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: isReducedMotion ? 0 : 0.25, duration: isReducedMotion ? 0 : 0.35 }}
+        className="flex flex-wrap items-center justify-center gap-2 mt-3.5 text-xs font-semibold text-[#14301f] select-none"
+      >
+        <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white/60 border border-white/80 shadow-xs">
+          <Bell className="w-3.5 h-3.5 text-emerald-800 shrink-0" />
+          <span>Reminders</span>
+        </div>
+        <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white/60 border border-white/80 shadow-xs">
+          <Zap className="w-3.5 h-3.5 text-emerald-800 shrink-0" />
+          <span>Estimated savings</span>
+        </div>
+        <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white/60 border border-white/80 shadow-xs">
+          <Flame className="w-3.5 h-3.5 text-amber-700 shrink-0" />
+          <span>Streaks</span>
         </div>
       </motion.div>
     </div>

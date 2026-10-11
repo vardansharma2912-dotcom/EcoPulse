@@ -5,23 +5,23 @@ import { Lightbulb } from 'lucide-react'
 const ENERGY_TIPS = [
   {
     title: 'Standby Power Drain',
-    text: 'Switching off appliances at the wall socket eliminates vampire power, saving 5–10% of household energy.',
+    text: 'Standby power adds up over a year, and varies by appliance. Switching off at the wall socket eliminates passive idle draw.',
   },
   {
     title: 'Optimal AC Set-Point',
-    text: 'Setting air conditioning to 24°C instead of 18°C saves ~6% electricity per degree Celsius avoided.',
+    text: 'Setting moderate air conditioning temperatures reduces compressor runtime while keeping living spaces comfortably cool.',
   },
   {
     title: 'Unplug Idle Chargers',
-    text: 'Phone and laptop chargers continuously draw 0.2–0.5W when left plugged in without a connected device.',
+    text: 'Charging adapters continue drawing small currents when left plugged in. Switching off sockets when done eliminates passive draw.',
   },
   {
     title: 'Fume Hood Sash Management',
-    text: 'Pulling down laboratory sash glass reduces exhaust fan ventilation load by up to 50% on campus.',
+    text: 'Pulling down laboratory sash glass reduces variable air ventilation exhaust load across campus research facilities.',
   },
   {
     title: 'Daylight Harvesting',
-    text: 'Opening natural window blinds and turning off overhead fixtures saves 40–80W per luminaire bank.',
+    text: 'Opening natural window blinds and switching off overhead fixtures allows natural daylight to illuminate study desks.',
   },
 ]
 
@@ -91,14 +91,14 @@ export const SidebarTipCard: React.FC<{ className?: string }> = ({ className = '
       <div className="relative z-10 flex items-center justify-between mb-2">
         <div className="flex items-center gap-1.5 text-emerald-300">
           <Lightbulb className="w-3.5 h-3.5" />
-          <span className="text-[10px] font-bold uppercase tracking-wider">Campus Energy Tip</span>
+          <span className="text-[10px] font-bold uppercase tracking-wider text-emerald-300">Campus Energy Tip</span>
         </div>
-        <div className="flex items-center gap-1">
+        <div className="flex items-center gap-1.5">
           {ENERGY_TIPS.map((_, i) => (
             <span
               key={i}
-              className={`w-1.5 h-1.5 rounded-full transition-all ${
-                i === index ? 'bg-emerald-400 w-3' : 'bg-white/20'
+              className={`h-1.5 rounded-full transition-all ${
+                i === index ? 'bg-emerald-400 w-3' : 'bg-white/50 w-1.5'
               }`}
             />
           ))}
@@ -116,8 +116,8 @@ export const SidebarTipCard: React.FC<{ className?: string }> = ({ className = '
             transition={{ duration: 0.35, ease: 'easeOut' }}
             className="space-y-1"
           >
-            <h4 className="text-xs font-bold text-white">{currentTip.title}</h4>
-            <p className="text-[11px] text-emerald-100/90 leading-relaxed font-normal">
+            <h4 className="text-xs font-bold text-white tracking-tight">{currentTip.title}</h4>
+            <p className="text-[11px] text-white/95 leading-relaxed font-normal">
               {currentTip.text}
             </p>
           </motion.div>
@@ -125,7 +125,7 @@ export const SidebarTipCard: React.FC<{ className?: string }> = ({ className = '
       </div>
 
       {isPaused && (
-        <span className="relative z-10 block text-[9px] text-emerald-300/70 mt-1 italic">
+        <span className="relative z-10 block text-[9px] text-emerald-300/80 mt-1 italic">
           Paused on hover
         </span>
       )}

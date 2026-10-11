@@ -1,6 +1,7 @@
 import React, { useMemo, useState } from 'react'
 import { NavLink, Outlet, useLocation } from 'react-router-dom'
-import { motion, AnimatePresence } from 'motion/react'
+import { motion, AnimatePresence, useReducedMotion } from 'motion/react'
+import { useToast } from '../../context/useToast'
 import {
   LayoutDashboard,
   Bell,
@@ -41,12 +42,21 @@ export const AppLayout: React.FC = () => {
   const location = useLocation()
   const today = todayKey()
 
+  const { showToast } = useToast()
+  const isReducedMotion = useReducedMotion()
   const [searchOpen, setSearchOpen] = useState(false)
   const [alertsPopoverOpen, setAlertsPopoverOpen] = useState(false)
   const [welcomeDismissed, setWelcomeDismissed] = useState(false)
 
   // Welcome screen is shown once on first launch or after reset when displayName is empty
   const showWelcome = !welcomeDismissed && !isWelcomeHandled() && !state.settings.displayName
+
+  const handleWelcomeComplete = (enteredName?: string) => {
+    setWelcomeDismissed(true)
+    if (enteredName) {
+      showToast(`Welcome, ${enteredName}!`)
+    }
+  }
 
   // Page title for compact mobile header
   const pageTitle = useMemo(() => {
@@ -75,27 +85,41 @@ export const AppLayout: React.FC = () => {
   }, [state.reminders, state.completions, today])
 
   return (
-    <div className="min-h-[100dvh] text-[#14301f] flex flex-col lg:flex-row relative">
-      {/* Fixed Botanical Background Layer */}
-      <LeafBackground />
+    <AnimatePresence mode="wait">
+      {showWelcome ? (
+        <motion.div
+          key="welcome-page"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0, transition: { duration: isReducedMotion ? 0 : 0.25 } }}
+          className="fixed inset-0 z-50 overflow-y-auto flex flex-col items-center justify-center p-3 sm:p-4 text-[#14301f]"
+        >
+          {/* Fixed Botanical Background Layer */}
+          <LeafBackground />
 
-      {/* Touch Custom Scrollbar Indicator */}
-      <ScrollThumb />
+          <WelcomeScreen onComplete={handleWelcomeComplete} />
+        </motion.div>
+      ) : (
+        <motion.div
+          key="app-shell"
+          initial={{ opacity: isReducedMotion ? 1 : 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: isReducedMotion ? 0 : 0.35, ease: [0.22, 1, 0.36, 1] }}
+          className="min-h-[100dvh] text-[#14301f] flex flex-col lg:flex-row relative"
+        >
+          {/* Fixed Botanical Background Layer */}
+          <LeafBackground />
 
-      {/* First-Launch Welcome Screen (Not Authentication) */}
-      <AnimatePresence>
-        {showWelcome && (
-          <WelcomeScreen onComplete={() => setWelcomeDismissed(true)} />
-        )}
-      </AnimatePresence>
+          {/* Touch Custom Scrollbar Indicator */}
+          <ScrollThumb />
 
-      {/* Global In-App Alert Toasts */}
-      <InAppAlertBanner
-        alerts={activeAlerts}
-        onMarkDone={markAlertDone}
-        onSnooze={snoozeAlert}
-        onDismiss={dismissAlert}
-      />
+          {/* Global In-App Alert Toasts */}
+          <InAppAlertBanner
+            alerts={activeAlerts}
+            onMarkDone={markAlertDone}
+            onSnooze={snoozeAlert}
+            onDismiss={dismissAlert}
+          />
 
       {/* Mobile Search Sheet Modal */}
       <MobileSearchSheet
@@ -284,6 +308,8 @@ export const AppLayout: React.FC = () => {
 
       {/* Floating Notch Dock: Fixed at Root, Replaces Bottom Tab Bar below 1024px */}
       <NotchDock />
-    </div>
+    </motion.div>
+  )}
+</AnimatePresence>
   )
 }

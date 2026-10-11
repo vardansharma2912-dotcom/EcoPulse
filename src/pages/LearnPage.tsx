@@ -45,7 +45,7 @@ const CARDS: HabitCard[] = [
     habit:
       'Make it a muscle-memory habit to flip off switches every single time you step out of a study bedroom, departmental lab, or washroom.',
     whyItHelps:
-      'Immediately cuts baseline electrical consumption during vacancy intervals. Even brief 15-minute saves accumulate across a semester.',
+      'Immediately cuts baseline electrical consumption during vacancy intervals. Even brief habits of turning off lights accumulate across a semester.',
     fullDetails:
       'Electric lighting in dormitories and study spaces operates directly on grid power. When study areas are unoccupied, illumination provides zero benefit. Developing the conscious habit of turning off lights upon exit eliminates unnecessary operating hours. Pairing desk placement with daylight and choosing task lighting over high-wattage ceiling fixtures further minimizes load.',
     note: 'Rated power varies by fixture type (compact fluorescents and older tubes draw more power than modern LEDs). Check lamp fixtures for labeled wattage.',
@@ -103,7 +103,7 @@ const CARDS: HabitCard[] = [
     summary:
       'High-performance OS power profiles keep processor frequencies elevated, dedicated graphic cards warm, and backlight brightness at maximum levels.',
     habit:
-      'Set display sleep to 5 minutes, configure auto-sleep or hibernation during study breaks, and dim screen brightness to match indoor lighting.',
+      'Configure auto-sleep or display standby during study breaks, and adjust screen brightness to match ambient indoor lighting.',
     whyItHelps:
       'Reduces unnecessary processor and display backlight power draw during reading sessions, lectures, and meal breaks.',
     fullDetails:
@@ -116,13 +116,13 @@ const CARDS: HabitCard[] = [
     category: 'Thermal Comfort',
     icon: Thermometer,
     summary:
-      'Setting room air conditioners to very low temperatures forces compressors to run continuously against ambient outdoor heat.',
+      'Setting room air conditioners to extreme low temperatures forces compressors to run continuously against ambient outdoor heat.',
     habit:
-      'Maintain moderate cooling set-points around 24°C–26°C and operate a ceiling fan on low speed to distribute cool air evenly.',
+      'Maintain moderate cooling set-points and operate a ceiling fan on low speed to distribute cool air evenly.',
     whyItHelps:
       'Compressor runtimes decrease significantly when maintaining a realistic indoor-to-outdoor temperature differential.',
     fullDetails:
-      'The compressor is the most power-intensive component of an air conditioning unit. Lowering the thermostat to 18°C does not cool the room faster; it simply keeps the compressor engaged longer. Combining a moderate 24°C setting with light fan air circulation provides equivalent perceived cooling comfort while shortening compressor duty cycles.',
+      'The compressor is the most power-intensive component of an air conditioning unit. Lowering the thermostat to extreme temperatures does not cool the room faster; it simply keeps the compressor engaged longer. Combining a moderate setting with light fan air circulation provides equivalent perceived cooling comfort while shortening compressor duty cycles.',
     note: 'Compressor power demand varies with room insulation, window sun exposure, filter cleanliness, and equipment star rating.',
   },
   {
@@ -148,7 +148,7 @@ const CARDS: HabitCard[] = [
     summary:
       'In lecture halls, project laboratories, and dorm floor lounges, individuals frequently assume that building maintenance or someone else will turn off switches.',
     habit:
-      'Take collective proactive ownership. If you are the last person exiting a shared room or project lab, take 10 seconds to switch off fixtures.',
+      'Take collective proactive ownership. If you are the last person exiting a shared room or project lab, take a moment to switch off fixtures.',
     whyItHelps:
       'Prevents lights, monitors, and ventilation equipment in unoccupied institutional rooms from operating unobserved overnight.',
     fullDetails:

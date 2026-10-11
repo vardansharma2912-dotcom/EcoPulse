@@ -126,17 +126,17 @@ export const SemiCircleGauge: React.FC<SemiCircleGaugeProps> = ({
         </div>
       </div>
 
-      {/* Legend of 3 Dots Underneath */}
-      <div className="flex items-center justify-center gap-4 mt-2 text-xs font-medium text-[#14301f]">
-        <div className="flex items-center gap-1.5">
+      {/* Legend of 3 Dots Underneath - nowrap items wrapping as whole units */}
+      <div className="flex flex-wrap items-center justify-center gap-x-3.5 gap-y-1.5 mt-2.5 text-xs font-semibold text-[#14301f]">
+        <div className="flex items-center gap-1.5 whitespace-nowrap shrink-0">
           <span className="w-2.5 h-2.5 rounded-full bg-[#196f45] shadow-xs" />
           <span>Done ({completed})</span>
         </div>
-        <div className="flex items-center gap-1.5">
+        <div className="flex items-center gap-1.5 whitespace-nowrap shrink-0">
           <span className="w-2.5 h-2.5 rounded-full bg-[#0a381e] shadow-xs" />
           <span>Snoozed ({snoozed})</span>
         </div>
-        <div className="flex items-center gap-1.5">
+        <div className="flex items-center gap-1.5 whitespace-nowrap shrink-0">
           <span className="w-2.5 h-2.5 rounded-full bg-[#8fa398] border border-stone-400/50 shadow-xs" />
           <span>Pending ({pending})</span>
         </div>

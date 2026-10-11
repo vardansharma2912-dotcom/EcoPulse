@@ -15,15 +15,15 @@ export const PageHeader: React.FC<PageHeaderProps> = ({
   badge,
 }) => {
   return (
-    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-5 mb-6 border-b border-emerald-900/10">
+    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pt-1 sm:pt-2 pb-5 mb-6 border-b border-emerald-900/10">
       <div>
         <div className="flex items-center gap-3">
-          {/* Title reveals left-to-right via clip-path 450ms */}
+          {/* Title reveals left-to-right via clip-path 450ms with vertical safety padding */}
           <motion.h1
-            initial={{ clipPath: 'inset(0 100% 0 0)' }}
-            animate={{ clipPath: 'inset(0 0% 0 0)' }}
+            initial={{ clipPath: 'inset(-8px 100% -8px 0)' }}
+            animate={{ clipPath: 'inset(-8px 0% -8px 0)' }}
             transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
-            className="text-xl sm:text-2xl font-bold tracking-tight text-[#14301f]"
+            className="text-xl sm:text-2xl font-bold tracking-tight text-[#14301f] leading-normal sm:leading-snug"
           >
             {title}
           </motion.h1>

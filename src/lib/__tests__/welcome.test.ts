@@ -72,4 +72,26 @@ describe('Welcome Screen Flag & Reset Behavior (Not Login)', () => {
     expect(resetState.settings.displayName).toBe('')
     expect(resetState.settings.tariffPerKwh).toBe(8)
   })
+
+  it('verifies welcome page display predicate: first launch shows it, handled hides it, reset displays it again', () => {
+    // Helper mimicking AppLayout's welcome predicate
+    const shouldShow = (dismissed: boolean, handled: boolean, displayName: string) =>
+      !dismissed && !handled && !displayName
+
+    // 1. Initial first-launch state
+    expect(isWelcomeHandled()).toBe(false)
+    expect(shouldShow(false, isWelcomeHandled(), '')).toBe(true)
+
+    // 2. User clicks continue with name
+    setWelcomeHandled(true)
+    expect(shouldShow(false, isWelcomeHandled(), 'Vardaan')).toBe(false)
+
+    // 3. User skips without name (stores empty string)
+    expect(shouldShow(false, isWelcomeHandled(), '')).toBe(false)
+
+    // 4. Reset all data restores the initial first-launch state
+    clearState()
+    expect(isWelcomeHandled()).toBe(false)
+    expect(shouldShow(false, isWelcomeHandled(), '')).toBe(true)
+  })
 })
