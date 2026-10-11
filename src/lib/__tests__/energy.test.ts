@@ -6,6 +6,9 @@ describe('energy.ts - calculateKwh', () => {
     // 100W for 10 hours = 1000 Wh = 1 kWh
     expect(calculateKwh(100, 10)).toBe(1)
     
+    // 100W for 5 hours = 500 Wh = 0.5 kWh
+    expect(calculateKwh(100, 5)).toBe(0.5)
+
     // 75W fan for 4 hours = 300 Wh = 0.3 kWh
     expect(calculateKwh(75, 4)).toBe(0.3)
     

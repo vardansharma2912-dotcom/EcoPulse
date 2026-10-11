@@ -10,6 +10,8 @@ import {
   Leaf,
 } from 'lucide-react'
 import { LeafBackground } from './LeafBackground'
+import { useReminderAlerts } from '../../lib/useReminderAlerts'
+import { InAppAlertBanner } from './InAppAlertBanner'
 
 const navItems = [
   { to: '/', label: 'Dashboard', icon: LayoutDashboard },
@@ -21,10 +23,20 @@ const navItems = [
 ]
 
 export const AppLayout: React.FC = () => {
+  const { activeAlerts, dismissAlert, markAlertDone, snoozeAlert } = useReminderAlerts()
+
   return (
     <div className="min-h-screen text-[#14301f] flex flex-col lg:flex-row relative">
       {/* Fixed Botanical Background Layer */}
       <LeafBackground />
+
+      {/* Global In-App Alert Toasts */}
+      <InAppAlertBanner
+        alerts={activeAlerts}
+        onMarkDone={markAlertDone}
+        onSnooze={snoozeAlert}
+        onDismiss={dismissAlert}
+      />
 
       {/* Desktop Floating Glass Sidebar (lg+) */}
       <aside className="hidden lg:flex w-64 flex-col justify-between m-4 glass-panel rounded-2xl p-5 shrink-0 sticky top-4 h-[calc(100vh-2rem)] z-30">
@@ -38,7 +50,7 @@ export const AppLayout: React.FC = () => {
               <span className="font-bold text-base text-[#14301f] tracking-tight block">
                 EcoPulse
               </span>
-              <p className="text-[11px] text-slate-600 font-medium">Smart Energy Reminder</p>
+              <p className="text-[11px] text-[#1e3f2b] font-semibold">Smart Energy Reminder</p>
             </div>
           </div>
 

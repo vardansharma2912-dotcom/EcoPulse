@@ -4,8 +4,20 @@ import { Card } from '../components/ui/Card'
 import { Button } from '../components/ui/Button'
 import { Input } from '../components/ui/Input'
 import { Dialog } from '../components/ui/Dialog'
+import { Badge } from '../components/ui/Badge'
 import { useAppState } from '../state'
-import { Save, RotateCcw, AlertTriangle, ShieldCheck } from 'lucide-react'
+import {
+  Save,
+  RotateCcw,
+  AlertTriangle,
+  ShieldCheck,
+  Bell,
+  BellOff,
+  BellRing,
+  Info,
+} from 'lucide-react'
+
+type PermissionState = 'unsupported' | 'not asked yet' | 'granted' | 'denied'
 
 export const SettingsPage: React.FC = () => {
   const { state, updateSettings, resetData } = useAppState()
@@ -13,6 +25,55 @@ export const SettingsPage: React.FC = () => {
   const [tariff, setTariff] = useState(state.settings.tariffPerKwh.toString())
   const [savedSuccess, setSavedSuccess] = useState(false)
   const [resetDialogOpen, setResetDialogOpen] = useState(false)
+  const [testAlertSent, setTestAlertSent] = useState(false)
+
+  // Real browser notification permission state
+  const [permissionState, setPermissionState] = useState<PermissionState>(() => {
+    if (typeof window !== 'undefined' && 'Notification' in window) {
+      if (Notification.permission === 'granted') return 'granted'
+      if (Notification.permission === 'denied') return 'denied'
+      return 'not asked yet'
+    }
+    return 'unsupported'
+  })
+
+  const handleRequestPermission = async () => {
+    if (typeof window !== 'undefined' && 'Notification' in window) {
+      try {
+        const result = await Notification.requestPermission()
+        if (result === 'granted') {
+          setPermissionState('granted')
+          updateSettings({ notificationsEnabled: true })
+        } else if (result === 'denied') {
+          setPermissionState('denied')
+          updateSettings({ notificationsEnabled: false })
+        } else {
+          setPermissionState('not asked yet')
+        }
+      } catch (err) {
+        console.error('[EcoPulse] Error requesting notification permission:', err)
+      }
+    }
+  }
+
+  const handleSendTestNotification = () => {
+    if (typeof window !== 'undefined' && 'Notification' in window && Notification.permission === 'granted') {
+      try {
+        const notif = new Notification('EcoPulse Test Alert', {
+          body: 'Browser notifications are configured and working properly!',
+          icon: '/favicon.svg',
+        })
+        notif.onclick = () => {
+          window.focus()
+          notif.close()
+        }
+        setTestAlertSent(true)
+        setTimeout(() => setTestAlertSent(false), 4000)
+      } catch (err) {
+        console.warn('[EcoPulse] Test notification failed:', err)
+      }
+    }
+  }
 
   const handleSave = (e: React.FormEvent) => {
     e.preventDefault()
@@ -38,7 +99,7 @@ export const SettingsPage: React.FC = () => {
     <div className="space-y-6 max-w-2xl">
       <PageHeader
         title="Settings & System Configuration"
-        description="Configure your domestic electricity tariff and manage local data storage."
+        description="Configure your domestic electricity tariff and manage browser alert preferences."
       />
 
       {/* Main Settings Form on glass-strong */}
@@ -68,7 +129,7 @@ export const SettingsPage: React.FC = () => {
                 <ShieldCheck className="w-4 h-4 text-emerald-700" /> Preferences saved!
               </span>
             ) : (
-              <span className="text-xs text-slate-600 font-medium">Persisted safely to browser localStorage</span>
+              <span className="text-xs text-[#1e3f2b] font-medium">Persisted safely to browser localStorage</span>
             )}
 
             <Button type="submit" variant="primary" icon={<Save className="w-4 h-4" />}>
@@ -77,6 +138,115 @@ export const SettingsPage: React.FC = () => {
           </div>
         </Card>
       </form>
+
+      {/* Browser Notifications Settings Card */}
+      <Card variant="glass-strong" className="space-y-4">
+        <div className="flex items-start justify-between gap-3">
+          <div className="space-y-1">
+            <div className="flex items-center gap-2">
+              <h3 className="text-sm font-bold text-[#14301f] flex items-center gap-2">
+                <Bell className="w-4 h-4 text-emerald-800" /> Browser Notifications
+              </h3>
+              <Badge
+                variant={
+                  permissionState === 'granted'
+                    ? 'emerald'
+                    : permissionState === 'denied'
+                    ? 'rose'
+                    : 'amber'
+                }
+                size="sm"
+              >
+                {permissionState}
+              </Badge>
+            </div>
+            <p className="text-xs text-[#183624] font-medium leading-relaxed">
+              In-app toast alerts are always active. You can also permit native desktop/browser notifications when reminders come due.
+            </p>
+          </div>
+        </div>
+
+        {/* State-specific UI controls */}
+        {permissionState === 'unsupported' && (
+          <div className="p-3 rounded-xl bg-amber-50/70 border border-amber-900/15 text-xs text-amber-950 font-medium">
+            This browser does not support the Web Notifications API. EcoPulse will rely exclusively on in-app toast alerts.
+          </div>
+        )}
+
+        {permissionState === 'not asked yet' && (
+          <div className="flex items-center justify-between p-3.5 rounded-xl bg-white/70 border border-emerald-900/15">
+            <div>
+              <p className="text-xs font-bold text-[#14301f]">Notification permission not requested</p>
+              <p className="text-[11px] text-[#1e3f2b]">Click to request permission from your browser.</p>
+            </div>
+            <Button
+              type="button"
+              variant="primary"
+              size="sm"
+              icon={<BellRing className="w-3.5 h-3.5" />}
+              onClick={handleRequestPermission}
+            >
+              Enable Notifications
+            </Button>
+          </div>
+        )}
+
+        {permissionState === 'granted' && (
+          <div className="space-y-3">
+            <div className="flex items-center justify-between p-3.5 rounded-xl bg-emerald-50/80 border border-emerald-900/15">
+              <div className="flex items-center gap-2.5">
+                <ShieldCheck className="w-4 h-4 text-emerald-700 shrink-0" />
+                <div>
+                  <p className="text-xs font-bold text-emerald-950">Permission Granted</p>
+                  <p className="text-[11px] text-[#1e3f2b]">Native system alerts will fire alongside in-app toasts.</p>
+                </div>
+              </div>
+              <div className="flex items-center gap-2">
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  onClick={handleSendTestNotification}
+                >
+                  Send Test Alert
+                </Button>
+                <input
+                  id="notifications-toggle"
+                  type="checkbox"
+                  checked={state.settings.notificationsEnabled}
+                  onChange={(e) => updateSettings({ notificationsEnabled: e.target.checked })}
+                  className="w-4 h-4 rounded text-emerald-700 focus:ring-emerald-600 border-slate-300 cursor-pointer ml-1"
+                />
+              </div>
+            </div>
+            {testAlertSent && (
+              <p className="text-xs text-emerald-800 font-bold flex items-center gap-1">
+                <ShieldCheck className="w-3.5 h-3.5 text-emerald-700" /> Test alert sent! Check your system notification banner.
+              </p>
+            )}
+          </div>
+        )}
+
+        {permissionState === 'denied' && (
+          <div className="p-3.5 rounded-xl bg-rose-50/80 border border-rose-900/15 space-y-2">
+            <div className="flex items-center gap-2 text-rose-950 font-bold text-xs">
+              <BellOff className="w-4 h-4 text-rose-700 shrink-0" />
+              Notifications Blocked in Browser
+            </div>
+            <p className="text-xs text-rose-900 leading-relaxed font-medium">
+              Notifications were blocked in your browser site settings. To re-enable them: click the padlock or site settings icon in your browser's address bar next to the URL, and change Notifications to <strong>Allow</strong>.
+            </p>
+          </div>
+        )}
+
+        {/* Honest Note Requirement */}
+        <div className="p-3 rounded-xl bg-white/60 border border-emerald-900/10 flex items-start gap-2.5 text-xs text-[#1e3f2b] leading-relaxed">
+          <Info className="w-4 h-4 text-emerald-800 shrink-0 mt-0.5" />
+          <p>
+            <strong>Honest note:</strong> Alerts only fire while EcoPulse is open in a browser tab. Closed tabs and sleeping devices can't be notified. Missed reminders show as Overdue when you return.
+          </p>
+        </div>
+      </Card>
 
       {/* Data Management & Reset Section */}
       <Card variant="glass" className="border-rose-400/50 bg-rose-50/60">

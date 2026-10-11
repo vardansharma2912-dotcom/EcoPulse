@@ -1,5 +1,5 @@
 import React from 'react'
-import leafBgImg from '../../assets/leaf-bg.png'
+import leafBgImg from '../../assets/leaf-bg.webp'
 
 /**
  * LeafBackground
