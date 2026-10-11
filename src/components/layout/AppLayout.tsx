@@ -110,11 +110,11 @@ export const AppLayout: React.FC = () => {
       />
 
       {/* Desktop Floating Glass Sidebar (lg+) */}
-      <aside className="hidden lg:flex w-64 flex-col justify-between m-4 glass-panel rounded-2xl p-5 shrink-0 sticky top-4 h-[calc(100vh-2rem)] z-30 overflow-y-auto">
+      <aside className="hidden lg:flex w-64 flex-col justify-between m-4 glass-panel rounded-2xl p-4 xl:p-5 shrink-0 sticky top-4 h-[calc(100vh-2rem)] z-30 overflow-hidden scrollbar-none">
         <div>
           {/* Logo & Project Banner */}
-          <div className="flex items-center gap-3 px-2 py-2 mb-6">
-            <div className="w-10 h-10 rounded-xl bg-emerald-700 text-white flex items-center justify-center shadow-sm shadow-emerald-950/15">
+          <div className="flex items-center gap-3 px-2 py-1 mb-4 xl:mb-5">
+            <div className="w-9 h-9 rounded-xl bg-emerald-700 text-white flex items-center justify-center shadow-sm shadow-emerald-950/15">
               <Leaf className="w-5 h-5" />
             </div>
             <div>
@@ -126,7 +126,7 @@ export const AppLayout: React.FC = () => {
           </div>
 
           {/* Navigation Links with Shared Sliding Pill & 3px Indicator */}
-          <nav className="space-y-1.5" aria-label="Main Navigation">
+          <nav className="space-y-1 xl:space-y-1.5" aria-label="Main Navigation">
             {navItems.map((item) => {
               const Icon = item.icon
               const isActive =
@@ -139,7 +139,7 @@ export const AppLayout: React.FC = () => {
                   key={item.to}
                   to={item.to}
                   end={item.to === '/'}
-                  className={`relative flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-semibold transition-colors ${
+                  className={`relative flex items-center gap-3 px-3.5 py-2 xl:py-2.5 rounded-xl text-sm font-semibold transition-colors ${
                     isActive ? 'text-white' : 'text-slate-700 hover:text-[#14301f] hover:bg-white/60'
                   }`}
                 >

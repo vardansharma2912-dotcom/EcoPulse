@@ -45,7 +45,7 @@ export const SidebarTipCard: React.FC<{ className?: string }> = ({ className = '
     <div
       onMouseEnter={() => setIsPaused(true)}
       onMouseLeave={() => setIsPaused(false)}
-      className={`relative overflow-hidden rounded-2xl bg-[#0a381e] text-white p-4 shadow-md border border-emerald-500/20 select-none ${className}`}
+      className={`relative overflow-hidden rounded-2xl bg-[#0a381e] text-white p-3.5 xl:p-4 shadow-md border border-emerald-500/20 select-none ${className}`}
     >
       {/* Original Topographic Contour-Line SVG Background */}
       <svg
