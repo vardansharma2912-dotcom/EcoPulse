@@ -20,8 +20,8 @@ export const EmptyState: React.FC<EmptyStateProps> = ({
           {icon}
         </div>
       )}
-      <h3 className="text-base font-semibold text-[#14301f] mb-1">{title}</h3>
-      <p className="text-sm text-slate-700 max-w-sm mb-5 leading-relaxed font-normal">{description}</p>
+      <h3 className="text-base font-bold text-[#0f2418] mb-1">{title}</h3>
+      <p className="text-sm text-[#183624] max-w-sm mb-5 leading-relaxed font-medium">{description}</p>
       {action && <div>{action}</div>}
     </div>
   )

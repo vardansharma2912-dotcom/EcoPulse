@@ -85,7 +85,7 @@ export const SettingsPage: React.FC = () => {
             <h3 className="text-sm font-bold text-rose-950 flex items-center gap-2">
               <AlertTriangle className="w-4 h-4 text-rose-700" /> Reset Application Data
             </h3>
-            <p className="text-xs text-slate-700 mt-1 max-w-md font-medium leading-relaxed">
+            <p className="text-xs text-[#183624] mt-1 max-w-md font-semibold leading-relaxed">
               Restores the default starter reminders, clears completion logs, and resets settings back to default.
             </p>
           </div>
@@ -109,7 +109,7 @@ export const SettingsPage: React.FC = () => {
         description="Are you sure you want to reset all EcoPulse data?"
       >
         <div className="space-y-4">
-          <p className="text-sm text-slate-700 leading-relaxed font-normal">
+          <p className="text-sm text-[#183624] leading-relaxed font-medium">
             This will permanently remove all logged completions and custom modifications, restoring the 6 default starter reminders. This action cannot be undone.
           </p>
           <div className="flex items-center justify-end gap-3 pt-4 border-t border-emerald-950/10">

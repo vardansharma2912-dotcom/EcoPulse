@@ -58,13 +58,13 @@ export const RemindersPage: React.FC = () => {
                     <h3 className="font-bold text-sm text-[#14301f]">
                       {reminder.title}
                     </h3>
-                    <div className="flex items-center gap-3 text-xs text-slate-600 font-medium">
+                    <div className="flex items-center gap-3 text-xs text-[#183a26] font-semibold">
                       <span className="flex items-center gap-1">
                         <Clock className="w-3.5 h-3.5 text-emerald-800" />
                         {reminder.time} ({reminder.recurrence})
                       </span>
                       {reminder.applianceWatts && (
-                        <span className="flex items-center gap-1 font-mono font-semibold text-emerald-900">
+                        <span className="flex items-center gap-1 font-mono font-bold text-emerald-950">
                           <Zap className="w-3.5 h-3.5 text-emerald-700" />
                           {reminder.applianceWatts}W
                         </span>
@@ -77,7 +77,7 @@ export const RemindersPage: React.FC = () => {
                 </div>
 
                 <div className="flex items-center justify-between pt-3.5 border-t border-emerald-950/10 text-xs">
-                  <span className="text-slate-600 font-medium">
+                  <span className="text-[#183a26] font-semibold">
                     Est. {reminder.avoidedHours ?? 1}h avoided/action
                   </span>
 

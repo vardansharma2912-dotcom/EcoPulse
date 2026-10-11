@@ -14,7 +14,7 @@ export const AnalyticsPage: React.FC = () => {
       <EmptyState
         icon={<BarChart3 className="w-6 h-6 text-emerald-800" />}
         title="No Conservation History Logged"
-        description="Analytics charts and energy trend graphs will generate automatically once verified actions are completed over consecutive days. Strictly no simulated or fake history is displayed."
+        description="Analytics charts and energy trend graphs will generate automatically once reminders are completed over consecutive days. Strictly no simulated or fake history is displayed."
       />
     </div>
   )
