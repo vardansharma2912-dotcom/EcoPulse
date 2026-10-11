@@ -191,13 +191,8 @@ export const AppLayout: React.FC = () => {
         </div>
 
         {/* Sidebar Footer with Animated Tip Card */}
-        <div className="space-y-3 pt-4">
+        <div className="pt-4">
           <SidebarTipCard />
-
-          <div className="p-3.5 rounded-xl glass-card text-[11px] space-y-1 border border-white/70">
-            <p className="font-bold text-[#0f2418]">CHE110 Environmental Studies</p>
-            <p className="text-[#183624] font-semibold">Assignment Due: 20 Oct 2026</p>
-          </div>
         </div>
       </aside>
 
