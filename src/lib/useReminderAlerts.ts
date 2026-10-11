@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback, useRef } from 'react'
 import { useAppState } from '../state'
 import { dueAlerts, getAlertKey } from './alerts'
 import { todayKey } from './dates'
+import { sendBrowserNotification } from './notifications'
 import type { Reminder } from '../types'
 
 const ALERTED_KEYS_STORAGE = 'ecopulse_alerted_keys_v1'
@@ -26,9 +27,21 @@ function saveAlertedKeys(keys: Set<string>): void {
 }
 
 export function useReminderAlerts() {
-  const { state, completeReminder, snoozeReminder } = useAppState()
+  const { state, completeReminder, snoozeReminder, updateSettings } = useAppState()
   const [activeAlerts, setActiveAlerts] = useState<Reminder[]>([])
   const alertedKeysRef = useRef<Set<string>>(loadAlertedKeys())
+
+  // Auto-sync notificationsEnabled if browser permission was granted directly in the browser
+  useEffect(() => {
+    if (
+      typeof window !== 'undefined' &&
+      'Notification' in window &&
+      Notification.permission === 'granted' &&
+      state.settings.notificationsEnabled === false
+    ) {
+      updateSettings({ notificationsEnabled: true })
+    }
+  }, [state.settings.notificationsEnabled, updateSettings])
 
   // Fire native browser notification if granted and enabled
   const triggerBrowserNotification = useCallback((reminder: Reminder) => {
@@ -36,20 +49,19 @@ export function useReminderAlerts() {
       typeof window !== 'undefined' &&
       'Notification' in window &&
       Notification.permission === 'granted' &&
-      state.settings.notificationsEnabled
+      state.settings.notificationsEnabled !== false
     ) {
-      try {
-        const notif = new Notification(reminder.title, {
-          body: `Scheduled for ${reminder.time}. Remember to turn off or unplug your appliance!`,
-          icon: '/favicon.svg',
-        })
-        notif.onclick = () => {
-          window.focus()
-          notif.close()
-        }
-      } catch (err) {
-        console.warn('[EcoPulse] Failed to fire browser notification:', err)
-      }
+      sendBrowserNotification(reminder.title, {
+        body: `Scheduled for ${reminder.time}. Remember to turn off or unplug your appliance!`,
+        tag: `ecopulse-reminder-${reminder.id}`,
+        onClick: () => {
+          try {
+            window.focus()
+          } catch {
+            // Ignore focus error
+          }
+        },
+      })
     }
   }, [state.settings.notificationsEnabled])
 

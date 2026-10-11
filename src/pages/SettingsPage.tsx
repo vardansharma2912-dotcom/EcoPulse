@@ -8,6 +8,7 @@ import { Badge } from '../components/ui/Badge'
 import { useAppState } from '../state'
 import { ALERTED_KEYS_STORAGE_KEY } from '../lib/storage'
 import { hasDemoCompletions } from '../lib/sampleData'
+import { sendBrowserNotification } from '../lib/notifications'
 import {
   Save,
   RotateCcw,
@@ -20,6 +21,8 @@ import {
   Calculator,
   Sparkles,
   Trash2,
+  CheckCircle2,
+  XCircle,
 } from 'lucide-react'
 
 type PermissionState = 'unsupported' | 'not asked yet' | 'granted' | 'denied'
@@ -34,6 +37,7 @@ export const SettingsPage: React.FC = () => {
   const [resetDialogOpen, setResetDialogOpen] = useState(false)
   const [resetConfirmInput, setResetConfirmInput] = useState('')
   const [testAlertSent, setTestAlertSent] = useState(false)
+  const [testFeedback, setTestFeedback] = useState<{ type: 'success' | 'error'; message: string } | null>(null)
 
   const isDemoActive = hasDemoCompletions(state.completions)
 
@@ -54,9 +58,17 @@ export const SettingsPage: React.FC = () => {
         if (result === 'granted') {
           setPermissionState('granted')
           updateSettings({ notificationsEnabled: true })
+          setTestFeedback({
+            type: 'success',
+            message: 'Permission granted! Desktop notifications are now enabled in EcoPulse.',
+          })
         } else if (result === 'denied') {
           setPermissionState('denied')
           updateSettings({ notificationsEnabled: false })
+          setTestFeedback({
+            type: 'error',
+            message: 'Notifications were blocked in your browser. Re-enable them in browser site settings.',
+          })
         } else {
           setPermissionState('not asked yet')
         }
@@ -66,22 +78,69 @@ export const SettingsPage: React.FC = () => {
     }
   }
 
-  const handleSendTestNotification = () => {
-    if (typeof window !== 'undefined' && 'Notification' in window && Notification.permission === 'granted') {
+  const handleSendTestNotification = async () => {
+    if (typeof window === 'undefined' || !('Notification' in window)) {
+      setTestFeedback({
+        type: 'error',
+        message: 'Desktop notifications are not supported in this browser.',
+      })
+      return
+    }
+
+    let currentPerm = Notification.permission
+    if (currentPerm === 'default') {
       try {
-        const notif = new Notification('EcoPulse Test Alert', {
-          body: 'Browser notifications are configured and working properly!',
-          icon: '/favicon.svg',
-        })
-        notif.onclick = () => {
-          window.focus()
-          notif.close()
+        currentPerm = await Notification.requestPermission()
+        setPermissionState(currentPerm === 'granted' ? 'granted' : currentPerm === 'denied' ? 'denied' : 'not asked yet')
+        if (currentPerm === 'granted') {
+          updateSettings({ notificationsEnabled: true })
         }
-        setTestAlertSent(true)
-        setTimeout(() => setTestAlertSent(false), 4000)
       } catch (err) {
-        console.warn('[EcoPulse] Test notification failed:', err)
+        console.warn('[EcoPulse] Permission request failed:', err)
       }
+    }
+
+    if (currentPerm !== 'granted') {
+      setTestFeedback({
+        type: 'error',
+        message: 'Notification permission is currently blocked or not granted.',
+      })
+      return
+    }
+
+    // Ensure setting is active
+    if (!state.settings.notificationsEnabled) {
+      updateSettings({ notificationsEnabled: true })
+    }
+
+    const res = sendBrowserNotification('EcoPulse Desktop Alert Test', {
+      body: 'Notifications are working! Your energy-saving reminders will pop up at their scheduled times.',
+    })
+
+    if (res.success) {
+      setTestAlertSent(true)
+      setTestFeedback({
+        type: 'success',
+        message: 'Desktop notification sent! If a banner didn\'t pop up in the bottom-right corner, check the Windows Notification Center (press Win + N) or verify that Windows "Do Not Disturb" (Focus Assist) is turned off.',
+      })
+      setTimeout(() => setTestAlertSent(false), 5000)
+    } else {
+      setTestFeedback({
+        type: 'error',
+        message: res.error || 'Failed to dispatch desktop notification.',
+      })
+    }
+  }
+
+  const handleClearAlertedKeys = () => {
+    try {
+      localStorage.removeItem(ALERTED_KEYS_STORAGE_KEY)
+      setTestFeedback({
+        type: 'success',
+        message: 'Cleared today\'s reminder alert locks! Reminders scheduled for earlier today can now trigger alerts again.',
+      })
+    } catch (err) {
+      console.warn('[EcoPulse] Failed to clear alert keys:', err)
     }
   }
 
@@ -219,11 +278,11 @@ export const SettingsPage: React.FC = () => {
 
       {/* Browser Notifications Settings Card */}
       <Card variant="glass-strong" className="space-y-4">
-        <div className="flex items-start justify-between gap-3">
+        <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4">
           <div className="space-y-1">
             <div className="flex items-center gap-2">
               <h3 className="text-sm font-bold text-[#14301f] flex items-center gap-2">
-                <Bell className="w-4 h-4 text-emerald-800" /> Browser Notifications
+                <Bell className="w-4 h-4 text-emerald-800" /> Desktop Notifications
               </h3>
               <Badge
                 variant={
@@ -235,28 +294,40 @@ export const SettingsPage: React.FC = () => {
                 }
                 size="sm"
               >
-                {permissionState}
+                {permissionState === 'granted' ? 'Allowed' : permissionState === 'denied' ? 'Blocked' : 'Not Requested'}
               </Badge>
             </div>
             <p className="text-xs text-[#1e3f2b] max-w-md leading-relaxed">
-              When granted, desktop notifications trigger for due reminders alongside the glass banner alert.
+              When permitted, native desktop popups alert you when reminders are due, even if you are browsing another tab or window.
             </p>
           </div>
 
-          <div className="flex items-center gap-2">
+          <div className="flex flex-wrap items-center gap-2">
             {permissionState === 'granted' ? (
-              <Button
-                type="button"
-                variant="outline"
-                size="sm"
-                icon={<BellRing className="w-3.5 h-3.5 text-emerald-800" />}
-                onClick={handleSendTestNotification}
-              >
-                {testAlertSent ? 'Sent!' : 'Send Test Alert'}
-              </Button>
+              <>
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  icon={<BellRing className="w-3.5 h-3.5 text-emerald-800" />}
+                  onClick={handleSendTestNotification}
+                >
+                  {testAlertSent ? 'Alert Sent!' : 'Send Test Alert'}
+                </Button>
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="sm"
+                  icon={<RotateCcw className="w-3.5 h-3.5 text-[#1e3f2b]" />}
+                  onClick={handleClearAlertedKeys}
+                  title="Resets alert memory for today so scheduled reminders can fire again immediately"
+                >
+                  Reset Today's Alert Locks
+                </Button>
+              </>
             ) : permissionState === 'denied' ? (
-              <span className="text-xs text-rose-800 font-semibold flex items-center gap-1">
-                <BellOff className="w-3.5 h-3.5" /> Blocked
+              <span className="text-xs text-rose-800 font-semibold flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-rose-100/50 border border-rose-200">
+                <BellOff className="w-4 h-4 text-rose-700" /> Blocked in Browser
               </span>
             ) : (
               <Button
@@ -266,30 +337,76 @@ export const SettingsPage: React.FC = () => {
                 icon={<Bell className="w-3.5 h-3.5" />}
                 onClick={handleRequestPermission}
               >
-                Enable Notifications
+                Enable Desktop Notifications
               </Button>
             )}
           </div>
         </div>
 
-        {/* Informative Instructions for Denied or Not Asked States */}
-        {permissionState === 'denied' && (
-          <div className="rounded-xl border border-rose-300/40 bg-rose-50/60 p-3 text-xs text-rose-950 space-y-1">
-            <p className="font-bold flex items-center gap-1.5">
-              <BellOff className="w-3.5 h-3.5 text-rose-700" /> Notifications are blocked in your browser
-            </p>
-            <p className="leading-relaxed">
-              To re-enable: click the lock/tune icon in your browser address bar (Site Settings), switch Notifications from "Block" to "Allow", and reload this page.
-            </p>
+        {/* Feedback Banner */}
+        {testFeedback && (
+          <div
+            className={`rounded-xl border p-3.5 text-xs flex items-start gap-2.5 transition-all ${
+              testFeedback.type === 'success'
+                ? 'bg-emerald-50/80 border-emerald-300 text-emerald-950'
+                : 'bg-rose-50/80 border-rose-300 text-rose-950'
+            }`}
+          >
+            {testFeedback.type === 'success' ? (
+              <CheckCircle2 className="w-4 h-4 text-emerald-700 shrink-0 mt-0.5" />
+            ) : (
+              <XCircle className="w-4 h-4 text-rose-700 shrink-0 mt-0.5" />
+            )}
+            <div className="flex-1 leading-relaxed">
+              <span className="font-semibold">
+                {testFeedback.type === 'success' ? 'Status: ' : 'Notification Error: '}
+              </span>
+              {testFeedback.message}
+            </div>
+            <button
+              type="button"
+              onClick={() => setTestFeedback(null)}
+              className="text-stone-500 hover:text-stone-800 font-bold px-1"
+            >
+              ×
+            </button>
           </div>
         )}
 
-        {/* Honest Architecture & Tab Lifecycle Disclaimer */}
-        <div className="rounded-xl border border-emerald-950/10 bg-white/40 p-3 text-xs text-[#14301f] flex items-start gap-2.5">
-          <Info className="w-4 h-4 text-emerald-800 shrink-0 mt-0.5" />
-          <p className="leading-relaxed">
-            <span className="font-bold">Honest note:</span> Alerts only fire while EcoPulse is open in an active browser tab. Closed tabs and sleeping devices can't be notified. Missed reminders show as <span className="font-semibold text-rose-900">Overdue</span> when you return.
-          </p>
+        {/* Denied Instructions */}
+        {permissionState === 'denied' && (
+          <div className="rounded-xl border border-rose-300/60 bg-rose-50/70 p-3.5 text-xs text-rose-950 space-y-1.5">
+            <p className="font-bold flex items-center gap-1.5 text-rose-900">
+              <BellOff className="w-4 h-4 text-rose-700" /> How to re-enable notifications in Chrome / Edge:
+            </p>
+            <ol className="list-decimal pl-5 space-y-1 text-xs text-rose-900 leading-relaxed">
+              <li>Click the <strong>tune / site settings icon (or lock icon)</strong> next to the URL in your browser address bar.</li>
+              <li>Change <strong>Notifications</strong> from <em>Block</em> to <strong>Allow</strong>.</li>
+              <li>Refresh the page and click <em>Send Test Alert</em> above.</li>
+            </ol>
+          </div>
+        )}
+
+        {/* Windows OS Tips / Troubleshooting */}
+        <div className="rounded-xl border border-emerald-900/10 bg-white/50 p-3.5 text-xs text-[#14301f] space-y-2">
+          <div className="flex items-center gap-2 font-bold text-emerald-950">
+            <Info className="w-4 h-4 text-emerald-800 shrink-0" />
+            <span>Windows & Browser Notification Troubleshooting</span>
+          </div>
+          <ul className="space-y-1.5 pl-6 list-disc text-[11.5px] leading-relaxed text-[#1b3b26]">
+            <li>
+              <strong>Windows Action Center:</strong> If you don't see a popup banner, open the Windows Notification Tray by pressing <kbd className="px-1.5 py-0.5 text-[10px] font-mono bg-white/80 border border-stone-300 rounded shadow-sm">Win + N</kbd>. The notification may be waiting there.
+            </li>
+            <li>
+              <strong>Windows "Do Not Disturb" / Focus Assist:</strong> If Windows DND is active (the bell or moon icon in the bottom-right taskbar), Windows silences banner popups and sends them directly to the Action Center.
+            </li>
+            <li>
+              <strong>Windows System Settings:</strong> Check <em>Windows Settings → System → Notifications</em> and ensure Google Chrome or Microsoft Edge is allowed to display banners.
+            </li>
+            <li>
+              <strong>Active Tab Lifecycle:</strong> Browser security requires EcoPulse to remain open in a tab (it can be in the background) for reminders to trigger.
+            </li>
+          </ul>
         </div>
       </Card>
 
