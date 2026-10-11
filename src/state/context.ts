@@ -11,7 +11,7 @@ export interface AppContextValue {
   toggleActive: (id: string) => void
   completeReminder: (reminderId: string, date?: string) => void
   undoCompletion: (reminderId: string, date?: string) => void
-  snoozeReminder: (id: string, minutes: number) => void
+  snoozeReminder: (id: string, options: { minutes?: number; until?: string } | number) => void
   updateSettings: (settings: Partial<Settings>) => void
   resetData: () => void
 }

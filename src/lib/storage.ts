@@ -1,7 +1,8 @@
-import type { AppState, Reminder, Settings } from '../types'
+import type { AppState, Completion, Reminder, Settings } from '../types'
 
-export const STORAGE_KEY = 'ecopulse_app_state_v1'
-export const CURRENT_VERSION = 1
+export const STORAGE_KEY = 'ecopulse_app_state_v2'
+export const PREVIOUS_STORAGE_KEY = 'ecopulse_app_state_v1'
+export const CURRENT_VERSION = 2
 
 export const DEFAULT_SETTINGS: Settings = {
   displayName: 'College Student',
@@ -35,7 +36,7 @@ export const INITIAL_REMINDERS: Reminder[] = [
   {
     id: 'rem-3',
     title: 'Unplug phone & device chargers from wall socket',
-    category: 'standby',
+    category: 'chargers',
     time: '08:00',
     recurrence: 'daily',
     applianceWatts: 10,
@@ -68,7 +69,7 @@ export const INITIAL_REMINDERS: Reminder[] = [
   {
     id: 'rem-6',
     title: 'Check and turn off shared floor / lab corridor lights',
-    category: 'lighting',
+    category: 'shared',
     time: '21:30',
     recurrence: 'daily',
     applianceWatts: 60,
@@ -103,12 +104,50 @@ function isValidState(data: unknown): data is AppState {
 }
 
 /**
- * Loads state from localStorage with version validation, error catching,
+ * Migrates completions from older formats (e.g. missing title).
+ */
+export function migrateCompletions(
+  completions: Partial<Completion>[],
+  reminders: Reminder[]
+): Completion[] {
+  const reminderMap = new Map<string, string>()
+  for (const r of reminders) {
+    reminderMap.set(r.id, r.title)
+  }
+
+  return completions.map((c) => {
+    const title = c.title || (c.reminderId ? reminderMap.get(c.reminderId) : undefined) || 'Deleted reminder'
+    return {
+      id: c.id || `comp-${Date.now()}-${Math.random().toString(36).substring(2, 6)}`,
+      reminderId: c.reminderId || 'unknown',
+      title,
+      date: c.date || new Date().toISOString().split('T')[0],
+      completedAt: c.completedAt || new Date().toISOString(),
+      kWh: typeof c.kWh === 'number' && !isNaN(c.kWh) ? c.kWh : 0,
+      costSaved: typeof c.costSaved === 'number' && !isNaN(c.costSaved) ? c.costSaved : 0,
+      tariffAtTime: typeof c.tariffAtTime === 'number' && !isNaN(c.tariffAtTime) ? c.tariffAtTime : 8,
+    }
+  })
+}
+
+/**
+ * Loads state from localStorage with version migration, error catching,
  * and graceful fallback to initial seeded state.
  */
 export function loadState(): AppState {
   try {
-    const raw = localStorage.getItem(STORAGE_KEY)
+    let raw = localStorage.getItem(STORAGE_KEY)
+    let isMigration = false
+
+    // Check previous version if v2 is not yet initialized
+    if (!raw) {
+      const v1Raw = localStorage.getItem(PREVIOUS_STORAGE_KEY)
+      if (v1Raw) {
+        raw = v1Raw
+        isMigration = true
+      }
+    }
+
     if (!raw) {
       const initial = getDefaultState()
       saveState(initial)
@@ -117,7 +156,17 @@ export function loadState(): AppState {
 
     const parsed = JSON.parse(raw)
     if (isValidState(parsed)) {
-      return parsed
+      // Ensure all completions have title snapshot
+      const migratedCompletions = migrateCompletions(parsed.completions, parsed.reminders)
+      const stateToUse: AppState = {
+        ...parsed,
+        completions: migratedCompletions,
+      }
+
+      if (isMigration) {
+        saveState(stateToUse)
+      }
+      return stateToUse
     } else {
       console.warn('[EcoPulse] Stored data invalid. Falling back to default state.')
       const fallback = getDefaultState()
@@ -153,6 +202,7 @@ export function saveState(state: AppState): boolean {
 export function clearState(): void {
   try {
     localStorage.removeItem(STORAGE_KEY)
+    localStorage.removeItem(PREVIOUS_STORAGE_KEY)
   } catch (err) {
     console.error('[EcoPulse] Failed to clear localStorage:', err)
   }

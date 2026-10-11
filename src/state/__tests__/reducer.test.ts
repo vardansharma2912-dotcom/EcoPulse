@@ -37,7 +37,7 @@ const mockInitialState: AppState = {
 }
 
 describe('reducer.ts - Completion Deduplication and Undo', () => {
-  it('adds a completion when completed for the first time today', () => {
+  it('adds a completion with snapshot title when completed for the first time today', () => {
     const nextState = appReducer(mockInitialState, {
       type: 'COMPLETE_REMINDER',
       payload: { reminderId: 'test-rem-1', date: '2026-10-11' },
@@ -46,6 +46,7 @@ describe('reducer.ts - Completion Deduplication and Undo', () => {
     expect(nextState.completions.length).toBe(1)
     const comp = nextState.completions[0]
     expect(comp.reminderId).toBe('test-rem-1')
+    expect(comp.title).toBe('Turn off lights') // Snapshot title
     expect(comp.date).toBe('2026-10-11')
     // 40W * 2 hours / 1000 = 0.08 kWh
     expect(comp.kWh).toBe(0.08)
@@ -113,6 +114,33 @@ describe('reducer.ts - Completion Deduplication and Undo', () => {
     })
 
     expect(undoneState.completions.length).toBe(0)
+  })
+
+  it('DELETE KEEPS HISTORY: deleting a reminder removes reminder but retains completion history', () => {
+    // 1. Complete test-rem-1
+    const completedState = appReducer(mockInitialState, {
+      type: 'COMPLETE_REMINDER',
+      payload: { reminderId: 'test-rem-1', date: '2026-10-11' },
+    })
+    expect(completedState.completions.length).toBe(1)
+    expect(completedState.completions[0].title).toBe('Turn off lights')
+
+    // 2. Delete test-rem-1
+    const afterDeleteState = appReducer(completedState, {
+      type: 'DELETE_REMINDER',
+      payload: { id: 'test-rem-1' },
+    })
+
+    // Reminder was deleted from reminders list
+    expect(afterDeleteState.reminders.some((r) => r.id === 'test-rem-1')).toBe(false)
+    expect(afterDeleteState.reminders.length).toBe(1)
+
+    // Completions and history are PRESERVED with their snapshot title!
+    expect(afterDeleteState.completions.length).toBe(1)
+    expect(afterDeleteState.completions[0].reminderId).toBe('test-rem-1')
+    expect(afterDeleteState.completions[0].title).toBe('Turn off lights')
+    expect(afterDeleteState.completions[0].kWh).toBe(0.08)
+    expect(afterDeleteState.completions[0].costSaved).toBe(0.64)
   })
 
   it('handles add, edit, and delete reminder', () => {

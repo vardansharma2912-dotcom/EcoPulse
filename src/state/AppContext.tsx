@@ -38,8 +38,12 @@ export const AppStateProvider: React.FC<{ children: React.ReactNode }> = ({ chil
     dispatch({ type: 'UNDO_COMPLETION', payload: { reminderId, date } })
   }
 
-  const snoozeReminder = (id: string, minutes: number) => {
-    dispatch({ type: 'SNOOZE_REMINDER', payload: { id, minutes } })
+  const snoozeReminder = (id: string, options: { minutes?: number; until?: string } | number) => {
+    if (typeof options === 'number') {
+      dispatch({ type: 'SNOOZE_REMINDER', payload: { id, minutes: options } })
+    } else {
+      dispatch({ type: 'SNOOZE_REMINDER', payload: { id, ...options } })
+    }
   }
 
   const updateSettings = (settings: Partial<Settings>) => {

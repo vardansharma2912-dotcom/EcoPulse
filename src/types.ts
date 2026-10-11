@@ -3,16 +3,18 @@ export type RecurrenceType = 'once' | 'daily' | 'weekdays' | 'weekly'
 export type ReminderCategory = 
   | 'lighting' 
   | 'cooling' 
+  | 'chargers'
   | 'computing' 
   | 'appliances' 
   | 'standby' 
+  | 'shared'
   | 'other'
 
 export interface Reminder {
   id: string
   title: string
   category: ReminderCategory
-  time: string // Format "HH:mm"
+  time: string // Format "HH:mm" (24-hour)
   recurrence: RecurrenceType
   days?: number[] // 0 = Sunday, 1 = Monday, ..., 6 = Saturday (for weekly recurrence)
   applianceWatts?: number // Rated watts of the appliance
@@ -25,6 +27,7 @@ export interface Reminder {
 export interface Completion {
   id: string
   reminderId: string
+  title: string // Snapshot of the reminder title at completion time
   date: string // Local date "YYYY-MM-DD"
   completedAt: string // ISO timestamp
   kWh: number

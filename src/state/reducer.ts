@@ -10,7 +10,7 @@ export type AppAction =
   | { type: 'TOGGLE_ACTIVE'; payload: { id: string } }
   | { type: 'COMPLETE_REMINDER'; payload: { reminderId: string; date?: string; completedAt?: string } }
   | { type: 'UNDO_COMPLETION'; payload: { reminderId: string; date?: string } }
-  | { type: 'SNOOZE_REMINDER'; payload: { id: string; minutes: number } }
+  | { type: 'SNOOZE_REMINDER'; payload: { id: string; minutes?: number; until?: string } }
   | { type: 'UPDATE_SETTINGS'; payload: Partial<Settings> }
   | { type: 'RESET_DATA' }
 
@@ -41,8 +41,7 @@ export function appReducer(state: AppState, action: AppAction): AppState {
       return {
         ...state,
         reminders: state.reminders.filter((r) => r.id !== action.payload.id),
-        // Also remove associated completions for integrity
-        completions: state.completions.filter((c) => c.reminderId !== action.payload.id),
+        // History survives deleting a reminder: past completions and stats are strictly preserved
       }
     }
 
@@ -72,10 +71,12 @@ export function appReducer(state: AppState, action: AppAction): AppState {
       const tariff = state.settings.tariffPerKwh
       const kwh = calculateKwh(watts, hours)
       const costSaved = calculateCost(kwh, tariff)
+      const title = reminder?.title || 'Completed action'
 
       const newCompletion: Completion = {
         id: `comp-${Date.now()}-${Math.random().toString(36).substring(2, 7)}`,
         reminderId: action.payload.reminderId,
+        title,
         date: targetDate,
         completedAt: action.payload.completedAt || new Date().toISOString(),
         kWh: kwh,
@@ -100,7 +101,9 @@ export function appReducer(state: AppState, action: AppAction): AppState {
     }
 
     case 'SNOOZE_REMINDER': {
-      const snoozedUntil = new Date(Date.now() + action.payload.minutes * 60000).toISOString()
+      const snoozedUntil =
+        action.payload.until ||
+        new Date(Date.now() + (action.payload.minutes || 15) * 60000).toISOString()
       return {
         ...state,
         reminders: state.reminders.map((r) =>
