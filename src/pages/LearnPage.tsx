@@ -175,9 +175,7 @@ const CARDS: HabitCard[] = [
 
 export const LearnPage: React.FC = () => {
   const [currentIndex, setCurrentIndex] = useState(0)
-  const [isPlaying, setIsPlaying] = useState(false) // Autoplay is OFF by default
-  const [isHovered, setIsHovered] = useState(false)
-  const [isFocused, setIsFocused] = useState(false)
+  const [isPlaying, setIsPlaying] = useState(true) // By default set to play (auto move to next slide)
   const [expandedCard, setExpandedCard] = useState<HabitCard | null>(null)
   const [prefersReducedMotion, setPrefersReducedMotion] = useState<boolean>(() => {
     if (typeof window !== 'undefined' && 'matchMedia' in window) {
@@ -222,16 +220,16 @@ export const LearnPage: React.FC = () => {
     setCurrentIndex((prev) => (prev - 1 + totalCards) % totalCards)
   }, [totalCards])
 
-  // Autoplay timer: pauses on hover and focus
+  // Autoplay timer: auto-advances to next slide every 4 seconds when isPlaying is true
   useEffect(() => {
-    if (!isPlaying || isHovered || isFocused) return
+    if (!isPlaying || Boolean(expandedCard)) return
 
     const timer = setInterval(() => {
       nextSlide()
-    }, 4500)
+    }, 4000)
 
     return () => clearInterval(timer)
-  }, [isPlaying, isHovered, isFocused, nextSlide])
+  }, [isPlaying, expandedCard, nextSlide])
 
   // Keyboard navigation (ArrowLeft & ArrowRight)
   const handleKeyDown = (e: React.KeyboardEvent) => {
@@ -294,10 +292,6 @@ export const LearnPage: React.FC = () => {
         aria-label="Energy Conservation Habits Carousel"
         tabIndex={0}
         onKeyDown={handleKeyDown}
-        onMouseEnter={() => setIsHovered(true)}
-        onMouseLeave={() => setIsHovered(false)}
-        onFocus={() => setIsFocused(true)}
-        onBlur={() => setIsFocused(false)}
         onTouchStart={handleTouchStart}
         onTouchEnd={handleTouchEnd}
         className="relative py-4 select-none focus:outline-none focus-visible:ring-2 focus-visible:ring-emerald-700/40 rounded-3xl"
@@ -498,45 +492,55 @@ export const LearnPage: React.FC = () => {
 
         {/* Glass Control Pill Below Carousel */}
         <div className="mt-4 flex flex-col items-center gap-3">
-          <div className="inline-flex items-center gap-2 sm:gap-3 rounded-full bg-white/75 backdrop-blur-md border border-white/80 shadow-md px-4 py-1.5 transition-all">
-            <button
-              type="button"
-              onClick={prevSlide}
-              aria-label="Previous habit card"
-              className="flex h-8 w-8 items-center justify-center rounded-full text-emerald-900 transition-colors hover:bg-emerald-800/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-700 cursor-pointer"
-            >
-              <ChevronLeft className="h-4 w-4" />
-            </button>
+          <div className="flex w-[440px] max-w-[calc(100vw-32px)] items-center justify-between rounded-full bg-white/80 backdrop-blur-md border border-white/80 shadow-md px-3.5 py-1.5 transition-all">
+            {/* Left controls: Prev & Play/Pause */}
+            <div className="flex items-center gap-1 shrink-0">
+              <button
+                type="button"
+                onClick={prevSlide}
+                aria-label="Previous habit card"
+                className="flex h-8 w-8 items-center justify-center rounded-full text-emerald-900 transition-colors hover:bg-emerald-800/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-700 cursor-pointer"
+              >
+                <ChevronLeft className="h-4 w-4" />
+              </button>
 
-            <button
-              type="button"
-              onClick={() => setIsPlaying((p) => !p)}
-              aria-label={isPlaying ? 'Pause slideshow' : 'Play slideshow'}
-              className="flex h-8 w-8 items-center justify-center rounded-full text-emerald-900 transition-colors hover:bg-emerald-800/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-700 cursor-pointer"
-            >
-              {isPlaying ? <Pause className="h-3.5 w-3.5" /> : <Play className="h-3.5 w-3.5" />}
-            </button>
+              <button
+                type="button"
+                onClick={() => setIsPlaying((p) => !p)}
+                aria-label={isPlaying ? 'Pause auto-advance' : 'Play auto-advance'}
+                title={isPlaying ? 'Pause auto-advance' : 'Play auto-advance'}
+                className="flex h-8 w-8 items-center justify-center rounded-full text-emerald-900 transition-colors hover:bg-emerald-800/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-700 cursor-pointer"
+              >
+                {isPlaying ? <Pause className="h-3.5 w-3.5" /> : <Play className="h-3.5 w-3.5" />}
+              </button>
+            </div>
 
-            <div className="h-4 w-px bg-black/10" />
+            <div className="h-4 w-px bg-black/10 shrink-0 mx-1" />
 
-            <span className="text-xs font-bold text-[#0f2819] max-w-[140px] sm:max-w-[180px] truncate">
-              {currentCard.title}
-            </span>
+            {/* Center: Title & Slide Counter with stable spacing */}
+            <div className="flex-1 flex items-center justify-between min-w-0 px-2 gap-2">
+              <span className="text-xs font-bold text-[#0f2819] truncate whitespace-nowrap">
+                {currentCard.title}
+              </span>
 
-            <span className="text-xs font-semibold tabular-nums text-emerald-900">
-              {currentIndex + 1}/{totalCards}
-            </span>
+              <span className="text-xs font-semibold tabular-nums text-emerald-900 shrink-0">
+                {currentIndex + 1}/{totalCards}
+              </span>
+            </div>
 
-            <div className="h-4 w-px bg-black/10" />
+            <div className="h-4 w-px bg-black/10 shrink-0 mx-1" />
 
-            <button
-              type="button"
-              onClick={nextSlide}
-              aria-label="Next habit card"
-              className="flex h-8 w-8 items-center justify-center rounded-full text-emerald-900 transition-colors hover:bg-emerald-800/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-700 cursor-pointer"
-            >
-              <ChevronRight className="h-4 w-4" />
-            </button>
+            {/* Right controls: Next */}
+            <div className="flex items-center shrink-0">
+              <button
+                type="button"
+                onClick={nextSlide}
+                aria-label="Next habit card"
+                className="flex h-8 w-8 items-center justify-center rounded-full text-emerald-900 transition-colors hover:bg-emerald-800/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-700 cursor-pointer"
+              >
+                <ChevronRight className="h-4 w-4" />
+              </button>
+            </div>
           </div>
 
           {/* Navigation Indicator Dots */}
