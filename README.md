@@ -1,4 +1,9 @@
-# EcoPulse — Smart Energy Saving Reminder System
+<div align="center">
+  <img src="docs/logo.png" alt="EcoPulse Logo" width="120" />
+  <h1>EcoPulse</h1>
+  <p><strong>Smart Energy Saving Reminder</strong></p>
+  <p><em>Small reminders, real habits. Track and reduce energy waste without invasive hardware.</em></p>
+</div>
 
 > **Course:** CHE110 — Environmental Studies Group Project  
 > **Target Submission Date:** 20 October 2026  
@@ -173,6 +178,7 @@ EcoPulse/
   - `TODO: List student names, registration numbers, and respective project contributions`
 
 - **Asset & Artwork Credits:**  
+  - Logo: `TODO (author / tool used)`
   - Botanical Watercolor Leaf Artwork: `TODO: Add credit / source reference`
   - Icons: [Lucide Icons](https://lucide.dev)
   - Fonts: Inter Variable by Rasmus Andersson via [@fontsource-variable/inter](https://fontsource.org)

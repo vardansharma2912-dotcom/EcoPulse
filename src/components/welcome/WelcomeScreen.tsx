@@ -1,8 +1,9 @@
 import React, { useState } from 'react'
 import { motion, useReducedMotion } from 'motion/react'
 import type { Variants } from 'motion/react'
-import { Leaf, Bell, Zap, Flame, ShieldCheck } from 'lucide-react'
+import { Bell, Zap, Flame, ShieldCheck } from 'lucide-react'
 import { Button } from '../ui/Button'
+import { Logo } from '../ui/Logo'
 import { useAppState } from '../../state'
 import { setWelcomeHandled } from '../../lib/storage'
 
@@ -96,18 +97,9 @@ export const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ onComplete }) => {
         exit="exit"
         className="glass-strong max-w-[420px] sm:max-w-[440px] w-full p-5 sm:p-6 rounded-3xl shadow-2xl border border-white/70 space-y-4 text-center select-none backdrop-blur-xl bg-white/65"
       >
-        {/* Leaf Logo Mark (gently scales in) */}
-        <motion.div
-          variants={itemVariants}
-          className="w-11 h-11 sm:w-12 sm:h-12 mx-auto rounded-2xl bg-emerald-700 text-white flex items-center justify-center shadow-lg shadow-emerald-950/20"
-        >
-          <motion.div
-            initial={{ scale: isReducedMotion ? 1 : 0.8 }}
-            animate={{ scale: 1 }}
-            transition={{ type: 'spring', stiffness: 350, damping: 22 }}
-          >
-            <Leaf className="w-6 h-6 sm:w-6.5 sm:h-6.5" />
-          </motion.div>
+        {/* EcoPulse Brand Logo (about 80px) */}
+        <motion.div variants={itemVariants} className="flex justify-center">
+          <Logo size={80} />
         </motion.div>
 
         {/* Header & Tagline */}

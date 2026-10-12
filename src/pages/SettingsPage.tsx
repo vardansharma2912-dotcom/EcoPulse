@@ -28,7 +28,9 @@ import {
   Trash2,
   CheckCircle2,
   XCircle,
+  ExternalLink,
 } from 'lucide-react'
+import { Logo } from '../components/ui/Logo'
 
 type PermissionState = 'unsupported' | 'not asked yet' | 'granted' | 'denied'
 
@@ -123,6 +125,8 @@ export const SettingsPage: React.FC = () => {
 
     const res = sendBrowserNotification('EcoPulse Desktop Alert Test', {
       body: 'Notifications are working! Your energy-saving reminders will pop up at their scheduled times.',
+      icon: '/icon-192.png',
+      badge: '/favicon-32.png',
     })
 
     if (res.success) {
@@ -490,6 +494,36 @@ export const SettingsPage: React.FC = () => {
               </Button>
             )}
           </div>
+        </div>
+      </Card>
+    </motion.div>
+
+    {/* About EcoPulse Card */}
+    <motion.div variants={cardVariants}>
+      <Card variant="glass" className="p-5">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div className="flex items-center gap-3.5">
+            <Logo size={42} />
+            <div>
+              <h3 className="text-sm font-bold text-[#0f2819] flex items-center gap-2">
+                EcoPulse
+                <Badge variant="emerald" size="sm">v1.0</Badge>
+              </h3>
+              <p className="text-xs text-[#1e3f2b] font-medium mt-0.5">
+                CHE110 Environmental Studies project
+              </p>
+            </div>
+          </div>
+
+          <a
+            href="https://github.com/vardansharma2912-dotcom/EcoPulse-energy-saver"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-1.5 text-xs font-semibold text-emerald-800 hover:text-emerald-950 transition-colors px-3 py-1.5 rounded-xl border border-emerald-800/20 bg-white/60 hover:bg-white/90 shadow-xs self-start sm:self-auto cursor-pointer"
+          >
+            <ExternalLink className="w-3.5 h-3.5" />
+            <span>GitHub Repository</span>
+          </a>
         </div>
       </Card>
     </motion.div>

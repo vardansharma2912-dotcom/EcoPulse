@@ -66,6 +66,8 @@ export function useReminderAlerts(options: UseReminderAlertsOptions = {}) {
       sendBrowserNotification(reminder.title, {
         body: `Scheduled for ${reminder.time}. Remember to turn off or unplug your appliance!`,
         tag: `ecopulse-reminder-${reminder.id}`,
+        icon: '/icon-192.png',
+        badge: '/favicon-32.png',
         onClick: () => {
           try {
             window.focus()

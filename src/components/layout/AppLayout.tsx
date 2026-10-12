@@ -8,7 +8,6 @@ import {
   BarChart3,
   BookOpen,
   Settings as SettingsIcon,
-  Leaf,
   Search,
 } from 'lucide-react'
 import { LeafBackground } from './LeafBackground'
@@ -24,6 +23,8 @@ import { useAppState } from '../../state'
 import { todayKey } from '../../lib/dates'
 import { isDueOn } from '../../lib/schedule'
 import { CountUp } from '../ui/CountUp'
+import { Logo } from '../ui/Logo'
+import { useDocumentTitle } from '../../lib/useDocumentTitle'
 import { isWelcomeHandled, isTourSeen } from '../../lib/storage'
 import { useTour } from '../../context/useTour'
 
@@ -75,6 +76,9 @@ export const AppLayout: React.FC = () => {
     if (path.startsWith('/settings')) return 'Settings'
     return 'EcoPulse'
   }, [location.pathname])
+
+  // Sync document title with current route ("Dashboard · EcoPulse", etc.)
+  useDocumentTitle(pageTitle)
 
   // User initials for mobile avatar chip
   const userInitial = useMemo(() => {
@@ -143,16 +147,8 @@ export const AppLayout: React.FC = () => {
       <aside className="hidden lg:flex w-64 flex-col justify-between m-4 glass-panel rounded-2xl p-4 xl:p-5 shrink-0 sticky top-4 h-[calc(100vh-2rem)] z-30 overflow-hidden scrollbar-none">
         <div>
           {/* Logo & Project Banner */}
-          <div className="flex items-center gap-3 px-2 py-1 mb-4 xl:mb-5">
-            <div className="w-9 h-9 rounded-xl bg-emerald-700 text-white flex items-center justify-center shadow-sm shadow-emerald-950/15">
-              <Leaf className="w-5 h-5" />
-            </div>
-            <div>
-              <span className="font-bold text-base text-[#14301f] tracking-tight block">
-                EcoPulse
-              </span>
-              <p className="text-[11px] text-[#1e3f2b] font-semibold">Smart Energy Reminder</p>
-            </div>
+          <div className="px-2 py-1 mb-4 xl:mb-5">
+            <Logo size={40} withWordmark />
           </div>
 
           {/* Navigation Links with Shared Sliding Pill & 3px Indicator */}
@@ -232,9 +228,7 @@ export const AppLayout: React.FC = () => {
         <header className="lg:hidden glass-panel border-b border-white/60 px-3.5 py-2.5 flex items-center justify-between sticky top-0 z-30 backdrop-blur-md">
           {/* Left: Logo & Current Page Title */}
           <div className="flex items-center gap-2 min-w-0">
-            <div className="w-7 h-7 rounded-lg bg-emerald-700 text-white flex items-center justify-center shadow-xs shrink-0">
-              <Leaf className="w-3.5 h-3.5" />
-            </div>
+            <Logo size={28} className="shrink-0" />
             <div className="min-w-0">
               <h1 className="font-bold text-sm text-[#14301f] leading-tight truncate">
                 {pageTitle}

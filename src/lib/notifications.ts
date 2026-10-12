@@ -37,6 +37,8 @@ export function sendBrowserNotification(
   options?: {
     body?: string
     tag?: string
+    icon?: string
+    badge?: string
     onClick?: () => void
   }
 ): NotificationResult {
@@ -51,15 +53,16 @@ export function sendBrowserNotification(
     }
   }
 
-  const iconUrl = typeof window !== 'undefined' ? `${window.location.origin}/icon-192.png` : undefined
+  const icon = options?.icon ?? '/icon-192.png'
+  const badge = options?.badge ?? '/favicon-32.png'
   const tag = options?.tag || `ecopulse-${Date.now()}`
 
   try {
     // Primary attempt: using raster PNG icon for Windows / macOS notification centers
     const notif = new window.Notification(title, {
       body: options?.body,
-      icon: iconUrl,
-      badge: iconUrl,
+      icon,
+      badge,
       tag,
       silent: false,
     })

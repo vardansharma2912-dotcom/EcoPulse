@@ -13,6 +13,7 @@ import {
   Plus,
 } from 'lucide-react'
 import { Button } from '../ui/Button'
+import { Logo } from '../ui/Logo'
 
 export interface TourDialogProps {
   open: boolean
@@ -276,10 +277,16 @@ const TourModalContent: React.FC<{ onClose: (action?: 'start' | 'add') => void }
                   <path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12" />
                 </svg>
 
-                {/* Main Large Icon */}
-                <div className="relative z-10 w-14 h-14 rounded-2xl bg-emerald-700 text-white flex items-center justify-center shadow-md shadow-emerald-950/20">
-                  <IconComponent className="w-7 h-7" />
-                </div>
+                {/* Main Illustration Mark */}
+                {currentStep === 0 || isLastStep ? (
+                  <div className="relative z-10 w-16 h-16 rounded-2xl bg-white/90 border border-white/80 flex items-center justify-center shadow-md shadow-emerald-950/10">
+                    <Logo size={48} />
+                  </div>
+                ) : (
+                  <div className="relative z-10 w-14 h-14 rounded-2xl bg-emerald-700 text-white flex items-center justify-center shadow-md shadow-emerald-950/20">
+                    <IconComponent className="w-7 h-7" />
+                  </div>
+                )}
               </div>
 
               {/* Title & Short Lines */}
