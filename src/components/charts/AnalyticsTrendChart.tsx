@@ -71,7 +71,7 @@ export const AnalyticsTrendChart: React.FC<AnalyticsTrendChartProps> = ({
 
   if (distinctDays < 3) {
     return (
-      <div className={`rounded-2xl bg-white/40 border border-white/60 p-8 text-center space-y-2 ${className}`}>
+      <div className={`h-full flex flex-col items-center justify-center rounded-2xl bg-white/40 border border-white/60 p-6 sm:p-8 text-center space-y-2 ${className}`}>
         <div className="w-10 h-10 rounded-full bg-emerald-900/10 flex items-center justify-center text-emerald-800 mx-auto">
           <AlertCircle className="w-5 h-5" />
         </div>
@@ -84,7 +84,7 @@ export const AnalyticsTrendChart: React.FC<AnalyticsTrendChartProps> = ({
   }
 
   return (
-    <div className={`space-y-3 ${className}`}>
+    <div className={`h-full flex flex-col justify-between space-y-3 ${className}`}>
       {/* Header with Legend Top Right */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
         <div className="flex items-center gap-2">

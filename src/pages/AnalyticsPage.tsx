@@ -132,24 +132,25 @@ export const AnalyticsPage: React.FC = () => {
         </motion.div>
       </div>
 
-      {/* Pill Bar Chart (Shared Component replacing Recharts bar chart) */}
-      <motion.div variants={cardVariants}>
-        <Card variant="glass-strong" className="p-5 sm:p-6 space-y-4">
-          <PillBarChart
-            data={weeklyData}
-            metric={chartMetric}
-            onMetricChange={setChartMetric}
-            height={220}
-          />
-        </Card>
-      </motion.div>
+      {/* Side-by-Side Activity & Comparative Trend Charts (2 Columns) */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <motion.div variants={cardVariants} className="h-full">
+          <Card variant="glass-strong" className="p-5 sm:p-6 space-y-4 h-full flex flex-col justify-between">
+            <PillBarChart
+              data={weeklyData}
+              metric={chartMetric}
+              onMetricChange={setChartMetric}
+              height={220}
+            />
+          </Card>
+        </motion.div>
 
-      {/* Multi-Period Comparative Trend Chart (Item 12: Recharts AreaChart with 3+ days guard) */}
-      <motion.div variants={cardVariants}>
-        <Card variant="glass-strong" className="p-5 sm:p-6">
-          <AnalyticsTrendChart completions={state.completions} height={220} />
-        </Card>
-      </motion.div>
+        <motion.div variants={cardVariants} className="h-full">
+          <Card variant="glass-strong" className="p-5 sm:p-6 h-full flex flex-col justify-between">
+            <AnalyticsTrendChart completions={state.completions} height={220} />
+          </Card>
+        </motion.div>
+      </div>
 
       {/* Week-over-Week Comparison */}
       <motion.div variants={cardVariants}>
