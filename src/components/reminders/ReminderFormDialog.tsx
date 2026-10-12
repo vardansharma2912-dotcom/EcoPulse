@@ -86,6 +86,14 @@ const ReminderFormContent: React.FC<FormContentProps> = ({
 
     if (!time || !/^([01]\d|2[0-3]):([0-5]\d)$/.test(time)) {
       newErrors.time = 'Valid time in 24-hour format (HH:mm) is required'
+    } else if (recurrence === 'once') {
+      const [h, m] = time.split(':').map((v) => parseInt(v, 10))
+      const remMinutes = (isNaN(h) ? 0 : h) * 60 + (isNaN(m) ? 0 : m)
+      const now = new Date()
+      const nowMinutes = now.getHours() * 60 + now.getMinutes()
+      if (remMinutes <= nowMinutes) {
+        newErrors.time = 'That time has already passed today. Pick a later time.'
+      }
     }
 
     if (recurrence === 'weekly' && days.length === 0) {
@@ -118,8 +126,26 @@ const ReminderFormContent: React.FC<FormContentProps> = ({
     const parsedHours = hours.trim() !== '' ? parseFloat(hours) : undefined
 
     if (isEditing && initialReminder) {
+      const now = new Date()
+      let updatedCreatedAt = initialReminder.createdAt
+      const [h, m] = time.split(':').map((v) => parseInt(v, 10))
+      const newMinutes = (isNaN(h) ? 0 : h) * 60 + (isNaN(m) ? 0 : m)
+      const nowMinutes = now.getHours() * 60 + now.getMinutes()
+
+      if (recurrence === 'once') {
+        updatedCreatedAt = now.toISOString()
+      } else if (newMinutes >= nowMinutes) {
+        // Editing a reminder to a later time on the same day makes it due today
+        const createdDate = new Date(initialReminder.createdAt)
+        const createdMinutes = createdDate.getHours() * 60 + createdDate.getMinutes()
+        if (newMinutes < createdMinutes) {
+          updatedCreatedAt = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 0, 0, 0, 0).toISOString()
+        }
+      }
+
       onSave({
         ...initialReminder,
+        createdAt: updatedCreatedAt,
         title: title.trim(),
         category,
         time,

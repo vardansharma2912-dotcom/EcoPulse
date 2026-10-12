@@ -1,10 +1,11 @@
 import React from 'react'
 import { motion, type HTMLMotionProps } from 'motion/react'
 
-export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+export interface ButtonProps extends Omit<HTMLMotionProps<'button'>, 'children'> {
   variant?: 'primary' | 'secondary' | 'outline' | 'ghost' | 'danger'
   size?: 'sm' | 'md' | 'lg'
   icon?: React.ReactNode
+  children?: React.ReactNode
 }
 
 export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
@@ -25,8 +26,6 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
       danger: 'bg-rose-700 hover:bg-rose-800 text-white shadow-sm shadow-rose-950/10',
     }
 
-    const motionProps = props as HTMLMotionProps<'button'>
-
     return (
       <motion.button
         ref={ref}
@@ -34,7 +33,7 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
         whileTap={{ scale: disabled ? 1 : 0.97 }}
         transition={{ type: 'spring', stiffness: 500, damping: 30 }}
         className={`${base} ${sizeClasses[size]} ${variantClasses[variant]} ${className}`}
-        {...motionProps}
+        {...props}
       >
         {icon && <span className="shrink-0">{icon}</span>}
         {children}

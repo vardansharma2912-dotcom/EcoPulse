@@ -1,7 +1,10 @@
 import { useState, useEffect, useCallback, useRef } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { useAppState } from '../state'
-import { dueAlerts, getAlertKey } from './alerts'
+import { useToast } from '../context/useToast'
+import { dueAlerts, getAlertKey, getMissedReminders } from './alerts'
 import { todayKey } from './dates'
+import { getLastVisit, setLastVisit } from './storage'
 import { sendBrowserNotification } from './notifications'
 import type { Reminder } from '../types'
 
@@ -26,10 +29,19 @@ function saveAlertedKeys(keys: Set<string>): void {
   }
 }
 
-export function useReminderAlerts() {
+export interface UseReminderAlertsOptions {
+  enabled?: boolean
+}
+
+export function useReminderAlerts(options: UseReminderAlertsOptions = {}) {
+  const { enabled = true } = options
   const { state, completeReminder, snoozeReminder, updateSettings } = useAppState()
+  const { showToast } = useToast()
+  const navigate = useNavigate()
+
   const [activeAlerts, setActiveAlerts] = useState<Reminder[]>([])
   const alertedKeysRef = useRef<Set<string>>(loadAlertedKeys())
+  const hasCheckedMissedOnMountRef = useRef(false)
 
   // Auto-sync notificationsEnabled if browser permission was granted directly in the browser
   useEffect(() => {
@@ -67,6 +79,8 @@ export function useReminderAlerts() {
 
   // Periodic check function
   const checkDueReminders = useCallback(() => {
+    if (!enabled) return
+
     const now = new Date()
     const today = todayKey(now)
     const due = dueAlerts(state.reminders, state.completions, now, alertedKeysRef.current)
@@ -86,16 +100,57 @@ export function useReminderAlerts() {
         return [...prev, ...uniqueIncoming]
       })
     }
-  }, [state.reminders, state.completions, triggerBrowserNotification])
 
-  // Interval check every 30 seconds
+    setLastVisit(now.toISOString())
+  }, [enabled, state.reminders, state.completions, triggerBrowserNotification])
+
+  // Check missed reminders when user returns (first check after enabled, or tab visible)
+  const checkMissedRemindersOnReturn = useCallback(() => {
+    if (!enabled) return
+
+    const now = new Date()
+    const lastVisit = getLastVisit()
+
+    if (!lastVisit) {
+      // First launch ever: never show missed toast
+      setLastVisit(now.toISOString())
+      return
+    }
+
+    const missed = getMissedReminders(state.reminders, state.completions, now, lastVisit)
+    if (missed.length >= 2) {
+      showToast(`You missed ${missed.length} reminders while EcoPulse was closed`, {
+        label: 'View',
+        onClick: () => {
+          navigate('/reminders?filter=overdue')
+        },
+      })
+    }
+
+    setLastVisit(now.toISOString())
+  }, [enabled, state.reminders, state.completions, showToast, navigate])
+
+  // When enabled transitions to true on mount or after welcome+tour, check missed slots & check due reminders
   useEffect(() => {
-    checkDueReminders()
+    if (enabled && !hasCheckedMissedOnMountRef.current) {
+      hasCheckedMissedOnMountRef.current = true
+      checkMissedRemindersOnReturn()
+      checkDueReminders()
+    }
+  }, [enabled, checkMissedRemindersOnReturn, checkDueReminders])
+
+  // Interval check every 30 seconds & visibility listener
+  useEffect(() => {
+    if (!enabled) return
+
     const interval = setInterval(checkDueReminders, 30000)
 
     const handleVisibilityChange = () => {
       if (document.visibilityState === 'visible') {
+        checkMissedRemindersOnReturn()
         checkDueReminders()
+      } else {
+        setLastVisit(new Date().toISOString())
       }
     }
 
@@ -104,8 +159,9 @@ export function useReminderAlerts() {
     return () => {
       clearInterval(interval)
       document.removeEventListener('visibilitychange', handleVisibilityChange)
+      setLastVisit(new Date().toISOString())
     }
-  }, [checkDueReminders])
+  }, [enabled, checkDueReminders, checkMissedRemindersOnReturn])
 
   // Handlers for in-app alert actions
   const dismissAlert = (reminderId: string) => {

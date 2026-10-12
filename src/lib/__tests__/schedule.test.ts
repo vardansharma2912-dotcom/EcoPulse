@@ -24,15 +24,52 @@ describe('schedule.ts - isDueOn', () => {
     expect(isDueOn(baseReminder, '2026-10-12')).toBe(true)
   })
 
-  it('correctly handles "once" recurrence (only due on createdAt date)', () => {
+  it('correctly handles "once" recurrence (only due on createdAt date if scheduled time >= createdAt)', () => {
+    // Created on 2026-10-10 at 10:00 local time, time is 14:00 (later than creation)
+    const createdDate = new Date(2026, 9, 10, 10, 0, 0)
     const onceRem: Reminder = {
       ...baseReminder,
       recurrence: 'once',
-      createdAt: '2026-10-10T08:00:00.000Z',
+      time: '14:00',
+      createdAt: createdDate.toISOString(),
     }
-    // Created on 2026-10-10
     expect(isDueOn(onceRem, '2026-10-10')).toBe(true)
     expect(isDueOn(onceRem, '2026-10-11')).toBe(false)
+
+    // If scheduled time was already before createdAt on the same day, it is not due
+    const oncePastRem: Reminder = {
+      ...baseReminder,
+      recurrence: 'once',
+      time: '09:00',
+      createdAt: createdDate.toISOString(), // 10:00 local time > 09:00
+    }
+    expect(isDueOn(oncePastRem, '2026-10-10')).toBe(false)
+    expect(isDueOn(oncePastRem, '2026-10-11')).toBe(false)
+  })
+
+  it('recurring reminder created after its scheduled time is NOT due on creation day, but is due on next matching day', () => {
+    // Created at 12:40 on 2026-10-12
+    const createdDate = new Date(2026, 9, 12, 12, 40, 0)
+    const morningReminder: Reminder = {
+      ...baseReminder,
+      time: '09:00',
+      recurrence: 'daily',
+      createdAt: createdDate.toISOString(),
+    }
+
+    // Not due on creation day
+    expect(isDueOn(morningReminder, '2026-10-12')).toBe(false)
+    // First due date is the next matching day
+    expect(isDueOn(morningReminder, '2026-10-13')).toBe(true)
+
+    // But an afternoon reminder (time 14:00 > 12:40) IS due on creation day
+    const afternoonReminder: Reminder = {
+      ...baseReminder,
+      time: '14:00',
+      recurrence: 'daily',
+      createdAt: createdDate.toISOString(),
+    }
+    expect(isDueOn(afternoonReminder, '2026-10-12')).toBe(true)
   })
 
   it('correctly handles "weekdays" recurrence', () => {

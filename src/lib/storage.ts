@@ -4,6 +4,8 @@ export const STORAGE_KEY = 'ecopulse_app_state_v2'
 export const PREVIOUS_STORAGE_KEY = 'ecopulse_app_state_v1'
 export const ALERTED_KEYS_STORAGE_KEY = 'ecopulse_alerted_keys_v1'
 export const WELCOME_FLAG_KEY = 'ecopulse_welcome_handled_v1'
+export const TOUR_FLAG_KEY = 'ecopulse_tour_seen_v1'
+export const LAST_VISIT_KEY = 'ecopulse_last_visit_v1'
 export const CURRENT_VERSION = 2
 
 export const DEFAULT_SETTINGS: Settings = {
@@ -32,81 +34,122 @@ export function setWelcomeHandled(handled = true): void {
   }
 }
 
-export const INITIAL_REMINDERS: Reminder[] = [
-  {
-    id: 'rem-1',
-    title: 'Turn off room lights before leaving',
-    category: 'lighting',
-    time: '09:00',
-    recurrence: 'daily',
-    applianceWatts: 40,
-    avoidedHours: 3,
-    active: true,
-    createdAt: '2026-10-11T00:00:00.000Z',
-  },
-  {
-    id: 'rem-2',
-    title: 'Switch off ceiling fan when room is unoccupied',
-    category: 'cooling',
-    time: '10:00',
-    recurrence: 'daily',
-    applianceWatts: 75,
-    avoidedHours: 4,
-    active: true,
-    createdAt: '2026-10-11T00:00:00.000Z',
-  },
-  {
-    id: 'rem-3',
-    title: 'Unplug phone & device chargers from wall socket',
-    category: 'chargers',
-    time: '08:00',
-    recurrence: 'daily',
-    applianceWatts: 10,
-    avoidedHours: 8,
-    active: true,
-    createdAt: '2026-10-11T00:00:00.000Z',
-  },
-  {
-    id: 'rem-4',
-    title: 'Put laptop on power-saving / sleep mode during lunch',
-    category: 'computing',
-    time: '13:00',
-    recurrence: 'weekdays',
-    applianceWatts: 65,
-    avoidedHours: 2,
-    active: true,
-    createdAt: '2026-10-11T00:00:00.000Z',
-  },
-  {
-    id: 'rem-5',
-    title: 'Switch off monitor & desk setup power strip at night',
-    category: 'standby',
-    time: '23:00',
-    recurrence: 'daily',
-    applianceWatts: 45,
-    avoidedHours: 7,
-    active: true,
-    createdAt: '2026-10-11T00:00:00.000Z',
-  },
-  {
-    id: 'rem-6',
-    title: 'Check and turn off shared floor / lab corridor lights',
-    category: 'shared',
-    time: '21:30',
-    recurrence: 'daily',
-    applianceWatts: 60,
-    avoidedHours: 5,
-    active: true,
-    createdAt: '2026-10-11T00:00:00.000Z',
-  },
-]
+export function isTourSeen(): boolean {
+  try {
+    return localStorage.getItem(TOUR_FLAG_KEY) === 'true'
+  } catch {
+    return false
+  }
+}
+
+export function setTourSeen(seen = true): void {
+  try {
+    if (seen) {
+      localStorage.setItem(TOUR_FLAG_KEY, 'true')
+    } else {
+      localStorage.removeItem(TOUR_FLAG_KEY)
+    }
+  } catch (err) {
+    console.error('[EcoPulse] Failed to write tour seen flag:', err)
+  }
+}
+
+export function getLastVisit(): string | null {
+  try {
+    return localStorage.getItem(LAST_VISIT_KEY)
+  } catch {
+    return null
+  }
+}
+
+export function setLastVisit(isoString: string = new Date().toISOString()): void {
+  try {
+    localStorage.setItem(LAST_VISIT_KEY, isoString)
+  } catch {
+    // Ignore storage quota
+  }
+}
+
+export function createInitialReminders(createdAt: string = new Date().toISOString()): Reminder[] {
+  return [
+    {
+      id: 'rem-1',
+      title: 'Turn off room lights before leaving',
+      category: 'lighting',
+      time: '09:00',
+      recurrence: 'daily',
+      applianceWatts: 40,
+      avoidedHours: 3,
+      active: true,
+      createdAt,
+    },
+    {
+      id: 'rem-2',
+      title: 'Switch off ceiling fan when room is unoccupied',
+      category: 'cooling',
+      time: '10:00',
+      recurrence: 'daily',
+      applianceWatts: 75,
+      avoidedHours: 4,
+      active: true,
+      createdAt,
+    },
+    {
+      id: 'rem-3',
+      title: 'Unplug phone & device chargers from wall socket',
+      category: 'chargers',
+      time: '08:00',
+      recurrence: 'daily',
+      applianceWatts: 10,
+      avoidedHours: 8,
+      active: true,
+      createdAt,
+    },
+    {
+      id: 'rem-4',
+      title: 'Put laptop on power-saving / sleep mode during lunch',
+      category: 'computing',
+      time: '13:00',
+      recurrence: 'weekdays',
+      applianceWatts: 65,
+      avoidedHours: 2,
+      active: true,
+      createdAt,
+    },
+    {
+      id: 'rem-5',
+      title: 'Switch off monitor & desk setup power strip at night',
+      category: 'standby',
+      time: '23:00',
+      recurrence: 'daily',
+      applianceWatts: 45,
+      avoidedHours: 7,
+      active: true,
+      createdAt,
+    },
+    {
+      id: 'rem-6',
+      title: 'Check and turn off shared floor / lab corridor lights',
+      category: 'shared',
+      time: '21:30',
+      recurrence: 'daily',
+      applianceWatts: 60,
+      avoidedHours: 5,
+      active: true,
+      createdAt,
+    },
+  ]
+}
+
+export const INITIAL_REMINDERS: Reminder[] = createInitialReminders()
 
 export function getDefaultState(): AppState {
+  const nowIso = new Date().toISOString()
   return {
-    reminders: INITIAL_REMINDERS,
+    reminders: createInitialReminders(nowIso),
     completions: [], // Strictly no fake history
-    settings: DEFAULT_SETTINGS,
-    lastUpdated: new Date().toISOString(),
+    settings: { ...DEFAULT_SETTINGS },
+    lastUpdated: nowIso,
   }
 }
 
@@ -228,6 +271,8 @@ export function clearState(): void {
     localStorage.removeItem(PREVIOUS_STORAGE_KEY)
     localStorage.removeItem(ALERTED_KEYS_STORAGE_KEY)
     localStorage.removeItem(WELCOME_FLAG_KEY)
+    localStorage.removeItem(TOUR_FLAG_KEY)
+    localStorage.removeItem(LAST_VISIT_KEY)
   } catch (err) {
     console.error('[EcoPulse] Failed to clear localStorage:', err)
   }

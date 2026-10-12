@@ -8,7 +8,8 @@ import { Dialog } from '../components/ui/Dialog'
 import { Badge } from '../components/ui/Badge'
 import { useAppState } from '../state'
 import { useToast } from '../context/useToast'
-import { ALERTED_KEYS_STORAGE_KEY } from '../lib/storage'
+import { useTour } from '../context/useTour'
+import { ALERTED_KEYS_STORAGE_KEY, clearState } from '../lib/storage'
 import { hasDemoCompletions } from '../lib/sampleData'
 import { sendBrowserNotification } from '../lib/notifications'
 import { containerVariants, cardVariants } from '../lib/motionVariants'
@@ -23,6 +24,7 @@ import {
   Info,
   Calculator,
   Sparkles,
+  Compass,
   Trash2,
   CheckCircle2,
   XCircle,
@@ -33,6 +35,7 @@ type PermissionState = 'unsupported' | 'not asked yet' | 'granted' | 'denied'
 export const SettingsPage: React.FC = () => {
   const { state, updateSettings, resetData, loadSampleData, removeSampleData } = useAppState()
   const { showToast } = useToast()
+  const { openTour } = useTour()
   const [displayName, setDisplayName] = useState(state.settings.displayName)
   const [tariff, setTariff] = useState(state.settings.tariffPerKwh.toString())
   const [tariffError, setTariffError] = useState<string | null>(null)
@@ -184,13 +187,7 @@ export const SettingsPage: React.FC = () => {
   const handleConfirmReset = () => {
     if (resetConfirmInput.trim() !== 'RESET') return
 
-    // Clear alerted keys storage entry as required by specification
-    try {
-      localStorage.removeItem(ALERTED_KEYS_STORAGE_KEY)
-    } catch (err) {
-      console.warn('[EcoPulse] Failed to clear alerted keys:', err)
-    }
-
+    clearState()
     resetData()
     setResetDialogOpen(false)
     setResetConfirmInput('')
@@ -262,9 +259,20 @@ export const SettingsPage: React.FC = () => {
               <span className="text-xs text-[#1e3f2b] font-medium">Persisted safely to browser localStorage</span>
             )}
 
-            <Button type="submit" variant="primary" icon={<Save className="w-4 h-4" />}>
-              Save Settings
-            </Button>
+            <div className="flex items-center gap-2">
+              <Button
+                type="button"
+                variant="outline"
+                size="md"
+                icon={<Compass className="w-4 h-4" />}
+                onClick={() => openTour(false)}
+              >
+                Replay tour
+              </Button>
+              <Button type="submit" variant="primary" icon={<Save className="w-4 h-4" />}>
+                Save Settings
+              </Button>
+            </div>
           </div>
         </Card>
       </form>

@@ -17,12 +17,33 @@ export function isDueOn(reminder: Reminder, dateKey: string): boolean {
     return false
   }
 
+  const createdDate = new Date(reminder.createdAt)
+  const createdDateKey = todayKey(createdDate)
+
+  // A reminder is never due before its creation date
+  if (dateKey < createdDateKey) {
+    return false
+  }
+
+  // Parse reminder time (HH:mm)
+  const [remH, remM] = reminder.time.split(':').map((v) => parseInt(v, 10))
+  const reminderMinutes = (isNaN(remH) ? 0 : remH) * 60 + (isNaN(remM) ? 0 : remM)
+
+  // On its creation day:
+  // If its scheduled time was already before createdAt, it is not due on its creation day.
+  // For recurring reminders, its first due date is the next matching day.
+  if (dateKey === createdDateKey) {
+    const createdMinutes = createdDate.getHours() * 60 + createdDate.getMinutes()
+    if (reminderMinutes < createdMinutes) {
+      return false
+    }
+  }
+
   const dayOfWeek = targetDate.getDay() // 0 = Sunday, 1 = Monday, ..., 6 = Saturday
 
   switch (reminder.recurrence) {
     case 'once': {
       // Due only on the calendar day of its creation
-      const createdDateKey = todayKey(new Date(reminder.createdAt))
       return createdDateKey === dateKey
     }
 

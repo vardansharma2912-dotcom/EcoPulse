@@ -18,6 +18,7 @@ import { weeklySeries } from '../lib/analytics'
 import { containerVariants, cardVariants, highlightCardVariants } from '../lib/motionVariants'
 import { ReminderFormDialog } from '../components/reminders/ReminderFormDialog'
 import { DemoBanner } from '../components/layout/DemoBanner'
+import { GettingStartedCard } from '../components/dashboard/GettingStartedCard'
 import type { Reminder } from '../types'
 import {
   Zap,
@@ -148,6 +149,9 @@ export const DashboardPage: React.FC = () => {
       />
 
       <DemoBanner />
+
+      {/* Getting Started Progress Card */}
+      <GettingStartedCard onOpenAddReminder={() => setAddDialogOpen(true)} />
 
       {/* Grid of Key Metrics Cards with CountUp - Forest Hero Card in Position 1 */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3.5">

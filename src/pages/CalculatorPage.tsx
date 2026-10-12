@@ -48,6 +48,14 @@ export const CalculatorPage: React.FC = () => {
   const { showToast } = useToast()
   const tariff = state.settings.tariffPerKwh
 
+  React.useEffect(() => {
+    try {
+      localStorage.setItem('ecopulse_calc_visited_v1', 'true')
+    } catch {
+      // Ignore
+    }
+  }, [])
+
   const [selectedPreset, setSelectedPreset] = useState<string>('Ceiling fan (75 W)')
   const [watts, setWatts] = useState<string>('75')
   const [hours, setHours] = useState<string>('4')

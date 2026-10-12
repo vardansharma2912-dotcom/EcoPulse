@@ -1,4 +1,5 @@
 import React, { useState, useMemo } from 'react'
+import { useSearchParams } from 'react-router-dom'
 import { motion, AnimatePresence } from 'motion/react'
 import { PageHeader } from '../components/layout/PageHeader'
 import { Card } from '../components/ui/Card'
@@ -73,7 +74,7 @@ function formatEnergyEstimate(reminder: Reminder): string {
   return 'No energy estimate set'
 }
 
-type StatusFilter = 'all' | 'due' | 'done' | 'snoozed' | 'inactive'
+type StatusFilter = 'all' | 'due' | 'overdue' | 'done' | 'snoozed' | 'inactive'
 
 export const RemindersPage: React.FC = () => {
   const {
@@ -87,23 +88,47 @@ export const RemindersPage: React.FC = () => {
     toggleActive,
   } = useAppState()
   const { showToast } = useToast()
+  const [searchParams, setSearchParams] = useSearchParams()
+  const filterParam = searchParams.get('filter')
+  const addParam = searchParams.get('add')
 
   const today = todayKey()
 
   // Dialog State
-  const [formOpen, setFormOpen] = useState(false)
+  const [internalFormOpen, setInternalFormOpen] = useState(false)
+  const isFormOpen = internalFormOpen || addParam === 'true'
   const [editingReminder, setEditingReminder] = useState<Reminder | null>(null)
 
   const [deleteTarget, setDeleteTarget] = useState<Reminder | null>(null)
   const [snoozeTarget, setSnoozeTarget] = useState<Reminder | null>(null)
 
   // Filter State
-  const [statusFilter, setStatusFilter] = useState<StatusFilter>('all')
+  const [internalStatusFilter, setInternalStatusFilter] = useState<StatusFilter>('all')
+  const statusFilter: StatusFilter = filterParam === 'overdue' ? 'overdue' : internalStatusFilter
+
+  const setStatusFilter = (filter: StatusFilter) => {
+    if (filterParam) {
+      const newParams = new URLSearchParams(searchParams)
+      newParams.delete('filter')
+      setSearchParams(newParams, { replace: true })
+    }
+    setInternalStatusFilter(filter)
+  }
+
   const [categoryFilter, setCategoryFilter] = useState<string>('all')
   const [searchQuery, setSearchQuery] = useState('')
   const [menuOpenId, setMenuOpenId] = useState<string | null>(null)
 
   const [currentDate] = useState(() => new Date())
+
+  const handleCloseForm = () => {
+    setInternalFormOpen(false)
+    if (addParam) {
+      const newParams = new URLSearchParams(searchParams)
+      newParams.delete('add')
+      setSearchParams(newParams, { replace: true })
+    }
+  }
 
   // Map reminders to their today status
   const remindersWithStatus = useMemo(() => {
@@ -134,6 +159,9 @@ export const RemindersPage: React.FC = () => {
         if (statusFilter === 'due') {
           return status !== 'not-due' && reminder.active
         }
+        if (statusFilter === 'overdue') {
+          return status === 'overdue'
+        }
         if (statusFilter === 'done') {
           return status === 'done'
         }
@@ -161,12 +189,12 @@ export const RemindersPage: React.FC = () => {
 
   const handleOpenAdd = () => {
     setEditingReminder(null)
-    setFormOpen(true)
+    setInternalFormOpen(true)
   }
 
   const handleOpenEdit = (reminder: Reminder) => {
     setEditingReminder(reminder)
-    setFormOpen(true)
+    setInternalFormOpen(true)
   }
 
   const handleSaveReminder = (data: Omit<Reminder, 'id' | 'createdAt'> | Reminder) => {
@@ -322,6 +350,7 @@ export const RemindersPage: React.FC = () => {
               [
                 { id: 'all', label: 'All' },
                 { id: 'due', label: 'Due Today' },
+                { id: 'overdue', label: 'Overdue' },
                 { id: 'done', label: 'Done' },
                 { id: 'snoozed', label: 'Snoozed' },
                 { id: 'inactive', label: 'Inactive' },
@@ -583,8 +612,8 @@ export const RemindersPage: React.FC = () => {
 
       {/* Add / Edit Drawer */}
       <ReminderFormDialog
-        open={formOpen}
-        onClose={() => setFormOpen(false)}
+        open={isFormOpen}
+        onClose={handleCloseForm}
         onSave={handleSaveReminder}
         initialReminder={editingReminder}
       />

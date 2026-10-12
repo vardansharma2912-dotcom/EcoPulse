@@ -1,7 +1,6 @@
 import React, { useMemo, useState } from 'react'
 import { NavLink, Outlet, useLocation } from 'react-router-dom'
 import { motion, AnimatePresence, useReducedMotion } from 'motion/react'
-import { useToast } from '../../context/useToast'
 import {
   LayoutDashboard,
   Bell,
@@ -25,7 +24,8 @@ import { useAppState } from '../../state'
 import { todayKey } from '../../lib/dates'
 import { isDueOn } from '../../lib/schedule'
 import { CountUp } from '../ui/CountUp'
-import { isWelcomeHandled } from '../../lib/storage'
+import { isWelcomeHandled, isTourSeen } from '../../lib/storage'
+import { useTour } from '../../context/useTour'
 
 const navItems = [
   { to: '/', label: 'Dashboard', icon: LayoutDashboard },
@@ -37,25 +37,31 @@ const navItems = [
 ]
 
 export const AppLayout: React.FC = () => {
-  const { activeAlerts, dismissAlert, markAlertDone, snoozeAlert } = useReminderAlerts()
+  const { openTour } = useTour()
   const { state } = useAppState()
   const location = useLocation()
   const today = todayKey()
 
-  const { showToast } = useToast()
   const isReducedMotion = useReducedMotion()
   const [searchOpen, setSearchOpen] = useState(false)
   const [alertsPopoverOpen, setAlertsPopoverOpen] = useState(false)
   const [welcomeDismissed, setWelcomeDismissed] = useState(false)
 
   // Welcome screen is shown once on first launch or after reset when displayName is empty
-  const showWelcome = !welcomeDismissed && !isWelcomeHandled() && !state.settings.displayName
+  const isReset = !isWelcomeHandled() && !state.settings.displayName
+  const showWelcome = isReset && !welcomeDismissed
 
-  const handleWelcomeComplete = (enteredName?: string) => {
+  // Hold all alert evaluation until BOTH the welcome step and the tour are finished
+  const alertsEnabled = !showWelcome && (isWelcomeHandled() || welcomeDismissed) && isTourSeen()
+
+  const { activeAlerts, dismissAlert, markAlertDone, snoozeAlert } = useReminderAlerts({
+    enabled: alertsEnabled,
+  })
+
+  const handleWelcomeComplete = (_enteredName?: string) => {
     setWelcomeDismissed(true)
-    if (enteredName) {
-      showToast(`Welcome, ${enteredName}!`)
-    }
+    // Go immediately to the tour as first-run tour
+    openTour(true)
   }
 
   // Page title for compact mobile header

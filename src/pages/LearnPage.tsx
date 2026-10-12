@@ -5,6 +5,7 @@ import { Button } from '../components/ui/Button'
 import { Dialog } from '../components/ui/Dialog'
 import { motion } from 'motion/react'
 import { containerVariants, cardVariants } from '../lib/motionVariants'
+import { useTour } from '../context/useTour'
 import {
   Lightbulb,
   Fan,
@@ -20,6 +21,7 @@ import {
   Play,
   Pause,
   Maximize2,
+  Compass,
 } from 'lucide-react'
 
 interface HabitCard {
@@ -173,6 +175,7 @@ const CARDS: HabitCard[] = [
 ]
 
 export const LearnPage: React.FC = () => {
+  const { openTour } = useTour()
   const [currentIndex, setCurrentIndex] = useState(0)
   const [isPlaying, setIsPlaying] = useState(true) // By default set to play (auto move to next slide)
   const [expandedCard, setExpandedCard] = useState<HabitCard | null>(null)
@@ -269,6 +272,17 @@ export const LearnPage: React.FC = () => {
       <PageHeader
         title="Energy Conservation Guide"
         description="Practical habits and conservation principles for college dormitories and campus living."
+        action={
+          <Button
+            type="button"
+            variant="outline"
+            size="sm"
+            icon={<Compass className="w-4 h-4" />}
+            onClick={() => openTour(false)}
+          >
+            Replay tour
+          </Button>
+        }
       />
 
 

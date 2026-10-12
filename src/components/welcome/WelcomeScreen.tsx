@@ -94,7 +94,7 @@ export const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ onComplete }) => {
         initial="hidden"
         animate="visible"
         exit="exit"
-        className="glass-strong max-w-[420px] sm:max-w-[440px] w-full p-5 sm:p-6 rounded-3xl shadow-2xl border border-white/80 space-y-4 text-center select-none"
+        className="glass-strong max-w-[420px] sm:max-w-[440px] w-full p-5 sm:p-6 rounded-3xl shadow-2xl border border-white/70 space-y-4 text-center select-none backdrop-blur-xl bg-white/65"
       >
         {/* Leaf Logo Mark (gently scales in) */}
         <motion.div
@@ -141,7 +141,7 @@ export const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ onComplete }) => {
               }}
               maxLength={40}
               autoFocus
-              className="w-full px-3.5 py-2 sm:py-2.5 text-sm rounded-xl bg-white/90 border border-emerald-950/20 text-[#14301f] placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-700/50 transition-all font-medium"
+              className="w-full px-3.5 py-2 sm:py-2.5 text-sm rounded-xl bg-white/80 border border-emerald-950/20 text-[#14301f] placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-700/50 transition-all font-medium"
             />
             {error && (
               <p className="text-[11px] text-rose-700 font-semibold px-1 pt-0.5">
@@ -181,22 +181,22 @@ export const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ onComplete }) => {
         </motion.div>
       </motion.div>
 
-      {/* Feature Chips Under the Card */}
+      {/* Feature Row Under the Card (plain icon + text with thin dividers, non-clickable) */}
       <motion.div
         initial={{ opacity: 0, y: isReducedMotion ? 0 : 12 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: isReducedMotion ? 0 : 0.25, duration: isReducedMotion ? 0 : 0.35 }}
-        className="flex flex-wrap items-center justify-center gap-2 mt-3.5 text-xs font-semibold text-[#14301f] select-none"
+        className="flex items-center justify-center gap-3 sm:gap-4 mt-3.5 text-xs font-semibold text-[#14301f]/85 select-none divide-x divide-emerald-900/20"
       >
-        <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white/60 border border-white/80 shadow-xs">
+        <div className="flex items-center gap-1.5">
           <Bell className="w-3.5 h-3.5 text-emerald-800 shrink-0" />
           <span>Reminders</span>
         </div>
-        <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white/60 border border-white/80 shadow-xs">
+        <div className="flex items-center gap-1.5 pl-3 sm:pl-4">
           <Zap className="w-3.5 h-3.5 text-emerald-800 shrink-0" />
           <span>Estimated savings</span>
         </div>
-        <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white/60 border border-white/80 shadow-xs">
+        <div className="flex items-center gap-1.5 pl-3 sm:pl-4">
           <Flame className="w-3.5 h-3.5 text-amber-700 shrink-0" />
           <span>Streaks</span>
         </div>

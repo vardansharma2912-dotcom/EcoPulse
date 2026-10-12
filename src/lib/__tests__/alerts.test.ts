@@ -1,5 +1,7 @@
-import { describe, it, expect } from 'vitest'
-import { dueAlerts, getAlertKey } from '../alerts'
+import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest'
+import { dueAlerts, getAlertKey, getMissedReminders } from '../alerts'
+import { todayStatus } from '../schedule'
+import { createInitialReminders } from '../storage'
 import type { Completion, Reminder } from '../../types'
 
 const baseReminder: Reminder = {
@@ -12,72 +14,162 @@ const baseReminder: Reminder = {
   createdAt: '2026-10-10T10:00:00.000Z',
 }
 
-describe('alerts.ts - dueAlerts', () => {
-  const testNow = new Date(2026, 9, 11, 14, 30, 0) // 11 Oct 2026 at 14:30 local time (after 14:00)
+describe('alerts.ts - dueAlerts and grace window (with fake clock)', () => {
+  beforeEach(() => {
+    vi.useFakeTimers()
+  })
 
-  it('alerts an active reminder when its time has passed and not done/snoozed', () => {
-    const alerts = dueAlerts([baseReminder], [], testNow, new Set())
+  afterEach(() => {
+    vi.useRealTimers()
+  })
+
+  it('starters created at 12:40 are not due or alerted today', () => {
+    // Clock at 12:45 PM on 2026-10-12
+    const launchTime = new Date(2026, 9, 12, 12, 40, 0)
+    const checkTime = new Date(2026, 9, 12, 12, 45, 0)
+    vi.setSystemTime(checkTime)
+
+    // Starters seeded at launch (08:00, 09:00, 10:00, 13:00, 21:30, 23:00)
+    const starters = createInitialReminders(launchTime.toISOString())
+
+    // 08:00, 09:00, 10:00 had times before 12:40, so they are not due on creation day.
+    // 13:00, 21:30, 23:00 are in the future (after 12:45).
+    const alerts = dueAlerts(starters, [], checkTime, new Set())
+    expect(alerts.length).toBe(0)
+  })
+
+  it('a slot 3 minutes ago alerts (inside 10-minute grace window)', () => {
+    // Scheduled at 14:00, now is 14:03 (3 minutes later)
+    const testNow = new Date(2026, 9, 12, 14, 3, 0)
+    vi.setSystemTime(testNow)
+
+    const rem: Reminder = {
+      ...baseReminder,
+      time: '14:00',
+      createdAt: '2026-10-10T10:00:00.000Z',
+    }
+
+    const alerts = dueAlerts([rem], [], testNow, new Set())
     expect(alerts.length).toBe(1)
     expect(alerts[0].id).toBe('rem-alert-1')
   })
 
-  it('does NOT alert if reminder is inactive', () => {
+  it('a slot 2 hours ago does not alert but shows Overdue in todayStatus', () => {
+    // Scheduled at 14:00, now is 16:00 (2 hours later)
+    const testNow = new Date(2026, 9, 12, 16, 0, 0)
+    vi.setSystemTime(testNow)
+
+    const rem: Reminder = {
+      ...baseReminder,
+      time: '14:00',
+      createdAt: '2026-10-10T10:00:00.000Z',
+    }
+
+    // Does NOT alert because 2 hours is older than the 10-minute grace window
+    const alerts = dueAlerts([rem], [], testNow, new Set())
+    expect(alerts.length).toBe(0)
+
+    // But shows as "overdue" in lists and status calculations
+    const status = todayStatus(rem, [], testNow)
+    expect(status).toBe('overdue')
+  })
+
+  it('a snooze expiring inside the grace window alerts', () => {
+    // Now is 14:30
+    const testNow = new Date(2026, 9, 12, 14, 30, 0)
+    vi.setSystemTime(testNow)
+
+    // Snooze expired 4 minutes ago (at 14:26)
+    const expiredSnooze: Reminder = {
+      ...baseReminder,
+      time: '14:00',
+      createdAt: '2026-10-10T10:00:00.000Z',
+      snoozedUntil: new Date(testNow.getTime() - 4 * 60 * 1000).toISOString(),
+    }
+
+    const alerts = dueAlerts([expiredSnooze], [], testNow, new Set())
+    expect(alerts.length).toBe(1)
+    expect(alerts[0].id).toBe('rem-alert-1')
+  })
+
+  it('a snooze expired 20 minutes ago (outside grace window) does not alert', () => {
+    const testNow = new Date(2026, 9, 12, 14, 30, 0)
+    vi.setSystemTime(testNow)
+
+    // Snooze expired 20 minutes ago (outside 10-min grace window)
+    const longExpiredSnooze: Reminder = {
+      ...baseReminder,
+      time: '14:00',
+      createdAt: '2026-10-10T10:00:00.000Z',
+      snoozedUntil: new Date(testNow.getTime() - 20 * 60 * 1000).toISOString(),
+    }
+
+    const alerts = dueAlerts([longExpiredSnooze], [], testNow, new Set())
+    expect(alerts.length).toBe(0)
+  })
+
+  it('does NOT alert if reminder is inactive or already completed today', () => {
+    const testNow = new Date(2026, 9, 12, 14, 3, 0)
+    vi.setSystemTime(testNow)
+
     const inactive = { ...baseReminder, active: false }
-    const alerts = dueAlerts([inactive], [], testNow, new Set())
-    expect(alerts.length).toBe(0)
-  })
+    expect(dueAlerts([inactive], [], testNow, new Set()).length).toBe(0)
 
-  it('does NOT alert if scheduled time is still in the future', () => {
-    const futureReminder = { ...baseReminder, time: '16:00' } // 16:00 is after 14:30
-    const alerts = dueAlerts([futureReminder], [], testNow, new Set())
-    expect(alerts.length).toBe(0)
-  })
-
-  it('does NOT alert if already completed today', () => {
     const completion: Completion = {
       id: 'c1',
       reminderId: baseReminder.id,
       title: baseReminder.title,
-      date: '2026-10-11',
+      date: '2026-10-12',
       completedAt: testNow.toISOString(),
       kWh: 0.1,
       costSaved: 0.8,
       tariffAtTime: 8,
     }
-    const alerts = dueAlerts([baseReminder], [completion], testNow, new Set())
-    expect(alerts.length).toBe(0)
+    expect(dueAlerts([baseReminder], [completion], testNow, new Set()).length).toBe(0)
   })
 
-  it('does NOT alert if key is already alerted', () => {
-    const key = getAlertKey(baseReminder, '2026-10-11')
-    const alreadyAlerted = new Set([key])
-    const alerts = dueAlerts([baseReminder], [], testNow, alreadyAlerted)
-    expect(alerts.length).toBe(0)
+  it('does NOT alert if alert key has already fired', () => {
+    const testNow = new Date(2026, 9, 12, 14, 3, 0)
+    vi.setSystemTime(testNow)
+
+    const key = getAlertKey(baseReminder, '2026-10-12')
+    expect(dueAlerts([baseReminder], [], testNow, new Set([key])).length).toBe(0)
   })
 
-  it('does NOT alert while currently within active snooze window', () => {
-    const snoozed: Reminder = {
+  it('calculates the missed-summary count correctly for slots passed while closed', () => {
+    // User last visited at 09:30 AM
+    const lastVisit = new Date(2026, 9, 12, 9, 30, 0)
+    // User returns at 13:00 PM
+    const returnNow = new Date(2026, 9, 12, 13, 0, 0)
+    vi.setSystemTime(returnNow)
+
+    const rem1: Reminder = {
       ...baseReminder,
-      snoozedUntil: new Date(testNow.getTime() + 15 * 60000).toISOString(), // 15 min in future
+      id: 'r1',
+      time: '10:00', // Missed (between 09:30 and 12:50)
+      createdAt: '2026-10-10T00:00:00.000Z',
     }
-    const alerts = dueAlerts([snoozed], [], testNow, new Set())
-    expect(alerts.length).toBe(0)
-  })
-
-  it('RE-ALERTS after snooze expires', () => {
-    // Snooze expired 5 minutes ago
-    const expiredSnooze: Reminder = {
+    const rem2: Reminder = {
       ...baseReminder,
-      snoozedUntil: new Date(testNow.getTime() - 5 * 60000).toISOString(),
+      id: 'r2',
+      time: '11:30', // Missed (between 09:30 and 12:50)
+      createdAt: '2026-10-10T00:00:00.000Z',
+    }
+    const rem3: Reminder = {
+      ...baseReminder,
+      id: 'r3',
+      time: '12:55', // Inside grace window (passed 5 min ago) -> NOT missed, will alert
+      createdAt: '2026-10-10T00:00:00.000Z',
+    }
+    const rem4: Reminder = {
+      ...baseReminder,
+      id: 'r4',
+      time: '08:00', // Passed before last visit (08:00 < 09:30) -> NOT missed while closed
+      createdAt: '2026-10-10T00:00:00.000Z',
     }
 
-    // Previous standard key had already alerted before snoozing
-    const initialKey = `${baseReminder.id}_2026-10-11_14:00`
-    const alreadyAlerted = new Set([initialKey])
-
-    // Should return the reminder again because the snooze key is distinct
-    const alerts = dueAlerts([expiredSnooze], [], testNow, alreadyAlerted)
-    expect(alerts.length).toBe(1)
-    expect(alerts[0].id).toBe(baseReminder.id)
+    const missed = getMissedReminders([rem1, rem2, rem3, rem4], [], returnNow, lastVisit)
+    expect(missed.length).toBe(2)
+    expect(missed.map((m) => m.id)).toEqual(['r1', 'r2'])
   })
 })
