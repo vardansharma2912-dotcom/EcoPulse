@@ -8,6 +8,7 @@ export interface SemiCircleGaugeProps {
   pending: number
   total: number
   className?: string
+  compact?: boolean
 }
 
 export const SemiCircleGauge: React.FC<SemiCircleGaugeProps> = ({
@@ -16,6 +17,7 @@ export const SemiCircleGauge: React.FC<SemiCircleGaugeProps> = ({
   pending,
   total,
   className = '',
+  compact = false,
 }) => {
   // Semi-circle arc geometry: center (100, 100), radius 80
   // Arc length = PI * 80 = 251.33
@@ -31,7 +33,9 @@ export const SemiCircleGauge: React.FC<SemiCircleGaugeProps> = ({
 
   return (
     <div className={`flex flex-col items-center ${className}`}>
-      <div className="relative w-48 h-28 sm:w-56 sm:h-32 flex items-center justify-center">
+      <div className={`relative flex items-center justify-center ${
+        compact ? 'w-36 h-20 sm:w-40 sm:h-22' : 'w-48 h-28 sm:w-56 sm:h-32'
+      }`}>
         <svg
           viewBox="0 0 200 120"
           className="w-full h-full overflow-visible"
@@ -56,7 +60,7 @@ export const SemiCircleGauge: React.FC<SemiCircleGaugeProps> = ({
             d="M 20 100 A 80 80 0 0 1 180 100"
             fill="none"
             stroke="#e2ebe5"
-            strokeWidth="16"
+            strokeWidth={compact ? '18' : '16'}
             strokeLinecap="round"
           />
 
@@ -67,7 +71,7 @@ export const SemiCircleGauge: React.FC<SemiCircleGaugeProps> = ({
                 d="M 20 100 A 80 80 0 0 1 180 100"
                 fill="none"
                 stroke="url(#gauge-pending-hatch)"
-                strokeWidth="16"
+                strokeWidth={compact ? '18' : '16'}
                 strokeDasharray={`${pendingLen} ${ARC_LENGTH}`}
                 strokeDashoffset={-(completedLen + snoozedLen)}
                 initial={{ pathLength: 0 }}
@@ -81,7 +85,7 @@ export const SemiCircleGauge: React.FC<SemiCircleGaugeProps> = ({
                   d="M 20 100 A 80 80 0 0 1 180 100"
                   fill="none"
                   stroke="#0a381e"
-                  strokeWidth="16"
+                  strokeWidth={compact ? '18' : '16'}
                   strokeDasharray={`${snoozedLen} ${ARC_LENGTH}`}
                   strokeDashoffset={-completedLen}
                   initial={{ pathLength: 0 }}
@@ -96,7 +100,7 @@ export const SemiCircleGauge: React.FC<SemiCircleGaugeProps> = ({
                   d="M 20 100 A 80 80 0 0 1 180 100"
                   fill="none"
                   stroke="#196f45"
-                  strokeWidth="16"
+                  strokeWidth={compact ? '18' : '16'}
                   strokeLinecap="round"
                   strokeDasharray={`${completedLen} ${ARC_LENGTH}`}
                   strokeDashoffset={0}
@@ -112,32 +116,40 @@ export const SemiCircleGauge: React.FC<SemiCircleGaugeProps> = ({
         {/* Center Percentage Display */}
         <div className="absolute inset-0 flex flex-col items-center justify-end pb-1 pointer-events-none">
           {hasDue ? (
-            <div className="text-2xl sm:text-3xl font-extrabold text-[#0a381e] tracking-tight">
+            <div className={`font-extrabold text-[#0a381e] tracking-tight ${
+              compact ? 'text-xl sm:text-2xl' : 'text-2xl sm:text-3xl'
+            }`}>
               <CountUp value={completionPct} suffix="%" />
             </div>
           ) : (
-            <div className="text-2xl sm:text-3xl font-extrabold text-stone-400">
+            <div className={`font-extrabold text-stone-400 ${
+              compact ? 'text-xl sm:text-2xl' : 'text-2xl sm:text-3xl'
+            }`}>
               —
             </div>
           )}
-          <span className="text-[10px] font-semibold text-[#1e3f2b] uppercase tracking-wider">
+          <span className={`font-semibold text-[#1e3f2b] uppercase tracking-wider ${
+            compact ? 'text-[9px]' : 'text-[10px]'
+          }`}>
             {hasDue ? 'Done' : 'No Due Actions'}
           </span>
         </div>
       </div>
 
       {/* Legend of 3 Dots Underneath - nowrap items wrapping as whole units */}
-      <div className="flex flex-wrap items-center justify-center gap-x-3.5 gap-y-1.5 mt-2.5 text-xs font-semibold text-[#14301f]">
-        <div className="flex items-center gap-1.5 whitespace-nowrap shrink-0">
-          <span className="w-2.5 h-2.5 rounded-full bg-[#196f45] shadow-xs" />
+      <div className={`flex flex-wrap items-center justify-center font-semibold text-[#14301f] ${
+        compact ? 'gap-x-2.5 gap-y-1 mt-1 text-[11px]' : 'gap-x-3.5 gap-y-1.5 mt-2.5 text-xs'
+      }`}>
+        <div className="flex items-center gap-1 whitespace-nowrap shrink-0">
+          <span className="w-2 h-2 rounded-full bg-[#196f45] shadow-xs" />
           <span>Done ({completed})</span>
         </div>
-        <div className="flex items-center gap-1.5 whitespace-nowrap shrink-0">
-          <span className="w-2.5 h-2.5 rounded-full bg-[#0a381e] shadow-xs" />
+        <div className="flex items-center gap-1 whitespace-nowrap shrink-0">
+          <span className="w-2 h-2 rounded-full bg-[#0a381e] shadow-xs" />
           <span>Snoozed ({snoozed})</span>
         </div>
-        <div className="flex items-center gap-1.5 whitespace-nowrap shrink-0">
-          <span className="w-2.5 h-2.5 rounded-full bg-[#8fa398] border border-stone-400/50 shadow-xs" />
+        <div className="flex items-center gap-1 whitespace-nowrap shrink-0">
+          <span className="w-2 h-2 rounded-full bg-[#8fa398] border border-stone-400/50 shadow-xs" />
           <span>Pending ({pending})</span>
         </div>
       </div>

@@ -349,39 +349,39 @@ export const DashboardPage: React.FC = () => {
         </motion.div>
       </div>
 
-      {/* Row 3: Active Device Habits + SemiCircleGauge + Estimated Savings */}
+      {/* Row 3: Active Device Habits + SemiCircleGauge + Estimated Savings (Compact ~50% Height) */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-        {/* Card 1: Appliance Conservation Status (Matching Team Collaboration from video) */}
+        {/* Card 1: Appliance Conservation Status */}
         <motion.div variants={cardVariants}>
-          <Card variant="glass-strong" className="p-5 flex flex-col justify-between h-full space-y-3">
+          <Card variant="glass-strong" className="p-3.5 sm:p-4 flex flex-col justify-between h-full space-y-2">
             <div className="flex items-center justify-between">
-              <h3 className="text-sm font-bold text-[#14301f]">Conservation Habits</h3>
+              <h3 className="text-xs sm:text-sm font-bold text-[#14301f]">Conservation Habits</h3>
               <Badge variant="neutral" size="sm">Active</Badge>
             </div>
 
-            <div className="space-y-2.5">
+            <div className="grid grid-cols-2 gap-2 my-auto">
               {[
-                { name: 'Air Conditioning Set-Point', category: 'Cooling', status: 'Moderate Setting', impact: 'Compressor load reduced' },
-                { name: 'Computer Workstation Standby', category: 'Computing', status: 'Unplugged at Wall', impact: 'Phantom load isolated' },
-                { name: 'Fume Hood Sash Glass', category: 'Laboratory', status: 'Lowered', impact: 'Ventilation exhaust saved' },
+                { name: 'Air Conditioning', category: 'Cooling', status: 'Moderate', impact: 'Compressor load reduced' },
+                { name: 'Workstation Standby', category: 'Computing', status: 'Unplugged', impact: 'Phantom load isolated' },
+                { name: 'Fume Hood Sash', category: 'Laboratory', status: 'Lowered', impact: 'Ventilation exhaust saved' },
                 { name: 'Daylight Harvesting', category: 'Lighting', status: 'Lamps Off', impact: 'Natural daylight used' },
               ].map((habit) => (
                 <div
                   key={habit.name}
-                  className="p-2.5 rounded-xl bg-white/60 border border-emerald-950/5 flex items-center justify-between text-xs hover:bg-white/85 transition-colors"
+                  className="p-2 rounded-xl bg-white/60 border border-emerald-950/5 flex flex-col justify-between text-xs hover:bg-white/85 transition-colors"
                 >
-                  <div className="min-w-0 pr-2">
-                    <p className="font-bold text-[#102819] truncate">{habit.name}</p>
-                    <span className="text-[10px] text-[#1e3f2b]">{habit.category} · {habit.impact}</span>
+                  <p className="font-bold text-[11px] text-[#102819] truncate">{habit.name}</p>
+                  <div className="flex items-center justify-between gap-1 mt-1">
+                    <span className="text-[9px] text-[#1e3f2b] truncate">{habit.category}</span>
+                    <span className="shrink-0 px-1.5 py-0.5 rounded-full text-[9px] font-bold bg-emerald-100 text-emerald-900 border border-emerald-200">
+                      {habit.status}
+                    </span>
                   </div>
-                  <span className="shrink-0 px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-900 border border-emerald-200">
-                    {habit.status}
-                  </span>
                 </div>
               ))}
             </div>
 
-            <p className="text-[11px] text-[#1e3f2b] font-medium pt-1">
+            <p className="text-[10px] text-[#1e3f2b] font-medium pt-0.5">
               Top monitored appliances on campus & home
             </p>
           </Card>
@@ -389,8 +389,8 @@ export const DashboardPage: React.FC = () => {
 
         {/* Card 2: Today's Progress Semi-Circle Ring Gauge */}
         <motion.div variants={cardVariants}>
-          <Card variant="glass-strong" className="p-5 flex flex-col items-center justify-between h-full">
-            <div className="w-full flex items-center justify-between mb-2">
+          <Card variant="glass-strong" className="p-3.5 sm:p-4 flex flex-col items-center justify-between h-full space-y-1">
+            <div className="w-full flex items-center justify-between mb-1">
               <span className="text-xs font-bold uppercase tracking-wider text-[#14301f]">Today's Progress</span>
               <Badge variant="neutral" size="sm">
                 {completedTodayCount}/{totalDueToday}
@@ -402,10 +402,11 @@ export const DashboardPage: React.FC = () => {
               snoozed={snoozedTodayCount}
               pending={pendingTodayCount}
               total={totalDueToday}
-              className="py-1"
+              compact={true}
+              className="py-0.5"
             />
 
-            <p className="text-[11px] text-[#1e3f2b] font-medium text-center mt-2">
+            <p className="text-[10px] text-[#1e3f2b] font-medium text-center mt-1">
               {completedTodayCount} of {totalDueToday} actions completed today
             </p>
           </Card>
@@ -413,7 +414,7 @@ export const DashboardPage: React.FC = () => {
 
         {/* Card 3: Estimated Savings Hero Metric (Dark Green Slot) */}
         <motion.div variants={cardVariants}>
-          <div className="relative overflow-hidden rounded-2xl bg-[#0a381e] text-white p-5 flex flex-col justify-between shadow-xl border border-emerald-500/20 h-full min-h-[220px] select-none">
+          <div className="relative overflow-hidden rounded-2xl bg-[#0a381e] text-white p-3.5 sm:p-4 flex flex-col justify-between shadow-xl border border-emerald-500/20 h-full select-none space-y-2">
             {/* Topographic Contour-Line SVG Background */}
             <svg
               aria-hidden="true"
@@ -455,40 +456,40 @@ export const DashboardPage: React.FC = () => {
             </svg>
 
             {/* Header: Title & Tariff Badge */}
-            <div className="relative z-10 flex items-center justify-between mb-2">
-              <div className="flex items-center gap-2">
+            <div className="relative z-10 flex items-center justify-between mb-1">
+              <div className="flex items-center gap-1.5">
                 <TrendingUp className="w-4 h-4 text-emerald-300" />
-                <h3 className="text-sm sm:text-base font-bold text-white tracking-tight">Estimated Savings</h3>
+                <h3 className="text-xs sm:text-sm font-bold text-white tracking-tight">Estimated Savings</h3>
               </div>
-              <span className="px-2.5 py-0.5 rounded-full bg-emerald-900/60 border border-emerald-500/30 text-[11px] font-semibold text-emerald-300">
+              <span className="px-2 py-0.5 rounded-full bg-emerald-900/60 border border-emerald-500/30 text-[10px] font-semibold text-emerald-300">
                 ₹{state.settings.tariffPerKwh}/kWh Tariff
               </span>
             </div>
 
             {/* Main Metric: Total Money Saved */}
-            <div className="relative z-10 py-1">
-              <span className="text-[11px] font-bold uppercase tracking-wider text-emerald-300/90 block mb-0.5">
+            <div className="relative z-10 py-0.5 my-auto">
+              <span className="text-[10px] font-bold uppercase tracking-wider text-emerald-300/90 block mb-0.5">
                 Total Financial Savings
               </span>
-              <div className="text-3xl sm:text-4xl font-extrabold text-white tracking-tight tabular-nums flex items-baseline gap-1">
-                <span className="text-2xl text-emerald-300 font-bold">₹</span>
+              <div className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight tabular-nums flex items-baseline gap-1">
+                <span className="text-xl text-emerald-300 font-bold">₹</span>
                 <CountUp value={costSavedAllTime} decimals={2} />
               </div>
             </div>
 
             {/* Sub-metrics breakdown */}
-            <div className="relative z-10 pt-2.5 border-t border-emerald-500/20 flex items-center justify-between text-xs">
+            <div className="relative z-10 pt-2 border-t border-emerald-500/20 flex items-center justify-between text-xs">
               <div>
-                <span className="text-[10px] text-emerald-300 block uppercase font-bold tracking-wider">Saved Today</span>
+                <span className="text-[9px] text-emerald-300 block uppercase font-bold tracking-wider">Saved Today</span>
                 <span className="font-bold text-white text-xs tabular-nums">
                   ₹<CountUp value={costSavedToday} decimals={2} />
                 </span>
-                <span className="text-[10px] text-emerald-200/80 ml-1">
+                <span className="text-[9px] text-emerald-200/80 ml-1">
                   ({kwhSavedToday.toFixed(2)} kWh)
                 </span>
               </div>
               <div className="text-right">
-                <span className="text-[10px] text-emerald-300 block uppercase font-bold tracking-wider">All-Time Energy</span>
+                <span className="text-[9px] text-emerald-300 block uppercase font-bold tracking-wider">All-Time Energy</span>
                 <span className="font-bold text-white text-xs tabular-nums">
                   <CountUp value={kwhSavedAllTime} decimals={2} /> kWh
                 </span>
