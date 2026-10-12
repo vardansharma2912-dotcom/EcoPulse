@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react'
+import { createPortal } from 'react-dom'
 import { motion, AnimatePresence } from 'motion/react'
 import { X } from 'lucide-react'
 
@@ -62,7 +63,11 @@ export const Drawer: React.FC<DrawerProps> = ({
     }
   }, [open, onClose])
 
-  return (
+  if (typeof document === 'undefined') {
+    return null
+  }
+
+  return createPortal(
     <AnimatePresence>
       {open && (
         <div
@@ -77,7 +82,7 @@ export const Drawer: React.FC<DrawerProps> = ({
             exit={{ opacity: 0 }}
             transition={{ duration: 0.2 }}
             onClick={onClose}
-            className="fixed inset-0 bg-[#0a381e]/35 backdrop-blur-[2px]"
+            className="fixed inset-0 bg-[#0a381e]/40 backdrop-blur-[2px]"
             aria-hidden="true"
           />
 
@@ -105,7 +110,7 @@ export const Drawer: React.FC<DrawerProps> = ({
             )}
 
             {/* Header */}
-            <div className="flex items-start justify-between gap-4 px-6 py-4 sm:py-5 border-b border-emerald-900/10 shrink-0">
+            <div className="flex items-start justify-between gap-4 px-5 sm:px-6 py-4 sm:py-5 border-b border-emerald-900/10 shrink-0">
               <div>
                 <h2 id="drawer-title" className="text-base sm:text-lg font-bold text-[#14301f] tracking-tight">
                   {title}
@@ -120,7 +125,7 @@ export const Drawer: React.FC<DrawerProps> = ({
                 type="button"
                 onClick={onClose}
                 aria-label="Close drawer"
-                className="p-1.5 rounded-lg text-slate-700 hover:text-emerald-950 hover:bg-emerald-900/10 transition-colors cursor-pointer shrink-0"
+                className="w-11 h-11 rounded-xl flex items-center justify-center text-slate-700 hover:text-emerald-950 hover:bg-emerald-900/10 transition-colors cursor-pointer shrink-0"
               >
                 <X className="w-5 h-5" />
               </button>
@@ -137,13 +142,14 @@ export const Drawer: React.FC<DrawerProps> = ({
                   transition: { staggerChildren: 0.05, delayChildren: 0.1 },
                 },
               }}
-              className="p-6 flex-1 text-[#14301f] overflow-y-auto"
+              className="p-5 sm:p-6 flex-1 text-[#14301f] overflow-y-auto"
             >
               {children}
             </motion.div>
           </motion.div>
         </div>
       )}
-    </AnimatePresence>
+    </AnimatePresence>,
+    document.body
   )
 }

@@ -276,7 +276,7 @@ export const AppLayout: React.FC = () => {
         </header>
 
         {/* Page Content with Route AnimatePresence Transitions */}
-        <main className="flex-1 p-3.5 sm:p-5 lg:p-8 max-w-6xl w-full mx-auto">
+        <main className="flex-1 p-3.5 sm:p-5 lg:p-8 max-w-6xl w-full mx-auto pb-24 lg:pb-8">
           <AnimatePresence mode="wait">
             <motion.div
               key={location.pathname}

@@ -1,4 +1,5 @@
-import React, { useState, useMemo } from 'react'
+import React, { useState, useMemo, useEffect } from 'react'
+import { createPortal } from 'react-dom'
 import { useNavigate } from 'react-router-dom'
 import { motion, AnimatePresence } from 'motion/react'
 import { Search, X, Bell, BookOpen, Calculator, BarChart3, LayoutDashboard, ArrowRight } from 'lucide-react'
@@ -22,6 +23,25 @@ export const MobileSearchSheet: React.FC<MobileSearchSheetProps> = ({ isOpen, on
   const { state } = useAppState()
   const navigate = useNavigate()
 
+  useEffect(() => {
+    if (isOpen) {
+      const handleKeyDown = (e: KeyboardEvent) => {
+        if (e.key === 'Escape') {
+          e.preventDefault()
+          onClose()
+        }
+      }
+      window.addEventListener('keydown', handleKeyDown)
+      document.body.style.overflow = 'hidden'
+      document.body.setAttribute('data-modal-open', 'true')
+      return () => {
+        window.removeEventListener('keydown', handleKeyDown)
+        document.body.style.overflow = ''
+        document.body.removeAttribute('data-modal-open')
+      }
+    }
+  }, [isOpen, onClose])
+
   const filteredReminders = useMemo(() => {
     if (!query.trim()) return []
     const q = query.toLowerCase()
@@ -41,7 +61,9 @@ export const MobileSearchSheet: React.FC<MobileSearchSheetProps> = ({ isOpen, on
     onClose()
   }
 
-  return (
+  if (typeof document === 'undefined') return null
+
+  return createPortal(
     <AnimatePresence>
       {isOpen && (
         <motion.div
@@ -51,7 +73,7 @@ export const MobileSearchSheet: React.FC<MobileSearchSheetProps> = ({ isOpen, on
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          className="fixed inset-0 z-50 bg-black/35 backdrop-blur-sm flex flex-col justify-start p-3 sm:p-4"
+          className="fixed inset-0 z-50 bg-black/40 backdrop-blur-sm flex flex-col justify-start p-3 sm:p-4"
         >
           <motion.div
             initial={{ y: -24, opacity: 0 }}
@@ -136,6 +158,7 @@ export const MobileSearchSheet: React.FC<MobileSearchSheetProps> = ({ isOpen, on
           </motion.div>
         </motion.div>
       )}
-    </AnimatePresence>
+    </AnimatePresence>,
+    document.body
   )
 }

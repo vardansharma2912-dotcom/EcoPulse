@@ -1,4 +1,5 @@
 import React, { useMemo } from 'react'
+import { createPortal } from 'react-dom'
 import { useNavigate } from 'react-router-dom'
 import { motion, AnimatePresence } from 'motion/react'
 import { Bell, X, CheckCircle2, Clock, ArrowRight } from 'lucide-react'
@@ -35,7 +36,9 @@ export const MobileAlertsPopover: React.FC<MobileAlertsPopoverProps> = ({ isOpen
     onClose()
   }
 
-  return (
+  if (typeof document === 'undefined') return null
+
+  return createPortal(
     <AnimatePresence>
       {isOpen && (
         <>
@@ -115,6 +118,7 @@ export const MobileAlertsPopover: React.FC<MobileAlertsPopoverProps> = ({ isOpen
           </motion.div>
         </>
       )}
-    </AnimatePresence>
+    </AnimatePresence>,
+    document.body
   )
 }

@@ -11,7 +11,7 @@ export const LeafBackground: React.FC = () => {
   return (
     <div
       aria-hidden="true"
-      className="fixed inset-0 h-[100lvh] min-h-[100lvh] -z-10 pointer-events-none overflow-hidden select-none"
+      className="fixed inset-0 h-[100dvh] min-h-[100dvh] -z-10 pointer-events-none overflow-x-clip overflow-y-clip select-none"
     >
       <img
         src={leafBgImg}
