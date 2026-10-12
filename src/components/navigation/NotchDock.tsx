@@ -2,6 +2,7 @@ import React, { useEffect, useState, useRef, useMemo, useCallback } from 'react'
 import { NavLink, useLocation, useNavigate } from 'react-router-dom'
 import {
   motion,
+  AnimatePresence,
   useMotionValue,
   animate,
   useReducedMotion,
@@ -41,6 +42,10 @@ function computeNotchPath(w: number, h: number, r: number, x: number, sw = 48, d
   return `M ${r} 0 L ${leftShoulder} 0 C ${x - cpX} 0, ${x - troughCpX} ${d}, ${x} ${d} C ${x + troughCpX} ${d}, ${x + cpX} 0, ${rightShoulder} 0 L ${w - r} 0 A ${r} ${r} 0 0 1 ${w} ${r} L ${w} ${h - r} A ${r} ${r} 0 0 1 ${w - r} ${h} L ${r} ${h} A ${r} ${r} 0 0 1 0 ${h - r} L 0 ${r} A ${r} ${r} 0 0 1 ${r} 0 Z`
 }
 
+function computeFlatPath(w: number, h: number, r: number): string {
+  return `M ${r} 0 L ${w - r} 0 A ${r} ${r} 0 0 1 ${w} ${r} L ${w} ${h - r} A ${r} ${r} 0 0 1 ${w - r} ${h} L ${r} ${h} A ${r} ${r} 0 0 1 0 ${h - r} L 0 ${r} A ${r} ${r} 0 0 1 ${r} 0 Z`
+}
+
 /**
  * NotchDock
  * Custom mobile bottom navigation dock with a dynamic SVG notch plate that follows
@@ -64,12 +69,13 @@ export const NotchDock: React.FC = () => {
   const notchDepth = isLandscapePhone ? 28 : 34
   const notchShoulder = isLandscapePhone ? 40 : 48
 
-  // Find active index
+  // Find active index (-1 when in settings or non-dock route)
   const activeIndex = useMemo(() => {
     const path = location.pathname
+    if (path.startsWith('/settings')) return -1
     if (path === '/') return 0
     const idx = DOCK_TABS.findIndex((tab) => tab.to !== '/' && path.startsWith(tab.to))
-    return idx >= 0 ? idx : 0
+    return idx
   }, [location.pathname])
 
   // Center X of each tab
@@ -78,7 +84,7 @@ export const NotchDock: React.FC = () => {
     return DOCK_TABS.map((_, i) => tabWidth * i + tabWidth / 2)
   }, [dockWidth])
 
-  const beadX = useMotionValue(tabCenters[activeIndex] || 36)
+  const beadX = useMotionValue(activeIndex >= 0 ? tabCenters[activeIndex] || 36 : 36)
   const [currentPath, setCurrentPath] = useState(() =>
     computeNotchPath(dockWidth, barHeight, cornerRadius, tabCenters[activeIndex] || 36, notchShoulder, notchDepth)
   )
@@ -93,10 +99,12 @@ export const NotchDock: React.FC = () => {
   // Listen to beadX changes to smoothly re-render SVG notch path
   useEffect(() => {
     const unsubscribe = beadX.on('change', (latestX) => {
-      updatePath(latestX)
+      if (activeIndex >= 0) {
+        updatePath(latestX)
+      }
     })
     return () => unsubscribe()
-  }, [beadX, updatePath])
+  }, [beadX, updatePath, activeIndex])
 
   // Measure dock width and landscape status
   useEffect(() => {
@@ -117,16 +125,18 @@ export const NotchDock: React.FC = () => {
 
   // Animate bead to target tab center on route change
   useEffect(() => {
-    const targetX = tabCenters[activeIndex] || 36
-    if (shouldReduceMotion) {
-      beadX.set(targetX)
-    } else {
-      const controls = animate(beadX, targetX, {
-        type: 'spring',
-        stiffness: 380,
-        damping: 32,
-      })
-      return () => controls.stop()
+    if (activeIndex >= 0) {
+      const targetX = tabCenters[activeIndex] || 36
+      if (shouldReduceMotion) {
+        beadX.set(targetX)
+      } else {
+        const controls = animate(beadX, targetX, {
+          type: 'spring',
+          stiffness: 380,
+          damping: 32,
+        })
+        return () => controls.stop()
+      }
     }
   }, [activeIndex, tabCenters, shouldReduceMotion, beadX])
 
@@ -197,6 +207,7 @@ export const NotchDock: React.FC = () => {
 
   // Snap bead on drag release
   const handleDragEnd = (_: MouseEvent | TouchEvent | PointerEvent, info: PanInfo) => {
+    if (activeIndex < 0) return
     const current = beadX.get() + info.velocity.x * 0.05
     let closestIndex = 0
     let minDiff = Infinity
@@ -212,7 +223,7 @@ export const NotchDock: React.FC = () => {
     const targetTab = DOCK_TABS[closestIndex]
     if (targetTab && closestIndex !== activeIndex) {
       navigate(targetTab.to)
-    } else {
+    } else if (activeIndex >= 0) {
       animate(beadX, tabCenters[activeIndex], {
         type: 'spring',
         stiffness: 380,
@@ -221,11 +232,13 @@ export const NotchDock: React.FC = () => {
     }
   }
 
-  const ActiveIcon = DOCK_TABS[activeIndex].icon
+  const ActiveIcon = activeIndex >= 0 ? DOCK_TABS[activeIndex].icon : null
 
   if (isKeyboardOpen || isModalOpen) {
     return null
   }
+
+  const renderedPath = activeIndex < 0 ? computeFlatPath(dockWidth, barHeight, cornerRadius) : currentPath
 
   return (
     <div
@@ -243,7 +256,7 @@ export const NotchDock: React.FC = () => {
         preserveAspectRatio="none"
       >
         <path
-          d={currentPath}
+          d={renderedPath}
           fill="rgba(255, 255, 255, 0.88)"
           stroke="rgba(25, 111, 69, 0.22)"
           strokeWidth="1.2"
@@ -254,37 +267,46 @@ export const NotchDock: React.FC = () => {
       <div
         className="absolute inset-0 backdrop-blur-md pointer-events-none -z-10"
         style={{
-          clipPath: `path('${currentPath}')`,
-          WebkitClipPath: `path('${currentPath}')`,
+          clipPath: `path('${renderedPath}')`,
+          WebkitClipPath: `path('${renderedPath}')`,
         }}
       />
 
       {/* Floating Active Bead (Draggable Enhancement) */}
-      <motion.div
-        aria-hidden="true"
-        drag="x"
-        dragConstraints={{
-          left: tabCenters[0] || 0,
-          right: tabCenters[tabCenters.length - 1] || dockWidth,
-        }}
-        dragElastic={0.06}
-        onDragEnd={handleDragEnd}
-        style={{
-          x: beadX,
-          width: `${beadDiameter}px`,
-          height: `${beadDiameter}px`,
-          marginLeft: `-${beadDiameter / 2}px`,
-          top: isLandscapePhone ? '-22px' : '-26px',
-        }}
-        className="absolute z-20 flex items-center justify-center rounded-full bg-gradient-to-b from-[#1f7a4d] to-[#196f45] text-white shadow-[0_8px_22px_rgba(25,111,69,0.42)] cursor-grab active:cursor-grabbing border border-emerald-300/40"
-      >
-        <ActiveIcon className={isLandscapePhone ? 'w-5 h-5' : 'w-6 h-6'} />
-        {activeIndex === 1 && pendingCount > 0 && (
-          <span className="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-amber-400 text-amber-950 text-[10px] font-extrabold flex items-center justify-center border-2 border-white">
-            {pendingCount}
-          </span>
+      <AnimatePresence>
+        {activeIndex >= 0 && ActiveIcon && (
+          <motion.div
+            key="active-dock-bead"
+            initial={{ scale: 0, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            exit={{ scale: 0, opacity: 0 }}
+            transition={{ duration: shouldReduceMotion ? 0 : 0.2 }}
+            aria-hidden="true"
+            drag="x"
+            dragConstraints={{
+              left: tabCenters[0] || 0,
+              right: tabCenters[tabCenters.length - 1] || dockWidth,
+            }}
+            dragElastic={0.06}
+            onDragEnd={handleDragEnd}
+            style={{
+              x: beadX,
+              width: `${beadDiameter}px`,
+              height: `${beadDiameter}px`,
+              marginLeft: `-${beadDiameter / 2}px`,
+              top: isLandscapePhone ? '-22px' : '-26px',
+            }}
+            className="absolute z-20 flex items-center justify-center rounded-full bg-gradient-to-b from-[#1f7a4d] to-[#196f45] text-white shadow-[0_8px_22px_rgba(25,111,69,0.42)] cursor-grab active:cursor-grabbing border border-emerald-300/40"
+          >
+            <ActiveIcon className={isLandscapePhone ? 'w-5 h-5' : 'w-6 h-6'} />
+            {activeIndex === 1 && pendingCount > 0 && (
+              <span className="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-amber-400 text-amber-950 text-[10px] font-extrabold flex items-center justify-center border-2 border-white">
+                {pendingCount}
+              </span>
+            )}
+          </motion.div>
         )}
-      </motion.div>
+      </AnimatePresence>
 
       {/* Navigation Items */}
       <nav aria-label="Primary" className="relative z-10 w-full h-full flex items-center justify-around">
