@@ -90,17 +90,28 @@ export const SidebarTipCard: React.FC<{ className?: string }> = ({ className = '
       {/* Tip Header */}
       <div className="relative z-10 flex items-center justify-between mb-2">
         <div className="flex items-center gap-1.5 text-emerald-300">
-          <Lightbulb className="w-3.5 h-3.5" />
+          <Lightbulb className="w-3.5 h-3.5 shrink-0" />
           <span className="text-[10px] font-bold uppercase tracking-wider text-emerald-300">Campus Energy Tip</span>
         </div>
-        <div className="flex items-center gap-1.5">
-          {ENERGY_TIPS.map((_, i) => (
-            <span
+        <div className="flex items-center gap-1" role="tablist" aria-label="Energy tips navigation">
+          {ENERGY_TIPS.map((tip, i) => (
+            <button
               key={i}
-              className={`h-1.5 rounded-full transition-all ${
-                i === index ? 'bg-emerald-400 w-3' : 'bg-white/50 w-1.5'
-              }`}
-            />
+              type="button"
+              onClick={() => setIndex(i)}
+              aria-label={`Go to tip ${i + 1}: ${tip.title}`}
+              aria-selected={i === index}
+              role="tab"
+              className="p-1 -m-0.5 rounded-full flex items-center justify-center cursor-pointer focus-visible:outline-2 focus-visible:outline-emerald-400 focus-visible:outline-offset-1 group"
+            >
+              <span
+                className={`h-1.5 rounded-full transition-all duration-200 ${
+                  i === index
+                    ? 'bg-emerald-400 w-3.5 shadow-xs'
+                    : 'bg-white/40 w-1.5 group-hover:bg-white/80 group-hover:w-2'
+                }`}
+              />
+            </button>
           ))}
         </div>
       </div>
@@ -124,11 +135,17 @@ export const SidebarTipCard: React.FC<{ className?: string }> = ({ className = '
         </AnimatePresence>
       </div>
 
-      {isPaused && (
-        <span className="relative z-10 block text-[9px] text-emerald-300/80 mt-1 italic">
+      {/* Stable footer: fixed height so showing 'Paused on hover' does not increase card size */}
+      <div className="relative z-10 h-3.5 mt-1 flex items-center">
+        <span
+          className={`text-[9px] text-emerald-300/80 italic transition-opacity duration-200 ${
+            isPaused ? 'opacity-100' : 'opacity-0 pointer-events-none'
+          }`}
+          aria-hidden={!isPaused}
+        >
           Paused on hover
         </span>
-      )}
+      </div>
     </div>
   )
 }
