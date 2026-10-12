@@ -45,7 +45,7 @@ export const SidebarTipCard: React.FC<{ className?: string }> = ({ className = '
     <div
       onMouseEnter={() => setIsPaused(true)}
       onMouseLeave={() => setIsPaused(false)}
-      className={`relative overflow-hidden rounded-2xl bg-[#0a381e] text-white p-3.5 xl:p-4 shadow-md border border-emerald-500/20 select-none ${className}`}
+      className={`relative overflow-hidden rounded-2xl bg-[#0a381e] text-white p-3.5 xl:p-4 shadow-md border border-emerald-500/20 select-none h-[146px] flex flex-col justify-between ${className}`}
     >
       {/* Original Topographic Contour-Line SVG Background */}
       <svg
@@ -88,7 +88,7 @@ export const SidebarTipCard: React.FC<{ className?: string }> = ({ className = '
       </svg>
 
       {/* Tip Header */}
-      <div className="relative z-10 flex items-center justify-between mb-2">
+      <div className="relative z-10 flex items-center justify-between mb-1">
         <div className="flex items-center gap-1.5 text-emerald-300">
           <Lightbulb className="w-3.5 h-3.5 shrink-0" />
           <span className="text-[10px] font-bold uppercase tracking-wider text-emerald-300">Campus Energy Tip</span>
@@ -116,27 +116,27 @@ export const SidebarTipCard: React.FC<{ className?: string }> = ({ className = '
         </div>
       </div>
 
-      {/* Tip Content with 8s Rotating Crossfade */}
-      <div className="relative z-10 min-h-[58px]">
+      {/* Tip Content with strictly fixed height container so size never jumps */}
+      <div className="relative z-10 h-[66px] overflow-hidden flex flex-col justify-start my-auto">
         <AnimatePresence mode="wait">
           <motion.div
             key={index}
-            initial={{ opacity: 0, y: 4 }}
+            initial={{ opacity: 0, y: 3 }}
             animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -4 }}
-            transition={{ duration: 0.35, ease: 'easeOut' }}
-            className="space-y-1"
+            exit={{ opacity: 0, y: -3 }}
+            transition={{ duration: 0.25, ease: 'easeOut' }}
+            className="space-y-0.5"
           >
-            <h4 className="text-xs font-bold text-white tracking-tight">{currentTip.title}</h4>
-            <p className="text-[11px] text-white/95 leading-relaxed font-normal">
+            <h4 className="text-xs font-bold text-white tracking-tight line-clamp-1">{currentTip.title}</h4>
+            <p className="text-[11px] text-white/95 leading-relaxed font-normal line-clamp-3">
               {currentTip.text}
             </p>
           </motion.div>
         </AnimatePresence>
       </div>
 
-      {/* Stable footer: fixed height so showing 'Paused on hover' does not increase card size */}
-      <div className="relative z-10 h-3.5 mt-1 flex items-center">
+      {/* Stable footer: fixed height so showing 'Paused on hover' does not shift layout */}
+      <div className="relative z-10 h-3 flex items-center">
         <span
           className={`text-[9px] text-emerald-300/80 italic transition-opacity duration-200 ${
             isPaused ? 'opacity-100' : 'opacity-0 pointer-events-none'

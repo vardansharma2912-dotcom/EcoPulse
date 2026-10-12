@@ -144,7 +144,7 @@ export const AppLayout: React.FC = () => {
       />
 
       {/* Desktop Floating Glass Sidebar (lg+) */}
-      <aside className="hidden lg:flex w-64 flex-col justify-between m-4 glass-panel rounded-2xl p-4 xl:p-5 shrink-0 sticky top-4 h-[calc(100vh-2rem)] z-30 overflow-hidden scrollbar-none">
+      <aside className="hidden lg:flex w-64 flex-col justify-between m-4 glass-panel rounded-2xl p-4 xl:p-5 pb-5 xl:pb-6 shrink-0 sticky top-4 h-[calc(100vh-2rem)] z-30 overflow-hidden scrollbar-none">
         <div>
           {/* Logo & Project Banner */}
           <div className="px-2 py-1 mb-4 xl:mb-5">
@@ -217,7 +217,7 @@ export const AppLayout: React.FC = () => {
         </div>
 
         {/* Sidebar Footer with Animated Tip Card */}
-        <div className="pt-4">
+        <div className="pt-3 pb-2">
           <SidebarTipCard />
         </div>
       </aside>
