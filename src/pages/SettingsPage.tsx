@@ -531,10 +531,10 @@ export const SettingsPage: React.FC = () => {
     {/* Data Management & Reset Section */}
     <motion.div variants={cardVariants}>
       <Card variant="glass" className="border-rose-400/50 bg-rose-50/60 p-5">
-        <div className="flex items-start justify-between gap-4">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div>
             <h3 className="text-sm font-bold text-rose-950 flex items-center gap-2">
-              <AlertTriangle className="w-4 h-4 text-rose-700" /> Reset Application Data
+              <AlertTriangle className="w-4 h-4 text-rose-700 shrink-0" /> Reset Application Data
             </h3>
             <p className="text-xs text-[#183624] mt-1 max-w-md font-semibold leading-relaxed">
               Restores default starter reminders, clears completion logs, and clears notification alert history.
@@ -545,6 +545,7 @@ export const SettingsPage: React.FC = () => {
             variant="danger"
             size="sm"
             icon={<RotateCcw className="w-3.5 h-3.5" />}
+            className="w-full sm:w-auto shrink-0 justify-center whitespace-nowrap"
             onClick={() => {
               setResetConfirmInput('')
               setResetDialogOpen(true)
@@ -579,11 +580,12 @@ export const SettingsPage: React.FC = () => {
             placeholder="RESET"
           />
 
-          <div className="flex items-center justify-end gap-3 pt-4 border-t border-emerald-950/10">
+          <div className="flex flex-col-reverse sm:flex-row sm:items-center justify-end gap-2.5 sm:gap-3 pt-4 border-t border-emerald-950/10">
             <Button
               type="button"
               variant="outline"
               size="sm"
+              className="w-full sm:w-auto justify-center"
               onClick={() => {
                 setResetDialogOpen(false)
                 setResetConfirmInput('')
@@ -595,6 +597,7 @@ export const SettingsPage: React.FC = () => {
               type="button"
               variant="danger"
               size="sm"
+              className="w-full sm:w-auto justify-center"
               disabled={resetConfirmInput.trim() !== 'RESET'}
               onClick={handleConfirmReset}
             >
