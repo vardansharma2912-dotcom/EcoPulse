@@ -267,25 +267,67 @@ export const LearnPage: React.FC = () => {
       variants={containerVariants}
       initial="hidden"
       animate="visible"
-      className="space-y-6"
+      className="space-y-2 sm:space-y-3"
     >
       <PageHeader
+        className="flex flex-col md:flex-row md:items-center justify-between gap-3 pt-0 pb-2.5 mb-1.5 sm:mb-2 border-b border-emerald-900/10"
         title="Energy Conservation Guide"
         description="Practical habits and conservation principles for college dormitories and campus living."
         action={
-          <Button
-            type="button"
-            variant="outline"
-            size="sm"
-            icon={<Compass className="w-4 h-4" />}
-            onClick={() => openTour(false)}
-          >
-            Replay tour
-          </Button>
+          <div className="flex items-center gap-2 flex-wrap sm:flex-nowrap">
+            {/* Integrated Glass Navigation Toolbar */}
+            <div className="flex items-center gap-1 rounded-full bg-white/80 dark:bg-emerald-950/70 backdrop-blur-md border border-white/80 dark:border-emerald-800/40 shadow-xs px-2.5 py-1">
+              <button
+                type="button"
+                onClick={prevSlide}
+                aria-label="Previous habit card"
+                title="Previous habit"
+                className="flex h-7 w-7 items-center justify-center rounded-full text-emerald-900 dark:text-emerald-100 transition-colors hover:bg-emerald-800/10 active:scale-95 cursor-pointer"
+              >
+                <ChevronLeft className="h-4 w-4" />
+              </button>
+
+              <button
+                type="button"
+                onClick={() => setIsPlaying((p) => !p)}
+                aria-label={isPlaying ? 'Pause auto-advance' : 'Play auto-advance'}
+                title={isPlaying ? 'Pause auto-advance' : 'Play auto-advance'}
+                className="flex h-7 w-7 items-center justify-center rounded-full text-emerald-900 dark:text-emerald-100 transition-colors hover:bg-emerald-800/10 active:scale-95 cursor-pointer"
+              >
+                {isPlaying ? <Pause className="h-3.5 w-3.5" /> : <Play className="h-3.5 w-3.5" />}
+              </button>
+
+              <div className="h-3.5 w-px bg-black/10 dark:bg-white/10 shrink-0 mx-0.5" />
+
+              <span className="text-xs font-bold tabular-nums text-emerald-900 dark:text-emerald-100 px-1 whitespace-nowrap">
+                {currentIndex + 1} of {totalCards}
+              </span>
+
+              <div className="h-3.5 w-px bg-black/10 dark:bg-white/10 shrink-0 mx-0.5" />
+
+              <button
+                type="button"
+                onClick={nextSlide}
+                aria-label="Next habit card"
+                title="Next habit"
+                className="flex h-7 w-7 items-center justify-center rounded-full text-emerald-900 dark:text-emerald-100 transition-colors hover:bg-emerald-800/10 active:scale-95 cursor-pointer"
+              >
+                <ChevronRight className="h-4 w-4" />
+              </button>
+            </div>
+
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              icon={<Compass className="w-4 h-4" />}
+              onClick={() => openTour(false)}
+            >
+              Replay tour
+            </Button>
+          </div>
         }
       />
-
-
 
     {/* 3D Glassy Carousel Section */}
     <motion.div variants={cardVariants}>
@@ -298,29 +340,50 @@ export const LearnPage: React.FC = () => {
         onKeyDown={handleKeyDown}
         onTouchStart={handleTouchStart}
         onTouchEnd={handleTouchEnd}
-        className="relative py-4 select-none focus:outline-none focus-visible:ring-2 focus-visible:ring-emerald-700/40 rounded-3xl"
+        className="relative select-none focus:outline-none focus-visible:ring-2 focus-visible:ring-emerald-700/40 rounded-3xl"
       >
         {/* Screen Reader Live Region Announcement */}
         <div className="sr-only" aria-live="polite" aria-atomic="true">
           Slide {currentIndex + 1} of {totalCards}: {currentCard.title}. {currentCard.summary}
         </div>
 
+        {/* Floating Side Chevron Buttons for Direct Carousel Interaction */}
+        <button
+          type="button"
+          onClick={prevSlide}
+          aria-label="Previous habit card"
+          title="Previous habit"
+          className="hidden sm:flex absolute left-2 lg:left-6 top-1/2 -translate-y-1/2 z-40 h-9 w-9 items-center justify-center rounded-full bg-white/80 dark:bg-emerald-950/70 backdrop-blur-md border border-white/85 dark:border-emerald-800/40 text-emerald-900 dark:text-emerald-100 shadow-md hover:bg-white active:scale-95 transition-all cursor-pointer"
+        >
+          <ChevronLeft className="h-4.5 w-4.5" />
+        </button>
+
+        <button
+          type="button"
+          onClick={nextSlide}
+          aria-label="Next habit card"
+          title="Next habit"
+          className="hidden sm:flex absolute right-2 lg:right-6 top-1/2 -translate-y-1/2 z-40 h-9 w-9 items-center justify-center rounded-full bg-white/80 dark:bg-emerald-950/70 backdrop-blur-md border border-white/85 dark:border-emerald-800/40 text-emerald-900 dark:text-emerald-100 shadow-md hover:bg-white active:scale-95 transition-all cursor-pointer"
+        >
+          <ChevronRight className="h-4.5 w-4.5" />
+        </button>
+
         {/* 3D / Reduced-Motion Carousel Container */}
         {prefersReducedMotion || isNarrowScreen ? (
           /* Mobile / Narrow Screen: One Centered Card with Peeking Neighbours and touch-action: pan-y */
           <div
-            className="relative flex items-center justify-center overflow-hidden px-2 py-3 select-none"
+            className="relative flex items-center justify-center overflow-hidden px-2 py-2 select-none"
             style={{ touchAction: 'pan-y' }}
           >
             {/* Left Peeking Neighbour */}
             <div
               onClick={prevSlide}
-              className="hidden xs:block absolute -left-16 sm:-left-12 w-64 rounded-2xl bg-white/45 backdrop-blur-md border border-white/60 p-4 shadow-sm opacity-50 scale-90 cursor-pointer pointer-events-auto shrink-0 select-none transition-transform active:scale-85"
+              className="hidden xs:block absolute -left-16 sm:-left-12 w-64 rounded-2xl bg-white/45 backdrop-blur-md border border-white/60 p-3.5 shadow-sm opacity-50 scale-90 cursor-pointer pointer-events-auto shrink-0 select-none transition-transform active:scale-85"
               aria-hidden="true"
             >
               <div className="flex items-center gap-2 mb-2">
-                <div className="w-8 h-8 rounded-lg bg-emerald-700/15 text-emerald-800 flex items-center justify-center shrink-0">
-                  {React.createElement(CARDS[(currentIndex - 1 + totalCards) % totalCards].icon, { className: 'w-4 h-4' })}
+                <div className="w-7 h-7 rounded-lg bg-emerald-700/15 text-emerald-800 flex items-center justify-center shrink-0">
+                  {React.createElement(CARDS[(currentIndex - 1 + totalCards) % totalCards].icon, { className: 'w-3.5 h-3.5' })}
                 </div>
                 <p className="text-xs font-bold text-[#0f2819] truncate">
                   {CARDS[(currentIndex - 1 + totalCards) % totalCards].title}
@@ -333,12 +396,12 @@ export const LearnPage: React.FC = () => {
               role="group"
               aria-roledescription="slide"
               aria-label={`Slide ${currentIndex + 1} of ${totalCards}: ${currentCard.title}`}
-              className="w-full max-w-sm rounded-[22px] bg-white/85 backdrop-blur-xl border border-white/90 p-5 shadow-xl relative z-10 transition-all"
+              className="w-full max-w-sm rounded-[20px] bg-white/85 backdrop-blur-xl border border-white/90 p-4 shadow-xl relative z-10 transition-all"
             >
               {/* Illustration Area */}
-              <div className="relative mb-4 flex h-36 w-full items-center justify-center overflow-hidden rounded-2xl bg-gradient-to-br from-emerald-100/80 via-emerald-50/50 to-teal-100/70 p-4 border border-white/60">
+              <div className="relative mb-3 flex h-28 w-full items-center justify-center overflow-hidden rounded-2xl bg-gradient-to-br from-emerald-100/80 via-emerald-50/50 to-teal-100/70 p-3 border border-white/60">
                 <svg
-                  className="absolute -right-6 -bottom-6 h-36 w-36 text-emerald-800/10 pointer-events-none"
+                  className="absolute -right-5 -bottom-5 h-28 w-28 text-emerald-800/10 pointer-events-none"
                   viewBox="0 0 24 24"
                   fill="currentColor"
                   aria-hidden="true"
@@ -346,22 +409,22 @@ export const LearnPage: React.FC = () => {
                   <path d="M17 8C8 10 5.9 16.17 3.82 21.34L5.71 22l1-2.3A4.49 4.49 0 0 0 8 20C19 20 22 3 22 3c-1 2-8 2.25-13 3.25S2 11.5 2 13.5s1.75 3.75 1.75 3.75C7 8 17 8 17 8z" />
                 </svg>
 
-                <currentCard.icon className="relative z-10 h-14 w-14 text-emerald-800 drop-shadow-xs" />
+                <currentCard.icon className="relative z-10 h-10 w-10 text-emerald-800 drop-shadow-xs" />
               </div>
 
-              <div className="space-y-2.5">
+              <div className="space-y-2">
                 <div className="flex items-center justify-between gap-2">
-                  <h3 className="text-base font-bold text-[#0f2819]">{currentCard.title}</h3>
-                  <Badge variant="neutral" size="sm">
+                  <h3 className="text-sm font-bold text-[#0f2819] truncate">{currentCard.title}</h3>
+                  <Badge variant="neutral" size="sm" className="text-[10px]">
                     {currentCard.category}
                   </Badge>
                 </div>
 
-                <p className="text-xs text-[#1e3f2b] leading-relaxed line-clamp-3">
+                <p className="text-xs text-[#1e3f2b] leading-relaxed line-clamp-2">
                   {currentCard.summary}
                 </p>
 
-                <div className="rounded-xl bg-emerald-800/5 p-2.5 border border-emerald-800/10 space-y-1 text-xs">
+                <div className="rounded-xl bg-emerald-800/5 p-2 border border-emerald-800/10 space-y-0.5 text-xs">
                   <p className="text-[#0f2819]">
                     <span className="font-bold text-emerald-950">Habit: </span>
                     {currentCard.habit}
@@ -372,7 +435,7 @@ export const LearnPage: React.FC = () => {
                   </p>
                 </div>
 
-                <div className="pt-2 flex items-center justify-between">
+                <div className="pt-1.5 flex items-center justify-between">
                   <span className="text-[11px] text-[#1e3f2b]/80 italic">
                     {currentCard.note ? 'Varies by appliance' : ''}
                   </span>
@@ -381,6 +444,7 @@ export const LearnPage: React.FC = () => {
                     size="sm"
                     onClick={() => setExpandedCard(currentCard)}
                     icon={<Maximize2 className="w-3.5 h-3.5" />}
+                    className="py-1 px-2.5 text-xs"
                   >
                     Expand
                   </Button>
@@ -391,12 +455,12 @@ export const LearnPage: React.FC = () => {
             {/* Right Peeking Neighbour */}
             <div
               onClick={nextSlide}
-              className="hidden xs:block absolute -right-16 sm:-right-12 w-64 rounded-2xl bg-white/45 backdrop-blur-md border border-white/60 p-4 shadow-sm opacity-50 scale-90 cursor-pointer pointer-events-auto shrink-0 select-none transition-transform active:scale-85"
+              className="hidden xs:block absolute -right-16 sm:-right-12 w-64 rounded-2xl bg-white/45 backdrop-blur-md border border-white/60 p-3.5 shadow-sm opacity-50 scale-90 cursor-pointer pointer-events-auto shrink-0 select-none transition-transform active:scale-85"
               aria-hidden="true"
             >
               <div className="flex items-center gap-2 mb-2">
-                <div className="w-8 h-8 rounded-lg bg-emerald-700/15 text-emerald-800 flex items-center justify-center shrink-0">
-                  {React.createElement(CARDS[(currentIndex + 1) % totalCards].icon, { className: 'w-4 h-4' })}
+                <div className="w-7 h-7 rounded-lg bg-emerald-700/15 text-emerald-800 flex items-center justify-center shrink-0">
+                  {React.createElement(CARDS[(currentIndex + 1) % totalCards].icon, { className: 'w-3.5 h-3.5' })}
                 </div>
                 <p className="text-xs font-bold text-[#0f2819] truncate">
                   {CARDS[(currentIndex + 1) % totalCards].title}
@@ -407,7 +471,7 @@ export const LearnPage: React.FC = () => {
         ) : (
           /* Full 3D Carousel Layout with Perspective Container */
           <div
-            className="relative h-[440px] w-full flex items-center justify-center overflow-hidden"
+            className="relative h-[345px] sm:h-[355px] lg:h-[365px] w-full flex items-center justify-center overflow-hidden"
             style={{ perspective: '1100px', transformStyle: 'preserve-3d' }}
           >
             {CARDS.map((card, idx) => {
@@ -423,7 +487,7 @@ export const LearnPage: React.FC = () => {
               if (!isVisible) return null
 
               // 3D positioning calculations
-              const xPos = offset * 290
+              const xPos = offset * 270
               const rotateY = offset * -32
               const zPos = isCenter ? 0 : Math.abs(offset) === 1 ? -160 : -320
               const scale = isCenter ? 1 : isAdjacent ? 0.85 : 0.72
@@ -456,20 +520,20 @@ export const LearnPage: React.FC = () => {
                   }}
                   style={{
                     position: 'absolute',
-                    width: '340px',
+                    width: '325px',
                     zIndex,
                     transformStyle: 'preserve-3d',
                     cursor: isCenter ? 'default' : 'pointer',
                   }}
-                  className={`rounded-[20px] bg-white/80 backdrop-blur-xl border border-white/90 p-5 shadow-xl transition-shadow ${
+                  className={`rounded-[20px] bg-white/80 backdrop-blur-xl border border-white/90 p-4 shadow-xl transition-shadow ${
                     isCenter ? 'ring-1 ring-emerald-500/30 shadow-2xl' : 'hover:opacity-90'
                   }`}
                 >
                   {/* Card Illustration Area */}
-                  <div className="relative mb-3 flex h-32 w-full items-center justify-center overflow-hidden rounded-2xl bg-gradient-to-br from-emerald-100/90 via-emerald-50/60 to-teal-100/70 p-4 border border-white/70 shadow-inner">
+                  <div className="relative mb-2.5 flex h-24 w-full items-center justify-center overflow-hidden rounded-2xl bg-gradient-to-br from-emerald-100/90 via-emerald-50/60 to-teal-100/70 p-3 border border-white/70 shadow-inner">
                     {/* Faint botanical leaf watermark in background */}
                     <svg
-                      className="absolute -right-5 -bottom-5 h-32 w-32 text-emerald-800/15 pointer-events-none"
+                      className="absolute -right-4 -bottom-4 h-24 w-24 text-emerald-800/15 pointer-events-none"
                       viewBox="0 0 24 24"
                       fill="currentColor"
                       aria-hidden="true"
@@ -477,11 +541,11 @@ export const LearnPage: React.FC = () => {
                       <path d="M17 8C8 10 5.9 16.17 3.82 21.34L5.71 22l1-2.3A4.49 4.49 0 0 0 8 20C19 20 22 3 22 3c-1 2-8 2.25-13 3.25S2 11.5 2 13.5s1.75 3.75 1.75 3.75C7 8 17 8 17 8z" />
                     </svg>
 
-                    <card.icon className="relative z-10 h-12 w-12 text-emerald-800 drop-shadow-xs" />
+                    <card.icon className="relative z-10 h-10 w-10 text-emerald-800 drop-shadow-xs" />
                   </div>
 
                   {/* Card Details */}
-                  <div className="space-y-2">
+                  <div className="space-y-1.5">
                     <div className="flex items-center justify-between gap-1.5">
                       <h3 className="text-sm font-bold text-[#0f2819] truncate">{card.title}</h3>
                       <Badge variant="neutral" size="sm" className="shrink-0 text-[10px]">
@@ -504,7 +568,7 @@ export const LearnPage: React.FC = () => {
                       </p>
                     </div>
 
-                    <div className="pt-1.5 flex items-center justify-between">
+                    <div className="pt-1 flex items-center justify-between">
                       <span className="text-[10px] text-[#1e3f2b]/75 italic">
                         {card.note ? 'Varies by appliance' : ''}
                       </span>
@@ -529,77 +593,23 @@ export const LearnPage: React.FC = () => {
           </div>
         )}
 
-        {/* Glass Control Pill Below Carousel */}
-        <div className="mt-4 flex flex-col items-center gap-3">
-          <div className="flex w-[440px] max-w-[calc(100vw-32px)] items-center justify-between rounded-full bg-white/80 backdrop-blur-md border border-white/80 shadow-md px-3.5 py-1.5 transition-all">
-            {/* Left controls: Prev & Play/Pause */}
-            <div className="flex items-center gap-1 shrink-0">
-              <button
-                type="button"
-                onClick={prevSlide}
-                aria-label="Previous habit card"
-                className="flex h-8 w-8 items-center justify-center rounded-full text-emerald-900 transition-colors hover:bg-emerald-800/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-700 cursor-pointer"
-              >
-                <ChevronLeft className="h-4 w-4" />
-              </button>
-
-              <button
-                type="button"
-                onClick={() => setIsPlaying((p) => !p)}
-                aria-label={isPlaying ? 'Pause auto-advance' : 'Play auto-advance'}
-                title={isPlaying ? 'Pause auto-advance' : 'Play auto-advance'}
-                className="flex h-8 w-8 items-center justify-center rounded-full text-emerald-900 transition-colors hover:bg-emerald-800/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-700 cursor-pointer"
-              >
-                {isPlaying ? <Pause className="h-3.5 w-3.5" /> : <Play className="h-3.5 w-3.5" />}
-              </button>
-            </div>
-
-            <div className="h-4 w-px bg-black/10 shrink-0 mx-1" />
-
-            {/* Center: Title & Slide Counter with stable spacing */}
-            <div className="flex-1 flex items-center justify-between min-w-0 px-2 gap-2">
-              <span className="text-xs font-bold text-[#0f2819] truncate whitespace-nowrap">
-                {currentCard.title}
-              </span>
-
-              <span className="text-xs font-semibold tabular-nums text-emerald-900 shrink-0">
-                {currentIndex + 1}/{totalCards}
-              </span>
-            </div>
-
-            <div className="h-4 w-px bg-black/10 shrink-0 mx-1" />
-
-            {/* Right controls: Next */}
-            <div className="flex items-center shrink-0">
-              <button
-                type="button"
-                onClick={nextSlide}
-                aria-label="Next habit card"
-                className="flex h-8 w-8 items-center justify-center rounded-full text-emerald-900 transition-colors hover:bg-emerald-800/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-700 cursor-pointer"
-              >
-                <ChevronRight className="h-4 w-4" />
-              </button>
-            </div>
-          </div>
-
-          {/* Navigation Indicator Dots */}
-          <div className="flex items-center gap-1.5" role="tablist" aria-label="Habit card indicators">
-            {CARDS.map((c, i) => (
-              <button
-                key={c.id}
-                type="button"
-                role="tab"
-                aria-selected={i === currentIndex}
-                aria-label={`Jump to ${c.title}`}
-                onClick={() => setCurrentIndex(i)}
-                className={`h-2 rounded-full transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-700 cursor-pointer ${
-                  i === currentIndex
-                    ? 'w-6 bg-emerald-800'
-                    : 'w-2 bg-emerald-800/25 hover:bg-emerald-800/50'
-                }`}
-              />
-            ))}
-          </div>
+        {/* Compact Navigation Indicator Dots Directly Underneath */}
+        <div className="mt-2 flex items-center justify-center gap-1.5" role="tablist" aria-label="Habit card indicators">
+          {CARDS.map((c, i) => (
+            <button
+              key={c.id}
+              type="button"
+              role="tab"
+              aria-selected={i === currentIndex}
+              aria-label={`Jump to ${c.title}`}
+              onClick={() => setCurrentIndex(i)}
+              className={`h-1.5 rounded-full transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-700 cursor-pointer ${
+                i === currentIndex
+                  ? 'w-6 bg-emerald-800'
+                  : 'w-2 bg-emerald-800/25 hover:bg-emerald-800/50'
+              }`}
+            />
+          ))}
         </div>
       </section>
     </motion.div>

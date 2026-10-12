@@ -6,6 +6,7 @@ export interface PageHeaderProps {
   description?: string
   action?: React.ReactNode
   badge?: React.ReactNode
+  className?: string
 }
 
 export const PageHeader: React.FC<PageHeaderProps> = ({
@@ -13,9 +14,15 @@ export const PageHeader: React.FC<PageHeaderProps> = ({
   description,
   action,
   badge,
+  className,
 }) => {
   return (
-    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pt-1 sm:pt-2 pb-5 mb-6 border-b border-emerald-900/10">
+    <div
+      className={
+        className ??
+        'flex flex-col sm:flex-row sm:items-center justify-between gap-4 pt-1 sm:pt-2 pb-5 mb-6 border-b border-emerald-900/10'
+      }
+    >
       <div>
         <div className="flex items-center gap-3">
           {/* Title reveals left-to-right via clip-path 450ms with vertical safety padding */}
