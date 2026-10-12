@@ -9,7 +9,6 @@ import { EmptyState } from '../components/ui/EmptyState'
 import { CountUp } from '../components/ui/CountUp'
 import { SemiCircleGauge } from '../components/charts/SemiCircleGauge'
 import { PillBarChart } from '../components/charts/PillBarChart'
-import { TimeTrackerCard } from '../components/charts/TimeTrackerCard'
 import { useToast } from '../context/useToast'
 import { useAppState } from '../state'
 import { todayKey } from '../lib/dates'
@@ -70,6 +69,7 @@ export const DashboardPage: React.FC = () => {
   const pendingTodayCount = Math.max(0, totalDueToday - completedTodayCount - snoozedTodayCount)
 
   const kwhSavedToday = todayCompletions.reduce((acc, c) => acc + c.kWh, 0)
+  const costSavedToday = todayCompletions.reduce((acc, c) => acc + c.costSaved, 0)
   const kwhSavedAllTime = state.completions.reduce((acc, c) => acc + c.kWh, 0)
   const costSavedAllTime = state.completions.reduce((acc, c) => acc + c.costSaved, 0)
 
@@ -349,7 +349,7 @@ export const DashboardPage: React.FC = () => {
         </motion.div>
       </div>
 
-      {/* Row 3: Active Device Habits + SemiCircleGauge + TimeTrackerCard */}
+      {/* Row 3: Active Device Habits + SemiCircleGauge + Estimated Savings */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
         {/* Card 1: Appliance Conservation Status (Matching Team Collaboration from video) */}
         <motion.div variants={cardVariants}>
@@ -392,7 +392,9 @@ export const DashboardPage: React.FC = () => {
           <Card variant="glass-strong" className="p-5 flex flex-col items-center justify-between h-full">
             <div className="w-full flex items-center justify-between mb-2">
               <span className="text-xs font-bold uppercase tracking-wider text-[#14301f]">Today's Progress</span>
-              <Badge variant="emerald" size="sm">Live</Badge>
+              <Badge variant="neutral" size="sm">
+                {completedTodayCount}/{totalDueToday}
+              </Badge>
             </div>
 
             <SemiCircleGauge
@@ -409,9 +411,90 @@ export const DashboardPage: React.FC = () => {
           </Card>
         </motion.div>
 
-        {/* Card 3: The Iconic Time Tracker Card from the Reference Video */}
+        {/* Card 3: Estimated Savings Hero Metric (Dark Green Slot) */}
         <motion.div variants={cardVariants}>
-          <TimeTrackerCard className="h-full min-h-[220px]" />
+          <div className="relative overflow-hidden rounded-2xl bg-[#0a381e] text-white p-5 flex flex-col justify-between shadow-xl border border-emerald-500/20 h-full min-h-[220px] select-none">
+            {/* Topographic Contour-Line SVG Background */}
+            <svg
+              aria-hidden="true"
+              className="absolute inset-0 w-full h-full pointer-events-none opacity-[0.14]"
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 320 220"
+              preserveAspectRatio="none"
+            >
+              <path
+                d="M-30,40 C50,15 130,70 210,35 C270,10 320,45 370,30"
+                fill="none"
+                stroke="#ffffff"
+                strokeWidth="1.4"
+              />
+              <path
+                d="M-30,80 C60,55 140,110 220,70 C280,45 330,85 380,70"
+                fill="none"
+                stroke="#ffffff"
+                strokeWidth="1.4"
+              />
+              <path
+                d="M-30,120 C40,105 120,145 200,110 C270,85 310,135 370,120"
+                fill="none"
+                stroke="#ffffff"
+                strokeWidth="1.4"
+              />
+              <path
+                d="M-30,160 C70,135 150,185 230,150 C280,125 320,165 370,160"
+                fill="none"
+                stroke="#ffffff"
+                strokeWidth="1.4"
+              />
+              <path
+                d="M-30,20 C80,5 160,40 240,15 C290,0 330,30 380,18"
+                fill="none"
+                stroke="#ffffff"
+                strokeWidth="1.4"
+              />
+            </svg>
+
+            {/* Header: Title & Tariff Badge */}
+            <div className="relative z-10 flex items-center justify-between mb-2">
+              <div className="flex items-center gap-2">
+                <TrendingUp className="w-4 h-4 text-emerald-300" />
+                <h3 className="text-sm sm:text-base font-bold text-white tracking-tight">Estimated Savings</h3>
+              </div>
+              <span className="px-2.5 py-0.5 rounded-full bg-emerald-900/60 border border-emerald-500/30 text-[11px] font-semibold text-emerald-300">
+                ₹{state.settings.tariffPerKwh}/kWh Tariff
+              </span>
+            </div>
+
+            {/* Main Metric: Total Money Saved */}
+            <div className="relative z-10 py-1">
+              <span className="text-[11px] font-bold uppercase tracking-wider text-emerald-300/90 block mb-0.5">
+                Total Financial Savings
+              </span>
+              <div className="text-3xl sm:text-4xl font-extrabold text-white tracking-tight tabular-nums flex items-baseline gap-1">
+                <span className="text-2xl text-emerald-300 font-bold">₹</span>
+                <CountUp value={costSavedAllTime} decimals={2} />
+              </div>
+            </div>
+
+            {/* Sub-metrics breakdown */}
+            <div className="relative z-10 pt-2.5 border-t border-emerald-500/20 flex items-center justify-between text-xs">
+              <div>
+                <span className="text-[10px] text-emerald-300 block uppercase font-bold tracking-wider">Saved Today</span>
+                <span className="font-bold text-white text-xs tabular-nums">
+                  ₹<CountUp value={costSavedToday} decimals={2} />
+                </span>
+                <span className="text-[10px] text-emerald-200/80 ml-1">
+                  ({kwhSavedToday.toFixed(2)} kWh)
+                </span>
+              </div>
+              <div className="text-right">
+                <span className="text-[10px] text-emerald-300 block uppercase font-bold tracking-wider">All-Time Energy</span>
+                <span className="font-bold text-white text-xs tabular-nums">
+                  <CountUp value={kwhSavedAllTime} decimals={2} /> kWh
+                </span>
+              </div>
+            </div>
+          </div>
         </motion.div>
       </div>
 
