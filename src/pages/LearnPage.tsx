@@ -460,7 +460,7 @@ export const LearnPage: React.FC = () => {
 
               <div className="space-y-2">
                 <div className="flex items-center justify-between gap-2">
-                  <h3 className="text-sm font-bold text-[#0f2819] truncate">{currentCard.title}</h3>
+                  <h2 className="text-sm font-bold text-[#0f2819] truncate">{currentCard.title}</h2>
                   <Badge variant="neutral" size="sm" className="text-[10px]">
                     {currentCard.category}
                   </Badge>
@@ -593,7 +593,7 @@ export const LearnPage: React.FC = () => {
                   {/* Card Details */}
                   <div className="space-y-1.5">
                     <div className="flex items-center justify-between gap-1.5">
-                      <h3 className="text-sm font-bold text-[#0f2819] truncate">{card.title}</h3>
+                      <h2 className="text-sm font-bold text-[#0f2819] truncate">{card.title}</h2>
                       <Badge variant="neutral" size="sm" className="shrink-0 text-[10px]">
                         {card.category}
                       </Badge>
@@ -717,7 +717,7 @@ export const LearnPage: React.FC = () => {
 
             <div className="space-y-3">
               <div>
-                <h4 className="font-bold text-[#0f2819] text-xs">Summary:</h4>
+                <h3 className="font-bold text-[#0f2819] text-xs">Summary:</h3>
                 <p className="mt-0.5">{expandedCard.summary}</p>
               </div>
 
@@ -733,7 +733,7 @@ export const LearnPage: React.FC = () => {
               </div>
 
               <div>
-                <h4 className="font-bold text-[#0f2819] text-xs">Detailed Academic Context:</h4>
+                <h3 className="font-bold text-[#0f2819] text-xs">Detailed Academic Context:</h3>
                 <p className="mt-1 leading-relaxed text-[#1e3f2b]">{expandedCard.fullDetails}</p>
               </div>
 

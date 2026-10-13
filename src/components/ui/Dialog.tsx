@@ -19,14 +19,54 @@ export const Dialog: React.FC<DialogProps> = ({
   children,
 }) => {
   const previousActiveElement = useRef<HTMLElement | null>(null)
+  const dialogRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
     if (open) {
       previousActiveElement.current = document.activeElement as HTMLElement | null
+
+      // Auto-focus first interactive element inside dialog if not already focused
+      const timer = window.setTimeout(() => {
+        if (dialogRef.current && !dialogRef.current.contains(document.activeElement)) {
+          const focusables = Array.from(
+            dialogRef.current.querySelectorAll<HTMLElement>(
+              'button:not([disabled]), [href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])'
+            )
+          ).filter((el) => el.offsetParent !== null || el.offsetWidth > 0 || el.offsetHeight > 0)
+
+          if (focusables.length > 0) {
+            focusables[0].focus()
+          }
+        }
+      }, 50)
+
       const handleKeyDown = (e: KeyboardEvent) => {
         if (e.key === 'Escape') {
           e.preventDefault()
           onClose()
+        } else if (e.key === 'Tab') {
+          if (!dialogRef.current) return
+          const focusables = Array.from(
+            dialogRef.current.querySelectorAll<HTMLElement>(
+              'button:not([disabled]), [href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])'
+            )
+          ).filter((el) => el.offsetParent !== null || el.offsetWidth > 0 || el.offsetHeight > 0)
+
+          if (focusables.length === 0) return
+          const first = focusables[0]
+          const last = focusables[focusables.length - 1]
+
+          if (e.shiftKey) {
+            if (document.activeElement === first) {
+              e.preventDefault()
+              last.focus()
+            }
+          } else {
+            if (document.activeElement === last) {
+              e.preventDefault()
+              first.focus()
+            }
+          }
         }
       }
       window.addEventListener('keydown', handleKeyDown)
@@ -34,11 +74,14 @@ export const Dialog: React.FC<DialogProps> = ({
       document.body.setAttribute('data-modal-open', 'true')
 
       return () => {
+        window.clearTimeout(timer)
         window.removeEventListener('keydown', handleKeyDown)
         document.body.style.overflow = ''
         document.body.removeAttribute('data-modal-open')
         if (previousActiveElement.current && typeof previousActiveElement.current.focus === 'function') {
-          previousActiveElement.current.focus()
+          try {
+            previousActiveElement.current.focus()
+          } catch {}
         }
       }
     }
@@ -65,14 +108,16 @@ export const Dialog: React.FC<DialogProps> = ({
 
           {/* Dialog Container: centered, max-height 90dvh with inner scroll */}
           <motion.div
+            ref={dialogRef}
             role="dialog"
             aria-modal="true"
             aria-labelledby="dialog-title"
+            tabIndex={-1}
             initial={{ opacity: 0, scale: 0.96, y: 8 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.96, y: 8 }}
             transition={{ type: 'spring', stiffness: 350, damping: 28 }}
-            className="relative z-10 w-full max-w-lg max-h-[90dvh] flex flex-col rounded-2xl glass-strong text-[#14301f] border border-white/80 p-0 shadow-2xl overflow-hidden my-auto"
+            className="relative z-10 w-full max-w-lg max-h-[90dvh] flex flex-col rounded-2xl glass-strong text-[#14301f] border border-white/80 p-0 shadow-2xl overflow-hidden my-auto focus:outline-none"
           >
             <div className="p-4 sm:p-6 flex flex-col max-h-[90dvh] overflow-y-auto">
               <div className="flex items-start justify-between gap-3 sm:gap-4 mb-4">

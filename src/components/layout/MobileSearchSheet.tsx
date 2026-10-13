@@ -86,10 +86,12 @@ export const MobileSearchSheet: React.FC<MobileSearchSheetProps> = ({ isOpen, on
             <div className="flex items-center gap-2 pb-3 border-b border-emerald-900/10">
               <Search className="w-5 h-5 text-emerald-800 shrink-0" />
               <input
+                id="mobile-search-input"
                 type="text"
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
                 placeholder="Search reminders, guides, pages..."
+                aria-label="Search reminders, guides, pages"
                 autoFocus
                 className="flex-1 bg-transparent border-none text-[#14301f] placeholder:text-slate-500 font-medium text-base focus:outline-none"
               />

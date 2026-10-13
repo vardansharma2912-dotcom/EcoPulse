@@ -144,12 +144,14 @@ export const SnoozeDialog: React.FC<SnoozeDialogProps> = ({
             </div>
             <div className="flex items-center gap-2">
               <Input
+                id="custom-snooze-minutes"
                 type="number"
                 min="1"
                 max="1440"
                 value={customMinutes}
                 onChange={(e) => setCustomMinutes(e.target.value)}
                 placeholder="e.g. 45"
+                aria-label="Custom snooze minutes"
                 className="text-base"
               />
               <Button type="submit" variant="primary" size="sm" className="shrink-0 min-h-[44px]">

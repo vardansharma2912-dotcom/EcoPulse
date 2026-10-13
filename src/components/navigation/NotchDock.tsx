@@ -208,6 +208,27 @@ export const NotchDock: React.FC = () => {
   const ActiveIcon = activeIndex >= 0 ? DOCK_TABS[activeIndex].icon : null
   const renderedPlatePath = activeIndex >= 0 ? currentPath : computeFlatPath(dockWidth, barHeight)
 
+  const handleDockKeyDown = (e: React.KeyboardEvent, index: number) => {
+    let nextIndex = -1
+    if (e.key === 'ArrowRight') {
+      nextIndex = (index + 1) % DOCK_TABS.length
+    } else if (e.key === 'ArrowLeft') {
+      nextIndex = (index - 1 + DOCK_TABS.length) % DOCK_TABS.length
+    } else if (e.key === 'Home') {
+      nextIndex = 0
+    } else if (e.key === 'End') {
+      nextIndex = DOCK_TABS.length - 1
+    }
+
+    if (nextIndex >= 0 && dockRef.current) {
+      e.preventDefault()
+      const links = dockRef.current.querySelectorAll<HTMLAnchorElement>('a')
+      if (links[nextIndex]) {
+        links[nextIndex].focus()
+      }
+    }
+  }
+
   return createPortal(
     <nav
       ref={dockRef}
@@ -268,12 +289,13 @@ export const NotchDock: React.FC = () => {
               end={tab.to === '/'}
               aria-label={tab.label}
               aria-current={isActive ? 'page' : undefined}
-              className={`flex-1 flex flex-col items-center justify-end pb-2 pt-1 relative transition-colors cursor-pointer group ${
-                isActive ? 'text-[#0a381e]' : 'text-[#486352] hover:text-[#0a381e]'
+              onKeyDown={(e) => handleDockKeyDown(e, idx)}
+              className={`flex-1 flex flex-col items-center justify-end pb-2 pt-1 relative transition-colors cursor-pointer group focus-visible:outline-2 focus-visible:outline-emerald-800 focus-visible:outline-offset-[-2px] rounded-xl ${
+                isActive ? 'text-[#0a381e]' : 'text-[#2d4a37] hover:text-[#0a381e]'
               }`}
             >
               {!isActive && (
-                <div className="relative p-1 text-[#486352] group-hover:text-[#0a381e] group-active:scale-90 transition-transform">
+                <div className="relative p-1 text-[#2d4a37] group-hover:text-[#0a381e] group-active:scale-90 transition-transform">
                   <Icon className="w-5 h-5" />
                   {tab.to === '/reminders' && pendingCount > 0 && (
                     <span className="absolute -top-1 -right-1 min-w-[16px] h-4 px-1 rounded-full bg-emerald-700 text-white text-[10px] font-bold flex items-center justify-center border border-white">
@@ -287,7 +309,7 @@ export const NotchDock: React.FC = () => {
                 className={`text-[10px] tracking-tight leading-none mt-0.5 transition-all ${
                   isActive
                     ? 'font-bold text-[#0a381e]'
-                    : 'font-medium text-[#486352] group-hover:text-[#0a381e]'
+                    : 'font-semibold text-[#2d4a37] group-hover:text-[#0a381e]'
                 }`}
               >
                 {tab.label}

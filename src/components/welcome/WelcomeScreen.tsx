@@ -122,10 +122,14 @@ export const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ onComplete }) => {
         {/* Name Input Form */}
         <motion.form variants={itemVariants} onSubmit={handleContinue} className="space-y-3.5 text-left">
           <div className="space-y-1">
+            <label htmlFor="welcome-name" className="sr-only">
+              What should we call you?
+            </label>
             <input
               id="welcome-name"
               type="text"
               placeholder="What should we call you?"
+              aria-label="What should we call you?"
               value={name}
               onChange={(e) => {
                 setName(e.target.value)
