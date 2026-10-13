@@ -45,7 +45,7 @@ const CARDS: HabitCard[] = [
     summary:
       'Leaving desk lamps, overhead room fixtures, and hallway lights switched on in empty rooms wastes power continuously without delivering any utility.',
     habit:
-      'Make it a muscle-memory habit to flip off switches every single time you step out of a study bedroom, departmental lab, or washroom.',
+      'Make it a muscle-memory habit to flip off switches every single time you step out of a study bedroom, classroom, or washroom.',
     whyItHelps:
       'Immediately cuts baseline electrical consumption during vacancy intervals. Even brief habits of turning off lights accumulate across a semester.',
     fullDetails:
@@ -148,9 +148,9 @@ const CARDS: HabitCard[] = [
     category: 'Shared Spaces',
     icon: Users,
     summary:
-      'In lecture halls, project laboratories, and dorm floor lounges, individuals frequently assume that building maintenance or someone else will turn off switches.',
+      'In lecture halls, study rooms, and dorm floor lounges, individuals frequently assume that building maintenance or someone else will turn off switches.',
     habit:
-      'Take collective proactive ownership. If you are the last person exiting a shared room or project lab, take a moment to switch off fixtures.',
+      'Take collective proactive ownership. If you are the last person exiting a shared study room or group lounge, take a moment to switch off fixtures.',
     whyItHelps:
       'Prevents lights, monitors, and ventilation equipment in unoccupied institutional rooms from operating unobserved overnight.',
     fullDetails:
@@ -177,7 +177,8 @@ const CARDS: HabitCard[] = [
 export const LearnPage: React.FC = () => {
   const { openTour } = useTour()
   const [currentIndex, setCurrentIndex] = useState(0)
-  const [isPlaying, setIsPlaying] = useState(true) // By default set to play (auto move to next slide)
+  const [isPlaying, setIsPlaying] = useState(false) // Autoplay starts paused by default
+  const [isHoveredOrFocused, setIsHoveredOrFocused] = useState(false)
   const [expandedCard, setExpandedCard] = useState<HabitCard | null>(null)
   const [prefersReducedMotion, setPrefersReducedMotion] = useState<boolean>(() => {
     if (typeof window !== 'undefined' && 'matchMedia' in window) {
@@ -200,7 +201,12 @@ export const LearnPage: React.FC = () => {
     if (typeof window === 'undefined') return
 
     const mediaQueryMotion = window.matchMedia('(prefers-reduced-motion: reduce)')
-    const handleMotionChange = (e: MediaQueryListEvent) => setPrefersReducedMotion(e.matches)
+    const handleMotionChange = (e: MediaQueryListEvent) => {
+      setPrefersReducedMotion(e.matches)
+      if (e.matches) {
+        setIsPlaying(false)
+      }
+    }
     mediaQueryMotion.addEventListener('change', handleMotionChange)
 
     const handleResize = () => {
@@ -222,16 +228,17 @@ export const LearnPage: React.FC = () => {
     setCurrentIndex((prev) => (prev - 1 + totalCards) % totalCards)
   }, [totalCards])
 
-  // Autoplay timer: auto-advances to next slide every 4 seconds when isPlaying is true
+  // Autoplay timer: auto-advances every 4s when playing.
+  // Never autoplays if prefers-reduced-motion is active; pauses on hover and keyboard focus.
   useEffect(() => {
-    if (!isPlaying || Boolean(expandedCard)) return
+    if (!isPlaying || prefersReducedMotion || isHoveredOrFocused || Boolean(expandedCard)) return
 
     const timer = setInterval(() => {
       nextSlide()
     }, 4000)
 
     return () => clearInterval(timer)
-  }, [isPlaying, expandedCard, nextSlide])
+  }, [isPlaying, prefersReducedMotion, isHoveredOrFocused, expandedCard, nextSlide])
 
   // Keyboard navigation (ArrowLeft & ArrowRight)
   const handleKeyDown = (e: React.KeyboardEvent) => {
@@ -289,12 +296,37 @@ export const LearnPage: React.FC = () => {
 
               <button
                 type="button"
-                onClick={() => setIsPlaying((p) => !p)}
-                aria-label={isPlaying ? 'Pause auto-advance' : 'Play auto-advance'}
-                title={isPlaying ? 'Pause auto-advance' : 'Play auto-advance'}
-                className="flex h-7 w-7 items-center justify-center rounded-full text-emerald-900 dark:text-emerald-100 transition-colors hover:bg-emerald-800/10 active:scale-95 cursor-pointer"
+                onClick={() => {
+                  if (!prefersReducedMotion) {
+                    setIsPlaying((p) => !p)
+                  }
+                }}
+                disabled={prefersReducedMotion}
+                aria-label={
+                  prefersReducedMotion
+                    ? 'Autoplay disabled (reduced motion preferred)'
+                    : isPlaying
+                    ? 'Pause auto-advance'
+                    : 'Play auto-advance'
+                }
+                title={
+                  prefersReducedMotion
+                    ? 'Autoplay disabled (reduced motion preferred)'
+                    : isPlaying
+                    ? 'Pause auto-advance'
+                    : 'Play auto-advance'
+                }
+                className={`flex h-7 w-7 items-center justify-center rounded-full text-emerald-900 dark:text-emerald-100 transition-colors ${
+                  prefersReducedMotion
+                    ? 'opacity-40 cursor-not-allowed'
+                    : 'hover:bg-emerald-800/10 active:scale-95 cursor-pointer'
+                }`}
               >
-                {isPlaying ? <Pause className="h-3.5 w-3.5" /> : <Play className="h-3.5 w-3.5" />}
+                {isPlaying && !prefersReducedMotion ? (
+                  <Pause className="h-3.5 w-3.5" />
+                ) : (
+                  <Play className="h-3.5 w-3.5" />
+                )}
               </button>
 
               <div className="h-3.5 w-px bg-black/10 dark:bg-white/10 shrink-0 mx-0.5" />
@@ -340,6 +372,14 @@ export const LearnPage: React.FC = () => {
         onKeyDown={handleKeyDown}
         onTouchStart={handleTouchStart}
         onTouchEnd={handleTouchEnd}
+        onMouseEnter={() => setIsHoveredOrFocused(true)}
+        onMouseLeave={() => setIsHoveredOrFocused(false)}
+        onFocus={() => setIsHoveredOrFocused(true)}
+        onBlur={(e) => {
+          if (!e.currentTarget.contains(e.relatedTarget as Node)) {
+            setIsHoveredOrFocused(false)
+          }
+        }}
         className="relative select-none focus:outline-none focus-visible:ring-2 focus-visible:ring-emerald-700/40 rounded-3xl"
       >
         {/* Screen Reader Live Region Announcement */}

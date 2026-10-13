@@ -467,7 +467,7 @@ export const SettingsPage: React.FC = () => {
               )}
             </div>
             <p className="text-xs text-[#1e3f2b] mt-1 leading-relaxed">
-              For grading and presentation walkthroughs: populates ~14 days of sample completions to visualize graphs, streaks, and milestone badges. Real completions are strictly preserved.
+              Load about 14 days of sample activity to preview charts, streaks and badges. Your real entries are never touched.
             </p>
           </div>
 

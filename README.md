@@ -14,7 +14,7 @@
 ## 1. Project Purpose & The Environmental Problem
 
 Electricity generation accounts for a substantial proportion of global fossil fuel combustion, greenhouse gas emissions, and industrial water cooling demands. On college campuses and in residential settings, a significant fraction of electrical energy is lost to **passive behavioral waste**:
-- Study room and laboratory lights remaining on when rooms are unoccupied.
+- Study room and classroom lights remaining on when rooms are unoccupied.
 - Ceiling and personal fans spinning in empty rooms (fans cool human skin, not air).
 - Laptops, monitors, and chargers continuously drawing vampire/standby power around the clock.
 

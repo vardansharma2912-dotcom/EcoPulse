@@ -18,7 +18,19 @@ import { containerVariants, cardVariants, highlightCardVariants } from '../lib/m
 import { ReminderFormDialog } from '../components/reminders/ReminderFormDialog'
 import { DemoBanner } from '../components/layout/DemoBanner'
 import { GettingStartedCard } from '../components/dashboard/GettingStartedCard'
-import type { Reminder } from '../types'
+import type { Reminder, ReminderCategory } from '../types'
+
+const CATEGORY_LABELS: Record<ReminderCategory, string> = {
+  lighting: 'Lighting',
+  cooling: 'Cooling',
+  chargers: 'Chargers',
+  computing: 'Computers',
+  appliances: 'Appliances',
+  standby: 'Standby',
+  shared: 'Shared spaces',
+  other: 'Other',
+}
+
 import {
   Zap,
   Clock,
@@ -92,6 +104,28 @@ export const DashboardPage: React.FC = () => {
   const isReminderDoneToday = (reminderId: string) => {
     return todayCompletions.some((c) => c.reminderId === reminderId)
   }
+
+  // Real category progress for reminders due today
+  const todayCategoryProgress = useMemo(() => {
+    const doneIds = new Set(todayCompletions.map((c) => c.reminderId))
+    const map = new Map<ReminderCategory, { total: number; done: number }>()
+    for (const r of dueTodayReminders) {
+      const entry = map.get(r.category) ?? { total: 0, done: 0 }
+      entry.total += 1
+      if (doneIds.has(r.id)) {
+        entry.done += 1
+      }
+      map.set(r.category, entry)
+    }
+
+    return Array.from(map.entries()).map(([category, stats]) => ({
+      category,
+      label: CATEGORY_LABELS[category] || category,
+      total: stats.total,
+      done: stats.done,
+      pct: stats.total > 0 ? Math.round((stats.done / stats.total) * 100) : 0,
+    }))
+  }, [dueTodayReminders, todayCompletions])
 
   const handleCreateReminder = (data: Omit<Reminder, 'id' | 'createdAt'> | Reminder) => {
     if (!('id' in data)) {
@@ -351,38 +385,52 @@ export const DashboardPage: React.FC = () => {
 
       {/* Row 3: Active Device Habits + SemiCircleGauge + Estimated Savings (Compact ~50% Height) */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-        {/* Card 1: Appliance Conservation Status */}
+        {/* Card 1: Today by Category Progress */}
         <motion.div variants={cardVariants}>
-          <Card variant="glass-strong" className="p-3.5 sm:p-4 flex flex-col justify-between h-full space-y-2">
+          <Card variant="glass-strong" className="p-3.5 sm:p-4 flex flex-col justify-between h-full space-y-2.5">
             <div className="flex items-center justify-between">
-              <h3 className="text-xs sm:text-sm font-bold text-[#14301f]">Conservation Habits</h3>
-              <Badge variant="neutral" size="sm">Active</Badge>
+              <h3 className="text-xs sm:text-sm font-bold text-[#14301f]">Today by category</h3>
+              <Badge variant="neutral" size="sm">
+                {todayCategoryProgress.length > 0
+                  ? `${todayCategoryProgress.length} ${todayCategoryProgress.length === 1 ? 'category' : 'categories'}`
+                  : '0 categories'}
+              </Badge>
             </div>
 
-            <div className="grid grid-cols-2 gap-2 my-auto">
-              {[
-                { name: 'Air Conditioning', category: 'Cooling', status: 'Moderate', impact: 'Compressor load reduced' },
-                { name: 'Workstation Standby', category: 'Computing', status: 'Unplugged', impact: 'Phantom load isolated' },
-                { name: 'Fume Hood Sash', category: 'Laboratory', status: 'Lowered', impact: 'Ventilation exhaust saved' },
-                { name: 'Daylight Harvesting', category: 'Lighting', status: 'Lamps Off', impact: 'Natural daylight used' },
-              ].map((habit) => (
-                <div
-                  key={habit.name}
-                  className="p-2 rounded-xl bg-white/60 border border-emerald-950/5 flex flex-col justify-between text-xs hover:bg-white/85 transition-colors"
-                >
-                  <p className="font-bold text-[11px] text-[#102819] truncate">{habit.name}</p>
-                  <div className="flex items-center justify-between gap-1 mt-1">
-                    <span className="text-[9px] text-[#1e3f2b] truncate">{habit.category}</span>
-                    <span className="shrink-0 px-1.5 py-0.5 rounded-full text-[9px] font-bold bg-emerald-100 text-emerald-900 border border-emerald-200">
-                      {habit.status}
-                    </span>
+            {todayCategoryProgress.length === 0 ? (
+              <div className="my-auto py-4 text-center">
+                <p className="text-xs font-semibold text-[#14301f]">No reminders due today</p>
+                <p className="text-[11px] text-slate-600 mt-1">
+                  All scheduled reminders for today are clear or none are due.
+                </p>
+              </div>
+            ) : (
+              <div className="space-y-2.5 my-auto max-h-[160px] overflow-y-auto pr-0.5 scrollbar-thin">
+                {todayCategoryProgress.map((item) => (
+                  <div key={item.category} className="space-y-1">
+                    <div className="flex items-center justify-between text-xs">
+                      <span className="font-semibold text-[#102819] truncate">{item.label}</span>
+                      <span className="text-[11px] font-mono font-medium text-emerald-950 shrink-0">
+                        {item.done}/{item.total}
+                      </span>
+                    </div>
+                    <div className="h-1.5 w-full bg-emerald-950/10 rounded-full overflow-hidden">
+                      <motion.div
+                        className="h-full bg-emerald-700 rounded-full"
+                        initial={{ width: 0 }}
+                        animate={{ width: `${item.pct}%` }}
+                        transition={{ duration: 0.45, ease: 'easeOut' }}
+                      />
+                    </div>
                   </div>
-                </div>
-              ))}
-            </div>
+                ))}
+              </div>
+            )}
 
-            <p className="text-[10px] text-[#1e3f2b] font-medium pt-0.5">
-              Top monitored appliances on campus & home
+            <p className="text-[10px] text-[#1e3f2b] font-medium pt-0.5 border-t border-emerald-900/10">
+              {todayCategoryProgress.length === 0
+                ? 'No reminders due today'
+                : `${completedTodayCount} of ${totalDueToday} actions completed today`}
             </p>
           </Card>
         </motion.div>

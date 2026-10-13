@@ -16,8 +16,8 @@ const ENERGY_TIPS = [
     text: 'Charging adapters continue drawing small currents when left plugged in. Switching off sockets when done eliminates passive draw.',
   },
   {
-    title: 'Fume Hood Sash Management',
-    text: 'Pulling down laboratory sash glass reduces variable air ventilation exhaust load across campus research facilities.',
+    title: 'Laptop Power Saving',
+    text: "Use your laptop's power-saving mode and switch off the screen when you step away.",
   },
   {
     title: 'Daylight Harvesting',

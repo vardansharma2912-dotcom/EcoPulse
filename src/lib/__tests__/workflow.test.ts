@@ -42,7 +42,7 @@ describe('Full End-to-End Reminders & Persistence Workflow', () => {
 
     // 1. ADD REMINDER
     const newReminderData: Omit<Reminder, 'id' | 'createdAt'> = {
-      title: 'Lab Fume Hood Sash',
+      title: 'Study Room Desk Light',
       category: 'shared',
       time: '17:00',
       recurrence: 'daily',
@@ -53,12 +53,12 @@ describe('Full End-to-End Reminders & Persistence Workflow', () => {
     state = appReducer(state, { type: 'ADD_REMINDER', payload: newReminderData })
     expect(state.reminders.length).toBe(1)
     const reminderId = state.reminders[0].id
-    expect(state.reminders[0].title).toBe('Lab Fume Hood Sash')
+    expect(state.reminders[0].title).toBe('Study Room Desk Light')
 
     // 2. EDIT REMINDER
-    const updatedReminder = { ...state.reminders[0], title: 'Lab Fume Hood Sash - Closed' }
+    const updatedReminder = { ...state.reminders[0], title: 'Study Room Desk Light - Switched Off' }
     state = appReducer(state, { type: 'EDIT_REMINDER', payload: updatedReminder })
-    expect(state.reminders[0].title).toBe('Lab Fume Hood Sash - Closed')
+    expect(state.reminders[0].title).toBe('Study Room Desk Light - Switched Off')
 
     // 3. COMPLETE REMINDER (Records title snapshot, kWh, costSaved)
     state = appReducer(state, {
@@ -67,7 +67,7 @@ describe('Full End-to-End Reminders & Persistence Workflow', () => {
     })
     expect(state.completions.length).toBe(1)
     expect(state.completions[0].reminderId).toBe(reminderId)
-    expect(state.completions[0].title).toBe('Lab Fume Hood Sash - Closed')
+    expect(state.completions[0].title).toBe('Study Room Desk Light - Switched Off')
     // 200W * 5h / 1000 = 1.0 kWh
     expect(state.completions[0].kWh).toBe(1.0)
     // 1.0 * 8 = ₹8.0
@@ -109,19 +109,19 @@ describe('Full End-to-End Reminders & Persistence Workflow', () => {
     expect(state.reminders.length).toBe(0)
     // Completion history is preserved!
     expect(state.completions.length).toBe(1)
-    expect(state.completions[0].title).toBe('Lab Fume Hood Sash - Closed')
+    expect(state.completions[0].title).toBe('Study Room Desk Light - Switched Off')
     expect(state.completions[0].kWh).toBe(1.0)
 
     // 7. PERSISTENCE IN LOCALSTORAGE
     saveState(state)
     const raw = localStorage.getItem(STORAGE_KEY)
     expect(raw).toBeDefined()
-    expect(raw).toContain('Lab Fume Hood Sash - Closed')
+    expect(raw).toContain('Study Room Desk Light - Switched Off')
 
     // Reload from storage
     const reloaded = loadState()
     expect(reloaded.reminders.length).toBe(0)
     expect(reloaded.completions.length).toBe(1)
-    expect(reloaded.completions[0].title).toBe('Lab Fume Hood Sash - Closed')
+    expect(reloaded.completions[0].title).toBe('Study Room Desk Light - Switched Off')
   })
 })

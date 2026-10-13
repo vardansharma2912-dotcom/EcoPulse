@@ -6,7 +6,7 @@ import type { Completion, Reminder } from '../../types'
 
 const baseReminder: Reminder = {
   id: 'rem-alert-1',
-  title: 'Turn off lab monitor',
+  title: 'Turn off desk monitor',
   category: 'computing',
   time: '14:00',
   recurrence: 'daily',
