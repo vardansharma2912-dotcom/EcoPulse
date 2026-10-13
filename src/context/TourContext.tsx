@@ -1,10 +1,13 @@
 import React, { useState, useCallback, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { TourDialog } from '../components/tour/TourDialog'
 import { setTourSeen } from '../lib/storage'
 import { useToast } from './useToast'
 import { useAppState } from '../state'
 import { TourContext } from './tourCore'
+
+const TourDialog = React.lazy(() =>
+  import('../components/tour/TourDialog').then((m) => ({ default: m.TourDialog }))
+)
 
 export const TourProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [isTourOpen, setIsTourOpen] = useState(false)
@@ -43,7 +46,11 @@ export const TourProvider: React.FC<{ children: React.ReactNode }> = ({ children
   return (
     <TourContext.Provider value={{ isTourOpen, openTour, closeTour: () => closeTour('start') }}>
       {children}
-      <TourDialog open={isTourOpen} onClose={closeTour} />
+      {isTourOpen && (
+        <React.Suspense fallback={null}>
+          <TourDialog open={isTourOpen} onClose={closeTour} />
+        </React.Suspense>
+      )}
     </TourContext.Provider>
   )
 }

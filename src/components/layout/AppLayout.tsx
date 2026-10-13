@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react'
+import React, { useMemo, useState, Suspense } from 'react'
 import { NavLink, Outlet, useLocation } from 'react-router-dom'
 import { motion, AnimatePresence, useReducedMotion } from 'motion/react'
 import {
@@ -18,7 +18,9 @@ import { MobileSearchSheet } from './MobileSearchSheet'
 import { MobileAlertsPopover } from './MobileAlertsPopover'
 import { NotchDock } from '../navigation/NotchDock'
 import { ScrollThumb } from '../ui/ScrollThumb'
-import { WelcomeScreen } from '../welcome/WelcomeScreen'
+const WelcomeScreen = React.lazy(() =>
+  import('../welcome/WelcomeScreen').then((m) => ({ default: m.WelcomeScreen }))
+)
 import { useAppState } from '../../state'
 import { todayKey } from '../../lib/dates'
 import { isDueOn } from '../../lib/schedule'
@@ -107,7 +109,9 @@ export const AppLayout: React.FC = () => {
           {/* Fixed Botanical Background Layer */}
           <LeafBackground />
 
-          <WelcomeScreen onComplete={handleWelcomeComplete} />
+          <Suspense fallback={null}>
+            <WelcomeScreen onComplete={handleWelcomeComplete} />
+          </Suspense>
         </motion.div>
       ) : (
         <motion.div
@@ -300,7 +304,27 @@ export const AppLayout: React.FC = () => {
               }}
               className="min-w-0"
             >
-              <Outlet />
+              <Suspense
+                fallback={
+                  <div
+                    role="status"
+                    aria-label="Loading page content"
+                    className="min-h-[40vh] flex items-center justify-center p-4 sm:p-8 select-none"
+                  >
+                    <div className="glass-panel px-6 py-5 rounded-2xl flex items-center gap-3.5 shadow-lg border border-white/60">
+                      <div
+                        className="w-5 h-5 rounded-full border-2 border-emerald-600/30 border-t-emerald-700 animate-spin"
+                        aria-hidden="true"
+                      />
+                      <span className="text-sm font-semibold text-[#14301f] tracking-wide">
+                        Loading EcoPulse...
+                      </span>
+                    </div>
+                  </div>
+                }
+              >
+                <Outlet />
+              </Suspense>
             </motion.div>
           </AnimatePresence>
         </main>
