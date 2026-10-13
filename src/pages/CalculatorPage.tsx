@@ -142,7 +142,7 @@ export const CalculatorPage: React.FC = () => {
       className="space-y-6"
     >
       <PageHeader
-        title="Appliance Energy Calculator"
+        title="Appliance Energy Cost & What-If Calculator"
         description={`Estimate electrical energy (kWh) and bill savings (${currency}) by turning off or unplugging specific appliances.`}
       />
 

@@ -104,9 +104,9 @@ export const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ onComplete }) => {
 
         {/* Header & Tagline */}
         <motion.div variants={itemVariants} className="space-y-1">
-          <h1 className="text-xl sm:text-2xl font-extrabold text-[#14301f] tracking-tight">
+          <h2 className="text-xl sm:text-2xl font-extrabold text-[#14301f] tracking-tight">
             Welcome to EcoPulse
-          </h1>
+          </h2>
           <p className="text-xs sm:text-sm text-slate-600 font-medium">
             Small habits, tracked honestly.
           </p>

@@ -159,7 +159,7 @@ export const DashboardPage: React.FC = () => {
       className="space-y-6"
     >
       <PageHeader
-        title="Energy Conservation Dashboard"
+        title="Smart Energy Saving Habit Dashboard"
         description="Daily overview of your energy-saving actions and estimated savings."
         action={
           <div className="flex items-center gap-2">

@@ -304,7 +304,7 @@ export const SettingsPage: React.FC = () => {
       className="space-y-6 max-w-2xl"
     >
       <PageHeader
-        title="Settings & System Configuration"
+        title="EcoPulse Settings & Energy Tariff Preferences"
         description="Configure your domestic electricity tariff, manage browser alerts, and handle application data."
       />
 

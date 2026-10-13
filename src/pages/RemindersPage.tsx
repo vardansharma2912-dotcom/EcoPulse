@@ -278,7 +278,7 @@ export const RemindersPage: React.FC = () => {
   return (
     <div className="space-y-6">
       <PageHeader
-        title="Energy Reminders"
+        title="Energy-Saving Habits & Scheduled Reminders"
         description="Daily schedules to power down, unplug, and optimize household and campus appliances."
         action={
           <Button

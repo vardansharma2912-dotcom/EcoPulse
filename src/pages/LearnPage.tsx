@@ -278,7 +278,7 @@ export const LearnPage: React.FC = () => {
     >
       <PageHeader
         className="flex flex-col md:flex-row md:items-center justify-between gap-3 pt-0 pb-2.5 mb-1.5 sm:mb-2 border-b border-emerald-900/10"
-        title="Energy Conservation Guide"
+        title="Practical Energy Conservation Habits & Guides"
         description="Practical habits and conservation principles for college dormitories and campus living."
         action={
           <div className="flex items-center gap-2 flex-wrap sm:flex-nowrap">

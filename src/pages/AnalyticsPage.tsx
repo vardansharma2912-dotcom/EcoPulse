@@ -74,7 +74,7 @@ export const AnalyticsPage: React.FC = () => {
       className="space-y-6"
     >
       <PageHeader
-        title="Conservation Analytics"
+        title="Energy Conservation Trends & Habit Analytics"
         description="Historical trends, weekly activity breakdowns, habit streaks, and milestone achievements."
       />
 
