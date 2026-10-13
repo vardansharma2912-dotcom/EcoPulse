@@ -289,7 +289,7 @@ export const DashboardPage: React.FC = () => {
 
         {/* Card 4: Action Streak */}
         <motion.div variants={cardVariants}>
-          <Card variant="glass" className="p-4 group h-full flex flex-col justify-between">
+          <Card variant="glass" className="p-4 group h-full flex flex-col justify-between overflow-hidden">
             <div>
               <div className="flex items-center justify-between text-[#14301f] mb-2">
                 <span className="text-xs font-bold uppercase tracking-wider">Action Streak</span>
@@ -303,7 +303,7 @@ export const DashboardPage: React.FC = () => {
                 </Link>
               </div>
 
-              <div className="pt-0.5">
+              <div className="pt-0.5 w-full min-w-0">
                 <StreakBadge
                   days={currentStreak}
                   size="md"

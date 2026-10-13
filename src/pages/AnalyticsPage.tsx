@@ -127,12 +127,12 @@ export const AnalyticsPage: React.FC = () => {
         </motion.div>
 
         <motion.div variants={cardVariants}>
-          <Card variant="glass" className="p-4 flex flex-col justify-between h-full">
+          <Card variant="glass" className="p-4 flex flex-col justify-between h-full overflow-hidden">
             <div>
               <div className="flex items-center justify-between text-[#14301f] mb-1.5">
                 <span className="text-xs font-bold uppercase tracking-wider">Active Habit Streak</span>
               </div>
-              <div className="pt-0.5">
+              <div className="pt-0.5 w-full min-w-0">
                 <StreakBadge
                   days={streaks.currentStreak}
                   size="md"

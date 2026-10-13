@@ -241,9 +241,9 @@ export const StreakBadge: React.FC<StreakBadgeProps> = ({
     <div
       role="status"
       aria-label={ariaLabel}
-      className={`inline-flex flex-col select-none ${className}`}
+      className={`flex flex-col select-none w-full min-w-0 ${className}`}
     >
-      <div className="inline-flex items-center gap-2 relative">
+      <div className="flex items-center gap-2 relative w-full min-w-0">
         {/* Animated Badge Icon Container */}
         <div className="relative flex items-center justify-center shrink-0">
           {/* Level-Up Burst Ripple Ring */}
@@ -391,61 +391,59 @@ export const StreakBadge: React.FC<StreakBadgeProps> = ({
 
         {/* Labels & Details */}
         {!compact && (
-          <div className="flex flex-col min-w-0">
-            <div className="flex items-center gap-1.5 flex-wrap">
-              {showDaysCount && (
-                <span className={`font-black tracking-tight text-[#0f2819] tabular-nums ${textStyles}`}>
-                  {`${days} day${days === 1 ? '' : 's'}`}
-                </span>
-              )}
+          <div className="flex items-center gap-1.5 flex-wrap min-w-0 flex-1">
+            {showDaysCount && (
+              <span className={`font-black tracking-tight text-[#0f2819] tabular-nums ${textStyles}`}>
+                {`${days} day${days === 1 ? '' : 's'}`}
+              </span>
+            )}
 
-              {showLabel && (
-                <span
-                  className="px-2 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider border"
-                  style={{
-                    backgroundColor: tier.colors.bg,
-                    color: tier.colors.text,
-                    borderColor: tier.colors.border,
-                  }}
-                >
-                  {tier.name}
-                </span>
-              )}
-            </div>
-
-            {/* Sub-caption or Progress Indicator */}
-            {showProgress && (
-              <div className="mt-1 space-y-1">
-                <div className="flex items-center justify-between text-[10px] font-bold text-[#1e3f2b]">
-                  {nextTier ? (
-                    <span>
-                      {`${daysToNext} more day${daysToNext === 1 ? '' : 's'} to ${nextTier.name}`}
-                    </span>
-                  ) : (
-                    <span className="text-amber-800 font-extrabold flex items-center gap-1">
-                      Max level achieved! 🏆
-                    </span>
-                  )}
-                  {progress !== null && (
-                    <span className="tabular-nums opacity-75">{Math.round(progress * 100)}%</span>
-                  )}
-                </div>
-
-                {/* Progress Bar Track */}
-                <div className="h-1.5 w-32 sm:w-40 rounded-full bg-black/10 overflow-hidden relative">
-                  <motion.div
-                    initial={{ width: 0 }}
-                    animate={{ width: progress !== null ? `${progress * 100}%` : '100%' }}
-                    transition={{ duration: 0.6, ease: 'easeOut' as const }}
-                    className="h-full rounded-full"
-                    style={{ background: tier.colors.gradient }}
-                  />
-                </div>
-              </div>
+            {showLabel && (
+              <span
+                className="px-2 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider border shrink-0"
+                style={{
+                  backgroundColor: tier.colors.bg,
+                  color: tier.colors.text,
+                  borderColor: tier.colors.border,
+                }}
+              >
+                {tier.name}
+              </span>
             )}
           </div>
         )}
       </div>
+
+      {/* Full-width Sub-caption and Progress Track */}
+      {!compact && showProgress && (
+        <div className="mt-2 space-y-1.5 w-full min-w-0">
+          <div className="flex items-center justify-between text-[10px] font-bold text-[#1e3f2b] gap-1">
+            {nextTier ? (
+              <span className="truncate">
+                {`${daysToNext} more day${daysToNext === 1 ? '' : 's'} to ${nextTier.name}`}
+              </span>
+            ) : (
+              <span className="text-amber-800 font-extrabold flex items-center gap-1 truncate">
+                Max level achieved! 🏆
+              </span>
+            )}
+            {progress !== null && (
+              <span className="tabular-nums opacity-75 shrink-0">{Math.round(progress * 100)}%</span>
+            )}
+          </div>
+
+          {/* Progress Bar Track */}
+          <div className="h-1.5 w-full rounded-full bg-black/10 overflow-hidden relative">
+            <motion.div
+              initial={{ width: 0 }}
+              animate={{ width: progress !== null ? `${progress * 100}%` : '100%' }}
+              transition={{ duration: 0.6, ease: 'easeOut' as const }}
+              className="h-full rounded-full"
+              style={{ background: tier.colors.gradient }}
+            />
+          </div>
+        </div>
+      )}
     </div>
   )
 }
