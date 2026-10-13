@@ -1,6 +1,7 @@
 {
   "name": "EcoPulse - Smart Energy Saving Reminder",
   "short_name": "EcoPulse",
+  "description": "Build sustainable energy-saving habits with timely reminders, estimated savings, and analytics.",
   "start_url": "/",
   "scope": "/",
   "display": "standalone",
