@@ -1,0 +1,225 @@
+<!-- Note: This static 404 page can only be verified on the deployed Vercel site, because vite dev and vite preview fall back to index.html (SPA fallback). -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="robots" content="noindex">
+  <title>Page not found · EcoPulse</title>
+
+  <!-- Favicon and App Icons -->
+  <link rel="icon" href="/favicon.ico" sizes="48x48">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16.png">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+
+  <!-- Tiny inline route redirector: converts real-path misses for known routes into hash routes -->
+  <script>
+    (function () {
+      try {
+        var path = window.location.pathname.replace(/^\/+|\/+$/g, '').toLowerCase();
+        var first = path.split('/')[0];
+        var known = ['dashboard', 'reminders', 'calculator', 'analytics', 'learn', 'settings'];
+        if (known.indexOf(first) !== -1) {
+          var target = '/#/' + path + (window.location.search || '') + (window.location.hash || '');
+          window.location.replace(target);
+        }
+      } catch (e) {
+        /* Fallback: render 404 page content */
+      }
+    })();
+  </script>
+
+  <!-- Fully self-contained inline CSS (no external fonts or stylesheets) -->
+  <style>
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      min-height: 100vh;
+      min-height: 100dvh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1.5rem 1rem;
+      background: linear-gradient(135deg, #e6f4ea 0%, #f4fbf6 45%, #ffffff 100%);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      color: #14301f;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    .card {
+      background: rgba(255, 255, 255, 0.85);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid rgba(255, 255, 255, 0.9);
+      border-radius: 24px;
+      box-shadow: 0 16px 40px rgba(20, 48, 31, 0.12), inset 0 1px 0 rgba(255, 255, 255, 0.95);
+      padding: 2.5rem 1.75rem;
+      max-width: 440px;
+      width: 100%;
+      text-align: center;
+      display: flex;
+      flex-col;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .logo {
+      width: 56px;
+      height: 56px;
+      border-radius: 14px;
+      box-shadow: 0 4px 16px rgba(4, 120, 87, 0.18);
+      margin-bottom: 1.25rem;
+      object-fit: contain;
+    }
+
+    .illustration-wrap {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      margin-bottom: 1.25rem;
+      user-select: none;
+    }
+
+    .num {
+      font-size: 3.5rem;
+      font-weight: 900;
+      line-height: 1;
+      letter-spacing: -0.05em;
+      color: #14301f;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    }
+
+    .bulb-badge {
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #d1fae5 0%, #ecfdf5 50%, #a7f3d0 100%);
+      border: 1px solid rgba(5, 150, 105, 0.3);
+      box-shadow: inset 0 2px 4px rgba(6, 78, 59, 0.08);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #14301f;
+    }
+
+    .bulb-icon {
+      width: 30px;
+      height: 30px;
+    }
+
+    h1 {
+      font-size: 1.4rem;
+      font-weight: 800;
+      color: #14301f;
+      letter-spacing: -0.02em;
+      margin-bottom: 0.5rem;
+      line-height: 1.25;
+    }
+
+    p {
+      font-size: 0.95rem;
+      line-height: 1.5;
+      color: #334155;
+      max-width: 340px;
+      margin-bottom: 1.75rem;
+    }
+
+    .btn-primary {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      min-height: 44px;
+      min-width: 44px;
+      padding: 0.75rem 1.75rem;
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: #ffffff;
+      background: #047857;
+      border: none;
+      border-radius: 12px;
+      text-decoration: none;
+      cursor: pointer;
+      box-shadow: 0 4px 12px rgba(4, 120, 87, 0.25);
+      transition: background-color 0.15s ease, transform 0.1s ease, box-shadow 0.15s ease;
+      touch-action: manipulation;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .btn-primary:hover {
+      background: #065f46;
+      box-shadow: 0 6px 16px rgba(4, 120, 87, 0.35);
+    }
+
+    .btn-primary:active {
+      transform: scale(0.98);
+    }
+
+    .btn-primary:focus-visible {
+      outline: 2px solid #047857;
+      outline-offset: 2px;
+    }
+
+    @media (max-width: 360px) {
+      .card {
+        padding: 1.75rem 1.25rem;
+      }
+      .num {
+        font-size: 2.75rem;
+      }
+      .bulb-badge {
+        width: 48px;
+        height: 48px;
+      }
+      .bulb-icon {
+        width: 24px;
+        height: 24px;
+      }
+      h1 {
+        font-size: 1.25rem;
+      }
+      p {
+        font-size: 0.875rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <img src="/icon-192.png" alt="EcoPulse Logo" width="56" height="56" class="logo">
+
+    <div class="illustration-wrap" aria-hidden="true">
+      <span class="num">4</span>
+      <div class="bulb-badge">
+        <!-- SVG Unlit Lightbulb Illustration -->
+        <svg class="bulb-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <path d="M16.8 11.2c.8-.9 1.2-2 1.2-3.2a6 6 0 0 0-9.3-5" />
+          <path d="m2 2 20 20" />
+          <path d="M6.3 6.3a6 6 0 0 0-.3 1.7c0 1.2.4 2.3 1.2 3.2.7.9 1.3 1.9 1.5 3.1h2.6" />
+          <path d="M9 18h6" />
+          <path d="M10 22h4" />
+        </svg>
+      </div>
+      <span class="num">4</span>
+    </div>
+
+    <h1>This page is switched off</h1>
+    <p>We couldn't find that page. It may have been moved, or the link may be wrong.</p>
+
+    <a href="/" class="btn-primary">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+        <path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
+        <polyline points="9 22 9 12 15 12 15 22" />
+      </svg>
+      Go to EcoPulse
+    </a>
+  </div>
+</body>
+</html>

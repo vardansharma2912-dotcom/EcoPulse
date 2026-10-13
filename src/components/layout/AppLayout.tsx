@@ -69,12 +69,12 @@ export const AppLayout: React.FC = () => {
   const pageTitle = useMemo(() => {
     const path = location.pathname
     if (path === '/') return 'Dashboard'
-    if (path.startsWith('/reminders')) return 'Reminders'
-    if (path.startsWith('/calculator')) return 'Calculator'
-    if (path.startsWith('/analytics')) return 'Analytics'
-    if (path.startsWith('/learn')) return 'Learn'
-    if (path.startsWith('/settings')) return 'Settings'
-    return 'EcoPulse'
+    if (path === '/reminders' || path.startsWith('/reminders/')) return 'Reminders'
+    if (path === '/calculator' || path.startsWith('/calculator/')) return 'Calculator'
+    if (path === '/analytics' || path.startsWith('/analytics/')) return 'Analytics'
+    if (path === '/learn' || path.startsWith('/learn/')) return 'Learn'
+    if (path === '/settings' || path.startsWith('/settings/')) return 'Settings'
+    return 'Page not found'
   }, [location.pathname])
 
   // Sync document title with current route ("Dashboard · EcoPulse", etc.)
@@ -158,7 +158,7 @@ export const AppLayout: React.FC = () => {
               const isActive =
                 item.to === '/'
                   ? location.pathname === '/'
-                  : location.pathname.startsWith(item.to)
+                  : location.pathname === item.to || location.pathname.startsWith(item.to + '/')
 
               return (
                 <NavLink

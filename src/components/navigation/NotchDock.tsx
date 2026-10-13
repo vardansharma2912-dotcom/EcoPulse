@@ -64,7 +64,9 @@ export const NotchDock: React.FC = () => {
     const path = location.pathname
     if (path.startsWith('/settings')) return -1
     if (path === '/') return 0
-    const idx = DOCK_TABS.findIndex((tab) => tab.to !== '/' && path.startsWith(tab.to))
+    const idx = DOCK_TABS.findIndex(
+      (tab) => tab.to !== '/' && (path === tab.to || path.startsWith(tab.to + '/'))
+    )
     return idx
   }, [location.pathname])
 
@@ -204,6 +206,7 @@ export const NotchDock: React.FC = () => {
   }
 
   const ActiveIcon = activeIndex >= 0 ? DOCK_TABS[activeIndex].icon : null
+  const renderedPlatePath = activeIndex >= 0 ? currentPath : computeFlatPath(dockWidth, barHeight)
 
   return createPortal(
     <nav
@@ -222,7 +225,7 @@ export const NotchDock: React.FC = () => {
         preserveAspectRatio="none"
       >
         <path
-          d={currentPath}
+          d={renderedPlatePath}
           fill="rgba(255, 255, 255, 0.94)"
           stroke="rgba(25, 111, 69, 0.16)"
           strokeWidth="1"

@@ -119,13 +119,18 @@ EcoPulse adheres to strict academic honesty and technical transparency:
    npm run lint
    ```
 
+> [!NOTE]
+> **Static 404 Page (`public/404.html`):**  
+> EcoPulse includes both an in-app catch-all 404 page (`/#/*`) for hash-route navigation and a self-contained static `public/404.html` for unknown real paths served by hosting platforms like Vercel. The static `404.html` includes an inline script to seamlessly redirect known real paths (e.g. `/reminders`, `/calculator`) to their hash-route equivalents (`/#/reminders`, `/#/calculator`).  
+> *Note:* The static `404.html` can only be verified on the deployed Vercel site, because `vite dev` and `vite preview` inherently fall back to `index.html` for single-page applications.
+
 ---
 
 ## 7. Project Structure
 
 ```
 EcoPulse/
-├── public/                 # Static web assets (favicon, SVG icons)
+├── public/                 # Static web assets (favicon, SVG icons, 404.html)
 ├── src/
 │   ├── assets/             # Botanical leaf background assets (leaf-bg.webp)
 │   ├── components/
