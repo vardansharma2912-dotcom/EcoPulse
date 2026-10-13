@@ -1,0 +1,6 @@
+User-agent: *
+Allow: /
+Disallow: /settings
+Disallow: /404
+
+Sitemap: https://eco-pulse-flame.vercel.app/sitemap.xml

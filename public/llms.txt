@@ -1,0 +1,18 @@
+# EcoPulse
+
+> Smart Energy Saving Reminder & Habit Tracker
+
+EcoPulse is an energy-saving habit tracker and appliance cost calculator designed for students living in college dormitories and shared apartments. It pairs timely recurring reminders for standby appliances and room fixtures with transparent electrical tariff formulas, habit streak tiers, and privacy-first local browser persistence.
+
+## Key Pages
+
+- [Dashboard](https://eco-pulse-flame.vercel.app/): Daily overview of scheduled energy actions, streak status, today's category progress, and all-time kWh impact.
+- [Scheduled Reminders](https://eco-pulse-flame.vercel.app/reminders): Custom recurring alarms to switch off lamps, fans, chargers, monitors, and water heaters with avoided wattage formulas.
+- [Appliance Calculator](https://eco-pulse-flame.vercel.app/calculator): Interactive What-If electricity usage calculator estimating daily, weekly, monthly, and annual financial bill savings.
+- [Conservation Analytics](https://eco-pulse-flame.vercel.app/analytics): Historical conservation trends, weekly activity distributions, streak level milestones, and unlocked achievement badges.
+- [Conservation Guides](https://eco-pulse-flame.vercel.app/learn): 10 academic and practical electricity-saving guides for dorm life, vampire draw elimination, and natural cooling.
+- [Settings & Tariffs](https://eco-pulse-flame.vercel.app/settings): Domestic electricity tariff rates, currency selection, sound notifications, and full JSON data backup/restore.
+
+## Privacy & Local Architecture
+
+All user data, reminder configurations, completion logs, and tariff preferences stay strictly local in the user's browser (LocalStorage). EcoPulse requires no accounts, uses no telemetry trackers, and sends no personal energy data to external cloud servers.
