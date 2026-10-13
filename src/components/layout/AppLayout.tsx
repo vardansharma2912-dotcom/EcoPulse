@@ -23,10 +23,9 @@ const WelcomeScreen = React.lazy(() =>
 )
 import { useAppState } from '../../state'
 import { todayKey } from '../../lib/dates'
-import { isDueOn, computeStreak } from '../../lib/schedule'
+import { isDueOn } from '../../lib/schedule'
 import { CountUp } from '../ui/CountUp'
 import { Logo } from '../ui/Logo'
-import { StreakBadge } from '../ui/StreakBadge'
 import { useSeo } from '../../lib/seo'
 import { isWelcomeHandled, isTourSeen } from '../../lib/storage'
 import { useTour } from '../../context/useTour'
@@ -97,10 +96,7 @@ export const AppLayout: React.FC = () => {
     return dueToday.filter((r) => !doneIds.has(r.id)).length
   }, [state.reminders, state.completions, today])
 
-  // Compute active habit streak for sidebar and mobile indicators
-  const currentStreak = useMemo(() => {
-    return computeStreak(state.completions, today)
-  }, [state.completions, today])
+
 
   return (
     <AnimatePresence mode="wait">
@@ -226,23 +222,8 @@ export const AppLayout: React.FC = () => {
           </nav>
         </div>
 
-        {/* Sidebar Footer with Streak Level & Animated Tip Card */}
-        <div className="pt-2 pb-2 space-y-2">
-          <NavLink
-            to="/analytics"
-            className="flex items-center justify-between px-3 py-2 rounded-xl bg-white/45 hover:bg-white/70 border border-white/60 transition-all text-xs group"
-            title="View streak tier progression in Analytics"
-          >
-            <div className="flex flex-col min-w-0">
-              <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">
-                Streak Level
-              </span>
-              <span className="text-xs font-black text-[#0f2819] tabular-nums">
-                {currentStreak} day{currentStreak === 1 ? '' : 's'}
-              </span>
-            </div>
-            <StreakBadge days={currentStreak} size="sm" showLabel={true} showDaysCount={false} />
-          </NavLink>
+        {/* Sidebar Footer with Animated Tip Card */}
+        <div className="pt-2 pb-2">
           <SidebarTipCard />
         </div>
       </aside>
@@ -266,16 +247,6 @@ export const AppLayout: React.FC = () => {
 
           {/* Right: Search, Bell Popover, and Settings Avatar Chip */}
           <div className="flex items-center gap-1.5 shrink-0">
-            {/* Mobile Header Compact Streak Level Badge */}
-            <NavLink
-              to="/analytics"
-              className="px-2 py-1 rounded-xl bg-white/50 hover:bg-white/75 border border-white/60 flex items-center gap-1.5 transition-all text-xs font-black text-[#0f2819] tabular-nums"
-              title="View streak tiers in Analytics"
-              aria-label={`Current streak: ${currentStreak} days`}
-            >
-              <StreakBadge days={currentStreak} size="sm" compact showDaysCount={false} showLabel={false} />
-              <span>{currentStreak}d</span>
-            </NavLink>
 
             {/* Search Trigger */}
             <button

@@ -31,4 +31,7 @@ dist-ssr
 
 # Audit reports and screenshots
 audit/
+scripts/snap-*.mjs
+/test_*.png
+/*_preview.png
 

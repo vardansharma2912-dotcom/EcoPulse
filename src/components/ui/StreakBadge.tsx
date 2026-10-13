@@ -102,11 +102,11 @@ export const StreakBadge: React.FC<StreakBadgeProps> = ({
     }
   }, [tier.id, tier.intensity, tier.name, showToast])
 
-  // Size styling maps
+  // Size styling maps: horizontally elongated pill container
   const iconDimensions = {
-    sm: { width: 18, height: 18, box: 'w-7 h-7' },
-    md: { width: 24, height: 24, box: 'w-9 h-9' },
-    lg: { width: 34, height: 34, box: 'w-13 h-13' },
+    sm: { width: 22, height: 18, box: 'w-10 h-7' },
+    md: { width: 28, height: 24, box: 'w-13 h-9' },
+    lg: { width: 40, height: 34, box: 'w-18 h-13' },
   }[size]
 
   const textStyles = {
@@ -118,86 +118,121 @@ export const StreakBadge: React.FC<StreakBadgeProps> = ({
   // Animation variants based on tier intensity & reducedMotion
   const canAnimate = isVisible && !reducedMotion
 
-  const getBadgeAnimation = () => {
+  const getFlameAnimation = () => {
     if (!canAnimate) return {}
 
-    if (tier.animation === 'none') return {}
-
-    if (tier.animation === 'subtle') {
+    if (tier.id === 'spark' || tier.animation === 'subtle') {
       return {
-        scale: [1, 1.04, 1],
-        transition: { duration: 2.8, repeat: Infinity, ease: 'easeInOut' as const },
-      }
-    }
-
-    if (tier.animation === 'flame') {
-      return {
-        scale: [1, 1.06, 0.98, 1.04, 1],
-        transition: { duration: 2.2, repeat: Infinity, ease: 'easeInOut' as const },
-      }
-    }
-
-    if (tier.animation === 'blaze') {
-      return {
-        scale: [1, 1.08, 0.96, 1.06, 1],
+        scale: [1, 1.1, 0.95, 1.08, 1],
+        y: [0, -2, 0.8, -1.2, 0],
         filter: [
-          `drop-shadow(0 0 4px ${tier.colors.primary}66)`,
-          `drop-shadow(0 0 10px ${tier.colors.primary}aa)`,
-          `drop-shadow(0 0 4px ${tier.colors.primary}66)`,
+          `drop-shadow(0 0 2px ${tier.colors.primary}66)`,
+          `drop-shadow(0 0 9px ${tier.colors.primary}dd)`,
+          `drop-shadow(0 0 2px ${tier.colors.primary}66)`,
         ],
         transition: { duration: 1.6, repeat: Infinity, ease: 'easeInOut' as const },
       }
     }
 
-    if (tier.animation === 'inferno') {
+    if (tier.id === 'flame' || tier.animation === 'flame') {
       return {
-        scale: [1, 1.1, 0.95, 1.08, 1],
+        scale: [1, 1.12, 0.94, 1.09, 1],
+        y: [0, -2.5, 1, -1.5, 0],
+        rotate: [0, -3, 2.5, -2, 0],
         filter: [
-          `drop-shadow(0 0 6px ${tier.colors.primary}77)`,
-          `drop-shadow(0 0 14px ${tier.colors.secondary}bb)`,
-          `drop-shadow(0 0 6px ${tier.colors.primary}77)`,
+          `drop-shadow(0 0 4px ${tier.colors.primary}77)`,
+          `drop-shadow(0 0 13px ${tier.colors.primary}ee)`,
+          `drop-shadow(0 0 4px ${tier.colors.primary}77)`,
         ],
-        transition: { duration: 1.25, repeat: Infinity, ease: 'easeInOut' as const },
+        transition: { duration: 1.4, repeat: Infinity, ease: 'easeInOut' as const },
       }
     }
 
-    if (tier.animation === 'aurora') {
+    if (tier.id === 'blaze' || tier.animation === 'blaze') {
       return {
-        scale: [1, 1.08, 1],
+        scale: [1, 1.15, 0.92, 1.1, 1],
+        y: [0, -3, 1.2, -2, 0],
+        rotate: [0, -4, 3.5, -3, 0],
         filter: [
-          `drop-shadow(0 0 8px ${tier.colors.primary}88)`,
-          `drop-shadow(0 0 16px ${tier.colors.secondary}aa)`,
-          `drop-shadow(0 0 8px ${tier.colors.primary}88)`,
+          `drop-shadow(0 0 5px ${tier.colors.primary}88)`,
+          `drop-shadow(0 0 16px ${tier.colors.secondary}ff)`,
+          `drop-shadow(0 0 5px ${tier.colors.primary}88)`,
         ],
-        transition: { duration: 2.4, repeat: Infinity, ease: 'easeInOut' as const },
+        transition: { duration: 1.2, repeat: Infinity, ease: 'easeInOut' as const },
       }
     }
 
-    if (tier.animation === 'shimmer') {
+    if (tier.id === 'inferno' || tier.animation === 'inferno') {
       return {
-        scale: [1, 1.05, 1],
+        scale: [1, 1.18, 0.91, 1.12, 1],
+        y: [0, -3.5, 1.5, -2.5, 0],
+        rotate: [0, -5, 4, -4, 0],
         filter: [
-          `drop-shadow(0 0 6px rgba(56, 189, 248, 0.5))`,
-          `drop-shadow(0 0 14px rgba(226, 232, 240, 0.9))`,
-          `drop-shadow(0 0 6px rgba(56, 189, 248, 0.5))`,
+          `drop-shadow(0 0 7px ${tier.colors.primary}99)`,
+          `drop-shadow(0 0 18px ${tier.colors.secondary}ff)`,
+          `drop-shadow(0 0 7px ${tier.colors.primary}99)`,
         ],
-        transition: { duration: 1.8, repeat: Infinity, ease: 'easeInOut' as const },
+        transition: { duration: 1.05, repeat: Infinity, ease: 'easeInOut' as const },
       }
     }
 
-    if (tier.animation === 'legend') {
+    if (tier.id === 'aurora' || tier.animation === 'aurora') {
       return {
-        scale: [1, 1.1, 0.98, 1.07, 1],
+        scale: [1, 1.1, 0.96, 1.08, 1],
+        y: [0, -2, 1, -1.2, 0],
         filter: [
-          `drop-shadow(0 0 10px rgba(245, 158, 11, 0.6))`,
-          `drop-shadow(0 0 20px rgba(253, 224, 71, 0.9))`,
-          `drop-shadow(0 0 10px rgba(245, 158, 11, 0.6))`,
+          `drop-shadow(0 0 8px ${tier.colors.primary}aa)`,
+          `drop-shadow(0 0 18px ${tier.colors.secondary}dd)`,
+          `drop-shadow(0 0 8px ${tier.colors.primary}aa)`,
         ],
-        transition: { duration: 1.5, repeat: Infinity, ease: 'easeInOut' as const },
+        transition: { duration: 2.0, repeat: Infinity, ease: 'easeInOut' as const },
       }
     }
 
-    return {}
+    if (tier.id === 'platinum' || tier.animation === 'shimmer') {
+      return {
+        scale: [1, 1.08, 0.96, 1.06, 1],
+        y: [0, -1.5, 0.8, -1, 0],
+        filter: [
+          `drop-shadow(0 0 6px rgba(56, 189, 248, 0.7))`,
+          `drop-shadow(0 0 16px rgba(226, 232, 240, 1))`,
+          `drop-shadow(0 0 6px rgba(56, 189, 248, 0.7))`,
+        ],
+        transition: { duration: 1.6, repeat: Infinity, ease: 'easeInOut' as const },
+      }
+    }
+
+    if (tier.id === 'legend' || tier.animation === 'legend') {
+      return {
+        scale: [1, 1.16, 0.93, 1.1, 1],
+        y: [0, -3, 1.2, -2, 0],
+        filter: [
+          `drop-shadow(0 0 10px rgba(245, 158, 11, 0.8))`,
+          `drop-shadow(0 0 22px rgba(253, 224, 71, 1))`,
+          `drop-shadow(0 0 10px rgba(245, 158, 11, 0.8))`,
+        ],
+        transition: { duration: 1.3, repeat: Infinity, ease: 'easeInOut' as const },
+      }
+    }
+
+    // Dormant tier: soft breathing pulse
+    return {
+      scale: [1, 1.06, 1],
+      opacity: [0.8, 1, 0.8],
+      transition: { duration: 2.6, repeat: Infinity, ease: 'easeInOut' as const },
+    }
+  }
+
+  const getContainerBoxAnimation = () => {
+    if (!canAnimate || tier.intensity === 0) return {}
+    return {
+      boxShadow: [
+        `0 0 0px ${tier.colors.primary}00, 0 1px 4px ${tier.colors.primary}20`,
+        `0 0 12px ${tier.colors.primary}66, 0 2px 8px ${tier.colors.primary}40`,
+        `0 0 0px ${tier.colors.primary}00, 0 1px 4px ${tier.colors.primary}20`,
+      ],
+      transition: { duration: 1.8, repeat: Infinity, ease: 'easeInOut' as const },
+    }
   }
 
   const ariaLabel = `Current streak: ${days} day${days === 1 ? '' : 's'}, ${tier.name} level`
@@ -217,28 +252,28 @@ export const StreakBadge: React.FC<StreakBadgeProps> = ({
               initial={{ scale: 0.6, opacity: 1 }}
               animate={{ scale: 2.3, opacity: 0 }}
               transition={{ duration: 1.2, ease: 'easeOut' as const }}
-              className="absolute inset-0 rounded-full border-2 pointer-events-none z-10"
+              className="absolute inset-0 rounded-2xl border-2 pointer-events-none z-10"
               style={{ borderColor: tier.colors.primary }}
             />
           )}
 
-          {/* Glowing Aura Ring for Mid to High Tiers */}
-          {tier.intensity >= 3 && canAnimate && (
+          {/* Glowing Aura Ring for Active Tiers (Spark through Legend) */}
+          {tier.intensity >= 1 && canAnimate && (
             <motion.div
               animate={{
-                opacity: [0.35, 0.7, 0.35],
-                scale: [0.96, 1.08, 0.96],
+                opacity: [0.35, 0.75, 0.35],
+                scale: [0.94, 1.12, 0.94],
               }}
               transition={{
-                duration: Math.max(1.2, 3 - tier.intensity * 0.25),
+                duration: Math.max(1.1, 2.2 - tier.intensity * 0.18),
                 repeat: Infinity,
                 ease: 'easeInOut' as const,
               }}
-              className="absolute inset-0 rounded-full pointer-events-none -z-10"
+              className="absolute inset-0 rounded-2xl pointer-events-none -z-10"
               style={{
                 background: tier.colors.gradient,
-                filter: 'blur(6px)',
-                opacity: 0.5,
+                filter: 'blur(7px)',
+                opacity: 0.55,
               }}
             />
           )}
@@ -248,7 +283,7 @@ export const StreakBadge: React.FC<StreakBadgeProps> = ({
             <motion.div
               animate={{ rotate: 360 }}
               transition={{ duration: 6, repeat: Infinity, ease: 'linear' as const }}
-              className="absolute -inset-1 rounded-full opacity-40 blur-[2px] pointer-events-none -z-10"
+              className="absolute -inset-1 rounded-2xl opacity-40 blur-[2px] pointer-events-none -z-10"
               style={{
                 background: `conic-gradient(from 0deg, ${tier.colors.primary}, ${tier.colors.secondary}, ${tier.colors.primary})`,
               }}
@@ -285,27 +320,17 @@ export const StreakBadge: React.FC<StreakBadgeProps> = ({
             </div>
           )}
 
-          {/* Main SVG Flame-Bolt Icon Wrapper */}
+          {/* Horizontally elongated pill container */}
           <motion.div
-            animate={
-              levelUpBurst && canAnimate
-                ? { scale: [1, 1.35, 1.05, 1] }
-                : getBadgeAnimation()
-            }
-            transition={
-              levelUpBurst
-                ? { duration: 0.8, type: 'spring' as const, stiffness: 400, damping: 15 }
-                : undefined
-            }
-            className={`flex items-center justify-center rounded-xl relative transition-transform ${iconDimensions.box}`}
+            animate={getContainerBoxAnimation()}
+            className={`flex items-center justify-center rounded-2xl relative transition-transform ${iconDimensions.box}`}
             style={{
               backgroundColor: tier.colors.bg,
               border: `1px solid ${tier.colors.border}`,
-              boxShadow: tier.glow !== 'none' ? tier.glow : undefined,
             }}
           >
-            {/* Themed Energy-Flame SVG */}
-            <svg
+            {/* Themed Energy-Flame SVG with dynamic flame animation */}
+            <motion.svg
               viewBox="0 0 24 24"
               width={iconDimensions.width}
               height={iconDimensions.height}
@@ -313,6 +338,16 @@ export const StreakBadge: React.FC<StreakBadgeProps> = ({
               xmlns="http://www.w3.org/2000/svg"
               className="overflow-visible"
               aria-hidden="true"
+              animate={
+                levelUpBurst && canAnimate
+                  ? { scale: [1, 1.35, 1.05, 1] }
+                  : getFlameAnimation()
+              }
+              transition={
+                levelUpBurst
+                  ? { duration: 0.8, type: 'spring' as const, stiffness: 400, damping: 15 }
+                  : undefined
+              }
             >
               <defs>
                 <linearGradient id={gradientId} x1="0%" y1="0%" x2="100%" y2="100%">
@@ -332,13 +367,25 @@ export const StreakBadge: React.FC<StreakBadgeProps> = ({
 
               {/* Internal Electric Bolt Core */}
               {tier.intensity > 0 && (
-                <path
+                <motion.path
                   d="M12 9.5L10.2 13.2H12.6L11 16.8L14.4 12.2H12.2L13.4 9.5H12Z"
                   fill="#ffffff"
                   fillOpacity={tier.intensity >= 4 ? 0.95 : 0.8}
+                  animate={
+                    canAnimate
+                      ? {
+                          opacity: [0.75, 1, 0.7, 1, 0.75],
+                        }
+                      : undefined
+                  }
+                  transition={{
+                    duration: 1.2,
+                    repeat: Infinity,
+                    ease: 'easeInOut' as const,
+                  }}
                 />
               )}
-            </svg>
+            </motion.svg>
           </motion.div>
         </div>
 
