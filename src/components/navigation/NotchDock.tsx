@@ -56,6 +56,7 @@ export const NotchDock: React.FC = () => {
   const [isKeyboardOpen, setIsKeyboardOpen] = useState(false)
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [dockClicks, setDockClicks] = useState<Record<string, number>>({})
+  const [bottomOffset, setBottomOffset] = useState(0)
 
   const barHeight = 64
   const beadDiameter = 48
@@ -202,6 +203,38 @@ export const NotchDock: React.FC = () => {
     return () => observer.disconnect()
   }, [])
 
+  // Dynamic visual viewport offset: guarantees dock always sticks to visible screen bottom
+  useEffect(() => {
+    if (typeof window === 'undefined') return
+
+    const updateVisualBottom = () => {
+      if (window.visualViewport) {
+        const layoutHeight = window.innerHeight
+        const visualHeight = window.visualViewport.height
+        const visualTop = window.visualViewport.offsetTop || 0
+        const hiddenBottom = Math.max(0, Math.round(layoutHeight - (visualTop + visualHeight)))
+        setBottomOffset(hiddenBottom)
+        document.documentElement.style.setProperty('--mobile-dock-bottom', `${hiddenBottom}px`)
+      } else {
+        setBottomOffset(0)
+        document.documentElement.style.setProperty('--mobile-dock-bottom', '0px')
+      }
+    }
+
+    updateVisualBottom()
+    window.visualViewport?.addEventListener('resize', updateVisualBottom)
+    window.visualViewport?.addEventListener('scroll', updateVisualBottom)
+    window.addEventListener('resize', updateVisualBottom)
+    window.addEventListener('scroll', updateVisualBottom)
+
+    return () => {
+      window.visualViewport?.removeEventListener('resize', updateVisualBottom)
+      window.visualViewport?.removeEventListener('scroll', updateVisualBottom)
+      window.removeEventListener('resize', updateVisualBottom)
+      window.removeEventListener('scroll', updateVisualBottom)
+    }
+  }, [])
+
   if (isKeyboardOpen || isModalOpen) {
     return null
   }
@@ -234,10 +267,10 @@ export const NotchDock: React.FC = () => {
     <nav
       ref={dockRef}
       aria-label="Mobile Navigation"
-      className="lg:hidden fixed bottom-0 inset-x-0 z-40 max-w-[480px] w-full mx-auto select-none pointer-events-auto"
+      className="lg:hidden fixed inset-x-0 z-40 max-w-[480px] w-full mx-auto select-none pointer-events-auto"
       style={{
+        bottom: `calc(${bottomOffset}px + env(safe-area-inset-bottom, 0px))`,
         height: `${barHeight}px`,
-        paddingBottom: 'env(safe-area-inset-bottom, 0px)',
       }}
     >
       {/* SVG Notch Plate */}

@@ -52,7 +52,7 @@ export const ToastProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       {createPortal(
         <div
           aria-live="polite"
-          className="fixed bottom-[calc(76px+env(safe-area-inset-bottom,0px))] lg:bottom-6 inset-x-0 z-50 flex flex-col items-center gap-2 pointer-events-none px-4"
+          className="fixed bottom-[calc(var(--mobile-dock-bottom,0px)+76px+env(safe-area-inset-bottom,0px))] lg:bottom-6 inset-x-0 z-50 flex flex-col items-center gap-2 pointer-events-none px-4"
         >
           <AnimatePresence mode="sync">
             {toasts.map((toast) => (
