@@ -22,9 +22,12 @@ describe('Motion System & Variants', () => {
     expect(cardVariants.visible.transition.damping).toBe(24)
   })
 
-  it('defines highlightCardVariants with enhanced shadow bloom', () => {
+  it('defines highlightCardVariants with spring physics and clean elevation', () => {
     expect(highlightCardVariants.visible).toBeDefined()
-    // @ts-expect-error boxShadow inspect
-    expect(highlightCardVariants.visible.boxShadow).toContain('rgba(10, 56, 30')
+    expect(highlightCardVariants.hidden).toBeDefined()
+    // @ts-expect-error transition inspect
+    expect(highlightCardVariants.visible.transition.type).toBe('spring')
+    // @ts-expect-error transition inspect
+    expect(highlightCardVariants.visible.transition.stiffness).toBe(260)
   })
 })

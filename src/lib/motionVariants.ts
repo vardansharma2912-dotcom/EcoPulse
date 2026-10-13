@@ -36,14 +36,12 @@ export const highlightCardVariants: Variants = {
     opacity: 0,
     y: 16,
     scale: 0.97,
-    boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.05)',
     filter: typeof window !== 'undefined' && window.innerWidth >= 640 ? 'blur(4px)' : 'none',
   },
   visible: {
     opacity: 1,
     y: 0,
     scale: 1,
-    boxShadow: '0 12px 28px -6px rgba(10, 56, 30, 0.22), 0 8px 12px -6px rgba(10, 56, 30, 0.12)',
     filter: 'blur(0px)',
     transition: {
       type: 'spring',
