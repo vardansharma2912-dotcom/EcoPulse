@@ -5,23 +5,23 @@ import { Lightbulb } from 'lucide-react'
 const ENERGY_TIPS = [
   {
     title: 'Standby Power Drain',
-    text: 'Standby power adds up over a year, and varies by appliance. Switching off at the wall socket eliminates passive idle draw.',
+    text: 'Switch off wall sockets to stop idle phantom electricity draw.',
   },
   {
     title: 'Optimal AC Set-Point',
-    text: 'Setting moderate air conditioning temperatures reduces compressor runtime while keeping living spaces comfortably cool.',
+    text: 'Set cooling to 24°C to save up to 24% on compressor energy.',
   },
   {
     title: 'Unplug Idle Chargers',
-    text: 'Charging adapters continue drawing small currents when left plugged in. Switching off sockets when done eliminates passive draw.',
+    text: 'Unplug charging bricks once phones and laptops reach 100%.',
   },
   {
-    title: 'Laptop Power Saving',
-    text: "Use your laptop's power-saving mode and switch off the screen when you step away.",
+    title: 'Laptop Power Saver',
+    text: 'Enable battery saver and sleep displays when stepping away.',
   },
   {
     title: 'Daylight Harvesting',
-    text: 'Opening natural window blinds and switching off overhead fixtures allows natural daylight to illuminate study desks.',
+    text: 'Open window blinds to illuminate study spaces with sunlight.',
   },
 ]
 
@@ -116,8 +116,8 @@ export const SidebarTipCard: React.FC<{ className?: string }> = ({ className = '
         </div>
       </div>
 
-      {/* Tip Content with strictly fixed height container so size never jumps */}
-      <div className="relative z-10 h-[66px] overflow-hidden flex flex-col justify-start my-auto">
+      {/* Tip Content: Full text without line-clamping or ellipsis truncation */}
+      <div className="relative z-10 min-h-[66px] flex flex-col justify-center my-auto">
         <AnimatePresence mode="wait">
           <motion.div
             key={index}
@@ -127,8 +127,8 @@ export const SidebarTipCard: React.FC<{ className?: string }> = ({ className = '
             transition={{ duration: 0.25, ease: 'easeOut' }}
             className="space-y-0.5"
           >
-            <h4 className="text-xs font-bold text-white tracking-tight line-clamp-1">{currentTip.title}</h4>
-            <p className="text-[11px] text-white/95 leading-relaxed font-normal line-clamp-3">
+            <h4 className="text-xs font-bold text-white tracking-tight">{currentTip.title}</h4>
+            <p className="text-[11px] text-white/95 leading-relaxed font-normal">
               {currentTip.text}
             </p>
           </motion.div>
