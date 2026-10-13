@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { calculateKwh, calculateCost } from '../energy'
+import { calculateKwh, calculateCost, formatCost, SUPPORTED_CURRENCIES } from '../energy'
 
 describe('energy.ts - calculateKwh', () => {
   it('correctly calculates kWh from watts and hours', () => {
@@ -54,5 +54,22 @@ describe('energy.ts - calculateCost', () => {
     expect(calculateCost(1, -8)).toBe(0)
     expect(calculateCost(NaN, 8)).toBe(0)
     expect(calculateCost(1, Infinity)).toBe(0)
+  })
+})
+
+describe('energy.ts - formatCost & SUPPORTED_CURRENCIES', () => {
+  it('exports valid supported currencies list', () => {
+    expect(SUPPORTED_CURRENCIES).toEqual(['₹', '$', '€', '£'])
+  })
+
+  it('formats cost with default currency (₹)', () => {
+    expect(formatCost(12.3456)).toBe('₹12.35')
+    expect(formatCost(0)).toBe('₹0.00')
+  })
+
+  it('formats cost with custom currency symbols', () => {
+    expect(formatCost(50, '$')).toBe('$50.00')
+    expect(formatCost(19.99, '€')).toBe('€19.99')
+    expect(formatCost(100.5, '£')).toBe('£100.50')
   })
 })

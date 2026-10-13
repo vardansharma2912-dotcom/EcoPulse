@@ -36,9 +36,12 @@ export interface Completion {
   isDemo?: boolean // Flag indicating sample/demo data
 }
 
+export type CurrencySymbol = '₹' | '$' | '€' | '£'
+
 export interface Settings {
   displayName: string
-  tariffPerKwh: number // Default 8, currency ₹
+  tariffPerKwh: number // Default 8
+  currency: CurrencySymbol // Default '₹'
   notificationsEnabled: boolean
 }
 

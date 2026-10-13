@@ -1,6 +1,7 @@
 import { describe, it, expect, beforeEach } from 'vitest'
 import {
   loadState,
+  saveState,
   clearState,
   migrateCompletions,
   STORAGE_KEY,
@@ -8,6 +9,7 @@ import {
   createExportPayload,
   parseAndValidateImport,
   isValidState,
+  sanitizeCurrency,
 } from '../storage'
 import type { Reminder, AppState } from '../../types'
 
@@ -285,6 +287,7 @@ describe('Data Export and Import Round-Trip & Schema Validation', () => {
     settings: {
       displayName: 'Eco Pioneer',
       tariffPerKwh: 9.5,
+      currency: '₹',
       notificationsEnabled: true,
     },
     lastUpdated: '2026-10-12T23:10:00.000Z',
@@ -451,6 +454,128 @@ describe('Data Export and Import Round-Trip & Schema Validation', () => {
     expect(isValidState({ ...sampleState, reminders: 'not-an-array' })).toBe(false)
     expect(isValidState({ ...sampleState, completions: null })).toBe(false)
     expect(isValidState({ ...sampleState, settings: null })).toBe(false)
+  })
+})
+
+describe('Currency Selector Migration, Persistence, and Validation', () => {
+  beforeEach(() => {
+    mockStore.clear()
+    clearState()
+  })
+
+  it('sanitizeCurrency resolves valid currencies and falls back to ₹', () => {
+    expect(sanitizeCurrency('₹')).toBe('₹')
+    expect(sanitizeCurrency('$')).toBe('$')
+    expect(sanitizeCurrency('€')).toBe('€')
+    expect(sanitizeCurrency('£')).toBe('£')
+
+    // Fallbacks
+    expect(sanitizeCurrency(undefined)).toBe('₹')
+    expect(sanitizeCurrency(null)).toBe('₹')
+    expect(sanitizeCurrency('')).toBe('₹')
+    expect(sanitizeCurrency('USD')).toBe('₹')
+    expect(sanitizeCurrency(100)).toBe('₹')
+  })
+
+  it('loadState migrates legacy stored state missing settings.currency to default ₹', () => {
+    // Simulate pre-existing state without currency field
+    const legacyState = {
+      reminders: [],
+      completions: [],
+      settings: {
+        displayName: 'Campus Saver',
+        tariffPerKwh: 8.5,
+        notificationsEnabled: true,
+      },
+      lastUpdated: '2026-10-12T10:00:00.000Z',
+    }
+
+    mockStore.set(STORAGE_KEY, JSON.stringify(legacyState))
+
+    const loaded = loadState()
+    expect(loaded.settings.currency).toBe('₹')
+    expect(loaded.settings.tariffPerKwh).toBe(8.5)
+    expect(loaded.settings.displayName).toBe('Campus Saver')
+  })
+
+  it('saveState and loadState preserve selected custom currency', () => {
+    const customState: AppState = {
+      reminders: [],
+      completions: [],
+      settings: {
+        displayName: 'European Traveler',
+        tariffPerKwh: 0.35,
+        currency: '€',
+        notificationsEnabled: false,
+      },
+      lastUpdated: new Date().toISOString(),
+    }
+
+    saveState(customState)
+    const reloaded = loadState()
+    expect(reloaded.settings.currency).toBe('€')
+    expect(reloaded.settings.tariffPerKwh).toBe(0.35)
+  })
+
+  it('Export and Import preserves non-default currency ($ and £)', () => {
+    const dollarState: AppState = {
+      reminders: [],
+      completions: [],
+      settings: {
+        displayName: 'US Student',
+        tariffPerKwh: 0.16,
+        currency: '$',
+        notificationsEnabled: true,
+      },
+      lastUpdated: new Date().toISOString(),
+    }
+
+    const payload = createExportPayload(dollarState)
+    const result = parseAndValidateImport(payload)
+
+    expect(result.success).toBe(true)
+    if (result.success && result.data) {
+      expect(result.data.settings.currency).toBe('$')
+      expect(result.data.settings.tariffPerKwh).toBe(0.16)
+    }
+  })
+
+  it('Import from legacy backup file without currency safely defaults to ₹', () => {
+    const legacyExportJson = JSON.stringify({
+      version: 2,
+      exportedAt: new Date().toISOString(),
+      reminders: [],
+      completions: [],
+      settings: {
+        displayName: 'Legacy Backup',
+        tariffPerKwh: 7.8,
+        notificationsEnabled: true,
+      },
+    })
+
+    const result = parseAndValidateImport(legacyExportJson)
+    expect(result.success).toBe(true)
+    if (result.success && result.data) {
+      expect(result.data.settings.currency).toBe('₹')
+    }
+  })
+
+  it('Import rejects backup file with invalid currency values', () => {
+    const corruptedExportJson = JSON.stringify({
+      version: 2,
+      exportedAt: new Date().toISOString(),
+      reminders: [],
+      completions: [],
+      settings: {
+        displayName: 'Invalid Currency Backup',
+        tariffPerKwh: 8,
+        currency: 'INVALID_COIN',
+        notificationsEnabled: true,
+      },
+    })
+
+    const result = parseAndValidateImport(corruptedExportJson)
+    expect(result.success).toBe(false)
   })
 })
 

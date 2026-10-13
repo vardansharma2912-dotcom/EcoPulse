@@ -31,6 +31,7 @@ const mockInitialState: AppState = {
   settings: {
     displayName: 'Student',
     tariffPerKwh: 8,
+    currency: '₹',
     notificationsEnabled: false,
   },
   lastUpdated: '2026-10-11T00:00:00.000Z',
@@ -204,6 +205,7 @@ describe('reducer.ts - Completion Deduplication and Undo', () => {
       settings: {
         displayName: 'Imported User',
         tariffPerKwh: 12,
+        currency: '₹',
         notificationsEnabled: true,
       },
       lastUpdated: '2026-10-01T00:00:00.000Z',

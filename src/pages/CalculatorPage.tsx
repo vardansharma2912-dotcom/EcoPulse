@@ -47,6 +47,7 @@ export const CalculatorPage: React.FC = () => {
   const { state, addReminder } = useAppState()
   const { showToast } = useToast()
   const tariff = state.settings.tariffPerKwh
+  const currency = state.settings.currency || '₹'
 
   React.useEffect(() => {
     try {
@@ -142,7 +143,7 @@ export const CalculatorPage: React.FC = () => {
     >
       <PageHeader
         title="Appliance Energy Calculator"
-        description="Estimate electrical energy (kWh) and bill savings (₹) by turning off or unplugging specific appliances."
+        description={`Estimate electrical energy (kWh) and bill savings (${currency}) by turning off or unplugging specific appliances.`}
       />
 
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
@@ -246,7 +247,7 @@ export const CalculatorPage: React.FC = () => {
               {/* Current Tariff Rate with Link to Settings */}
               <div className="flex items-center justify-between p-3 rounded-xl bg-white/70 border border-emerald-900/15 text-xs">
                 <span className="text-[#183624] font-medium">
-                  Current Electricity Tariff: <strong className="text-emerald-950 font-bold">₹{tariff}/kWh</strong>
+                  Current Electricity Tariff: <strong className="text-emerald-950 font-bold">{currency}{tariff}/kWh</strong>
                 </span>
                 <Link
                   to="/settings"
@@ -288,7 +289,7 @@ export const CalculatorPage: React.FC = () => {
                   <span className="text-slate-600">// Cost Formula:</span> Cost = kWh × Tariff Rate
                 </p>
                 <p className="font-bold text-emerald-950">
-                  Cost = {dailyKwh.toFixed(3)} kWh × ₹{tariff} = ₹{dailyCost.toFixed(2)}/day
+                  Cost = {dailyKwh.toFixed(3)} kWh × {currency}{tariff} = {currency}{dailyCost.toFixed(2)}/day
                 </p>
               </div>
             </Card>
@@ -318,7 +319,7 @@ export const CalculatorPage: React.FC = () => {
                     <CountUp value={selectedPeriodKwh} decimals={2} /> <span className="text-base font-normal">kWh</span>
                   </span>
                   <span className="text-2xl font-extrabold tabular-nums tracking-tight">
-                    <CountUp value={selectedPeriodCost} decimals={2} prefix="₹" />
+                    <CountUp value={selectedPeriodCost} decimals={2} prefix={currency} />
                   </span>
                 </div>
               </div>
@@ -336,7 +337,7 @@ export const CalculatorPage: React.FC = () => {
                       <CountUp value={dailyKwh} decimals={2} suffix=" kWh" />
                     </span>
                     <span className="text-slate-600 font-medium ml-2">
-                      <CountUp value={dailyCost} decimals={2} prefix="₹" />
+                      <CountUp value={dailyCost} decimals={2} prefix={currency} />
                     </span>
                   </div>
                 </div>
@@ -352,7 +353,7 @@ export const CalculatorPage: React.FC = () => {
                       <CountUp value={weeklyKwh} decimals={2} suffix=" kWh" />
                     </span>
                     <span className="text-slate-600 font-medium ml-2">
-                      <CountUp value={weeklyCost} decimals={2} prefix="₹" />
+                      <CountUp value={weeklyCost} decimals={2} prefix={currency} />
                     </span>
                   </div>
                 </div>
@@ -368,7 +369,7 @@ export const CalculatorPage: React.FC = () => {
                       <CountUp value={monthlyKwh} decimals={2} suffix=" kWh" />
                     </span>
                     <span className="text-slate-600 font-medium ml-2">
-                      <CountUp value={monthlyCost} decimals={2} prefix="₹" />
+                      <CountUp value={monthlyCost} decimals={2} prefix={currency} />
                     </span>
                   </div>
                 </div>
@@ -384,7 +385,7 @@ export const CalculatorPage: React.FC = () => {
                       <CountUp value={annualKwh} decimals={2} suffix=" kWh" />
                     </span>
                     <span className="text-emerald-900 font-bold ml-2">
-                      <CountUp value={annualCost} decimals={2} prefix="₹" />
+                      <CountUp value={annualCost} decimals={2} prefix={currency} />
                     </span>
                   </div>
                 </div>

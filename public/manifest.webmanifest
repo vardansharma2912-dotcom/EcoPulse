@@ -1,7 +1,8 @@
 {
   "name": "EcoPulse - Smart Energy Saving Reminder",
   "short_name": "EcoPulse",
-  "start_url": "./",
+  "start_url": "/",
+  "scope": "/",
   "display": "standalone",
   "background_color": "#e6f4ea",
   "theme_color": "#e6f4ea",

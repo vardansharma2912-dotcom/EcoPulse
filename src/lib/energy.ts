@@ -45,3 +45,15 @@ export function calculateCost(kwh: number, tariffPerKwh: number): number {
   // Round to 2 decimal places for currency
   return Math.round(cost * 100) / 100
 }
+
+import type { CurrencySymbol } from '../types'
+
+export const SUPPORTED_CURRENCIES: CurrencySymbol[] = ['₹', '$', '€', '£']
+
+/**
+ * Formats monetary cost with selected currency symbol (defaults to ₹).
+ */
+export function formatCost(amount: number, currency: CurrencySymbol = '₹'): string {
+  const safe = typeof amount === 'number' && !isNaN(amount) ? amount : 0
+  return `${currency}${safe.toFixed(2)}`
+}

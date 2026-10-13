@@ -32,7 +32,7 @@ describe('Full End-to-End Reminders & Persistence Workflow', () => {
     state = {
       reminders: [],
       completions: [],
-      settings: { displayName: 'Student', tariffPerKwh: 8, notificationsEnabled: false },
+      settings: { displayName: 'Student', tariffPerKwh: 8, currency: '₹', notificationsEnabled: false },
       lastUpdated: new Date().toISOString(),
     }
   })

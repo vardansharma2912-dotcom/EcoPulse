@@ -237,7 +237,7 @@ describe('Sample Demo Data and Preservation of Real Data', () => {
     let state: AppState = {
       reminders: dummyReminders,
       completions: [realCompletion],
-      settings: { displayName: 'Student', tariffPerKwh: 8, notificationsEnabled: false },
+      settings: { displayName: 'Student', tariffPerKwh: 8, currency: '₹', notificationsEnabled: false },
       lastUpdated: '2026-10-11T12:00:00Z',
     }
 

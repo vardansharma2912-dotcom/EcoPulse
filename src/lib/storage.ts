@@ -1,4 +1,5 @@
-import type { AppState, Completion, Reminder, Settings } from '../types'
+import type { AppState, Completion, CurrencySymbol, Reminder, Settings } from '../types'
+import { SUPPORTED_CURRENCIES } from './energy'
 
 export const STORAGE_KEY = 'ecopulse_app_state_v2'
 export const PREVIOUS_STORAGE_KEY = 'ecopulse_app_state_v1'
@@ -8,9 +9,17 @@ export const TOUR_FLAG_KEY = 'ecopulse_tour_seen_v1'
 export const LAST_VISIT_KEY = 'ecopulse_last_visit_v1'
 export const CURRENT_VERSION = 2
 
+export function sanitizeCurrency(currency: unknown): CurrencySymbol {
+  if (typeof currency === 'string' && (SUPPORTED_CURRENCIES as string[]).includes(currency)) {
+    return currency as CurrencySymbol
+  }
+  return '₹'
+}
+
 export const DEFAULT_SETTINGS: Settings = {
   displayName: '', // Empty on first launch to trigger Welcome Screen
-  tariffPerKwh: 8, // ₹8 per kWh (placeholder from typical domestic slab)
+  tariffPerKwh: 8, // 8 per unit (placeholder from typical domestic slab)
+  currency: '₹',
   notificationsEnabled: false,
 }
 
@@ -166,6 +175,12 @@ export function isValidState(data: unknown): data is AppState {
   if (typeof candidate.settings.tariffPerKwh !== 'number' || isNaN(candidate.settings.tariffPerKwh) || candidate.settings.tariffPerKwh <= 0) {
     return false
   }
+  if (
+    candidate.settings.currency !== undefined &&
+    !(SUPPORTED_CURRENCIES as string[]).includes(candidate.settings.currency as string)
+  ) {
+    return false
+  }
 
   // Validate reminders structure
   for (const r of candidate.reminders) {
@@ -194,6 +209,7 @@ export function createExportPayload(state: AppState): string {
     settings: {
       displayName: state.settings.displayName ?? '',
       tariffPerKwh: state.settings.tariffPerKwh,
+      currency: sanitizeCurrency(state.settings.currency),
       notificationsEnabled: Boolean(state.settings.notificationsEnabled),
     },
     reminders: state.reminders,
@@ -237,6 +253,7 @@ export function parseAndValidateImport(jsonString: string): ImportResult {
     settings: {
       displayName: typeof parsed.settings.displayName === 'string' ? parsed.settings.displayName : '',
       tariffPerKwh: parsed.settings.tariffPerKwh,
+      currency: sanitizeCurrency(parsed.settings.currency),
       notificationsEnabled: Boolean(parsed.settings.notificationsEnabled),
     },
     lastUpdated: new Date().toISOString(),
@@ -306,6 +323,10 @@ export function loadState(): AppState {
       const migratedCompletions = migrateCompletions(parsed.completions, parsed.reminders)
       const stateToUse: AppState = {
         ...parsed,
+        settings: {
+          ...parsed.settings,
+          currency: sanitizeCurrency(parsed.settings?.currency),
+        },
         completions: migratedCompletions,
       }
 

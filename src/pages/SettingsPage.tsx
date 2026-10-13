@@ -13,7 +13,8 @@ import { ALERTED_KEYS_STORAGE_KEY, clearState, createExportPayload, parseAndVali
 import { hasDemoCompletions } from '../lib/sampleData'
 import { sendBrowserNotification } from '../lib/notifications'
 import { containerVariants, cardVariants } from '../lib/motionVariants'
-import type { AppState } from '../types'
+import type { AppState, CurrencySymbol } from '../types'
+import { SUPPORTED_CURRENCIES } from '../lib/energy'
 import {
   Save,
   RotateCcw,
@@ -44,6 +45,7 @@ export const SettingsPage: React.FC = () => {
   const { openTour } = useTour()
   const [displayName, setDisplayName] = useState(state.settings.displayName)
   const [tariff, setTariff] = useState(state.settings.tariffPerKwh.toString())
+  const [currency, setCurrency] = useState<CurrencySymbol>(state.settings.currency || '₹')
   const [tariffError, setTariffError] = useState<string | null>(null)
   const [nameError, setNameError] = useState<string | null>(null)
   const [savedSuccess, setSavedSuccess] = useState(false)
@@ -189,6 +191,7 @@ export const SettingsPage: React.FC = () => {
     updateSettings({
       displayName: displayName.trim(),
       tariffPerKwh: numericTariff,
+      currency,
     })
     setSavedSuccess(true)
     showToast('Settings saved!')
@@ -204,6 +207,7 @@ export const SettingsPage: React.FC = () => {
     setResetConfirmInput('')
     setDisplayName('')
     setTariff('8')
+    setCurrency('₹')
     setNameError(null)
     setTariffError(null)
     showToast('All application data reset!')
@@ -276,6 +280,7 @@ export const SettingsPage: React.FC = () => {
     replaceState(pendingImportData)
     setDisplayName(pendingImportData.settings.displayName)
     setTariff(pendingImportData.settings.tariffPerKwh.toString())
+    setCurrency(pendingImportData.settings.currency || '₹')
     setImportConfirmOpen(false)
     setPendingImportData(null)
     if (fileInputRef.current) fileInputRef.current.value = ''
@@ -316,8 +321,46 @@ export const SettingsPage: React.FC = () => {
             hint="Used to personalize dashboard greetings and exported environmental reports."
           />
 
+          {/* Currency Selector */}
+          <div className="space-y-1.5">
+            <label className="block text-xs font-bold text-[#14301f] tracking-wide">
+              Currency Symbol
+            </label>
+            <div className="grid grid-cols-4 gap-2">
+              {SUPPORTED_CURRENCIES.map((sym) => {
+                const labels: Record<CurrencySymbol, string> = {
+                  '₹': 'INR',
+                  $: 'USD',
+                  '€': 'EUR',
+                  '£': 'GBP',
+                }
+                const isSelected = currency === sym
+                return (
+                  <button
+                    key={sym}
+                    type="button"
+                    onClick={() => setCurrency(sym)}
+                    className={`py-2 px-3 rounded-xl text-xs font-bold transition-all border flex flex-col items-center justify-center gap-0.5 cursor-pointer ${
+                      isSelected
+                        ? 'bg-emerald-800 text-white border-emerald-800 shadow-sm'
+                        : 'bg-white/60 text-[#14301f] border-emerald-950/15 hover:bg-white/90'
+                    }`}
+                  >
+                    <span className="text-base leading-none">{sym}</span>
+                    <span className={`text-[10px] font-semibold ${isSelected ? 'text-emerald-100' : 'text-emerald-900/70'}`}>
+                      {labels[sym]}
+                    </span>
+                  </button>
+                )
+              })}
+            </div>
+            <p className="text-[11px] text-[#1e3f2b]/80">
+              Applied everywhere costs and savings are displayed across the dashboard, calculator, and analytics.
+            </p>
+          </div>
+
           <Input
-            label="Tariff Rate per kWh (₹ / unit)"
+            label={`Tariff Rate per kWh (${currency} / unit)`}
             type="number"
             step="0.1"
             min="0.1"
@@ -327,7 +370,7 @@ export const SettingsPage: React.FC = () => {
               if (tariffError) setTariffError(null)
             }}
             error={tariffError || undefined}
-            hint="Default is ₹8/unit (placeholder, set from your electricity bill. Must be > 0)."
+            hint={`Default is ${currency}8/unit (placeholder, set from your electricity bill. Must be > 0).`}
           />
 
           <div className="flex items-center justify-between pt-4 border-t border-emerald-950/10">
@@ -376,7 +419,7 @@ export const SettingsPage: React.FC = () => {
               <span className="font-semibold text-emerald-900">Energy (kWh):</span> Watts (W) × Hours avoided (h) ÷ 1000
             </p>
             <p>
-              <span className="font-semibold text-emerald-900">Cost Saved (₹):</span> Energy (kWh) × Tariff (₹/kWh)
+              <span className="font-semibold text-emerald-900">Cost Saved ({currency}):</span> Energy (kWh) × Tariff ({currency}/kWh)
             </p>
           </div>
 
@@ -385,7 +428,7 @@ export const SettingsPage: React.FC = () => {
               <span className="font-bold text-[#0f2819]">1 Kilowatt-hour (kWh):</span> One commercial unit of electricity (1000 Watt-hours), equal to running a 1000 W appliance for 1 hour.
             </div>
             <div>
-              <span className="font-bold text-[#0f2819]">Tariff Placeholder:</span> Typically ₹6 to ₹10 per kWh in Indian domestic utility slabs. Default is ₹8/kWh.
+              <span className="font-bold text-[#0f2819]">Tariff Placeholder:</span> Domestic rates vary by utility slab. Default rate is {currency}8/kWh.
             </div>
           </div>
         </div>
@@ -415,7 +458,7 @@ export const SettingsPage: React.FC = () => {
               </Badge>
             </div>
             <p className="text-xs text-[#1e3f2b] max-w-md leading-relaxed">
-              When permitted, native desktop popups alert you when reminders are due, even if you are browsing another tab or window.
+              When permitted, native desktop popups alert you when reminders are due while EcoPulse is running in your browser (active or background tab). Reminders fire only while the app or browser is running, since there is no push backend.
             </p>
           </div>
 
@@ -504,6 +547,16 @@ export const SettingsPage: React.FC = () => {
           </div>
         )}
 
+        {/* Honest Delivery Lifecycle Notice */}
+        <div className="rounded-xl border border-emerald-900/15 bg-emerald-50/60 p-3.5 text-xs text-[#14301f] space-y-1">
+          <p className="font-bold flex items-center gap-1.5 text-emerald-950">
+            <Info className="w-4 h-4 text-emerald-800 shrink-0" /> Local Reminder Lifecycle
+          </p>
+          <p className="text-[11.5px] leading-relaxed text-[#1b3b26]">
+            EcoPulse operates entirely client-side without a remote server or push backend. Reminders evaluate once every minute <strong>while the app or browser is running</strong> (it can be in a minimized or background tab). Reminders cannot fire when your browser is completely shut down.
+          </p>
+        </div>
+
         {/* Windows OS Tips / Troubleshooting */}
         <div className="rounded-xl border border-emerald-900/10 bg-white/50 p-3.5 text-xs text-[#14301f] space-y-2">
           <div className="flex items-center gap-2 font-bold text-emerald-950">
@@ -521,7 +574,7 @@ export const SettingsPage: React.FC = () => {
               <strong>Windows System Settings:</strong> Check <em>Windows Settings → System → Notifications</em> and ensure Google Chrome or Microsoft Edge is allowed to display banners.
             </li>
             <li>
-              <strong>Active Tab Lifecycle:</strong> Browser security requires EcoPulse to remain open in a tab (it can be in the background) for reminders to trigger.
+              <strong>No Push Backend:</strong> Because EcoPulse is privacy-first with no remote push server, your browser must remain open (even in the background or minimized) for scheduled alerts to evaluate and trigger.
             </li>
           </ul>
         </div>
@@ -759,7 +812,7 @@ export const SettingsPage: React.FC = () => {
                 </div>
                 <div>
                   <span className="text-[#1e3f2b] font-medium">Tariff: </span>
-                  <span className="font-bold">₹{pendingImportData.settings.tariffPerKwh}/unit</span>
+                  <span className="font-bold">{pendingImportData.settings.currency || '₹'}{pendingImportData.settings.tariffPerKwh}/unit</span>
                 </div>
                 <div>
                   <span className="text-[#1e3f2b] font-medium">Profile: </span>

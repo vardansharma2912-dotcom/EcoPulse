@@ -34,6 +34,7 @@ import {
 
 export const AnalyticsPage: React.FC = () => {
   const { state } = useAppState()
+  const currency = state.settings.currency || '₹'
   const [chartMetric, setChartMetric] = useState<'kwh' | 'actions'>('kwh')
   const [visibleDateGroups, setVisibleDateGroups] = useState<number>(5)
 
@@ -97,7 +98,7 @@ export const AnalyticsPage: React.FC = () => {
               <TrendingUp className="w-4 h-4 text-emerald-800" />
             </div>
             <p className="text-2xl sm:text-3xl font-extrabold text-[#0f2819] tabular-nums tracking-tight">
-              <CountUp value={totalCostAllTime} decimals={2} prefix="₹" />
+              <CountUp value={totalCostAllTime} decimals={2} prefix={currency} />
             </p>
             <p className="text-[11px] text-[#1e3f2b] font-medium mt-1">Estimated at active tariffs</p>
           </Card>
@@ -351,7 +352,7 @@ export const AnalyticsPage: React.FC = () => {
                     <div className="flex items-center gap-2 text-xs text-[#1e3f2b] font-medium">
                       <span>{group.totalKwh.toFixed(2)} kWh est.</span>
                       <span>•</span>
-                      <span>₹{group.totalCost.toFixed(2)} saved</span>
+                      <span>{currency}{group.totalCost.toFixed(2)} saved</span>
                     </div>
                   </div>
 
@@ -392,7 +393,7 @@ export const AnalyticsPage: React.FC = () => {
                               +{comp.kWh.toFixed(2)} kWh
                             </p>
                             <p className="text-[10px] text-emerald-800 font-semibold tabular-nums">
-                              +₹{comp.costSaved.toFixed(2)}
+                              +{currency}{comp.costSaved.toFixed(2)}
                             </p>
                           </div>
                         </div>

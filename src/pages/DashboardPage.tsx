@@ -54,6 +54,7 @@ export const DashboardPage: React.FC = () => {
 
   const [addDialogOpen, setAddDialogOpen] = useState(false)
   const [chartMetric, setChartMetric] = useState<'kwh' | 'actions'>('kwh')
+  const currency = state.settings.currency || '₹'
 
   // Calculations derived purely from real state
   const dueTodayReminders = useMemo(() => {
@@ -510,7 +511,7 @@ export const DashboardPage: React.FC = () => {
                 <h3 className="text-xs sm:text-sm font-bold text-white tracking-tight">Estimated Savings</h3>
               </div>
               <span className="px-2 py-0.5 rounded-full bg-emerald-900/60 border border-emerald-500/30 text-[10px] font-semibold text-emerald-300">
-                ₹{state.settings.tariffPerKwh}/kWh Tariff
+                {currency}{state.settings.tariffPerKwh}/kWh Tariff
               </span>
             </div>
 
@@ -520,7 +521,7 @@ export const DashboardPage: React.FC = () => {
                 Total Financial Savings
               </span>
               <div className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight tabular-nums flex items-baseline gap-1">
-                <span className="text-xl text-emerald-300 font-bold">₹</span>
+                <span className="text-xl text-emerald-300 font-bold">{currency}</span>
                 <CountUp value={costSavedAllTime} decimals={2} />
               </div>
             </div>
@@ -530,7 +531,7 @@ export const DashboardPage: React.FC = () => {
               <div>
                 <span className="text-[9px] text-emerald-300 block uppercase font-bold tracking-wider">Saved Today</span>
                 <span className="font-bold text-white text-xs tabular-nums">
-                  ₹<CountUp value={costSavedToday} decimals={2} />
+                  {currency}<CountUp value={costSavedToday} decimals={2} />
                 </span>
                 <span className="text-[9px] text-emerald-200/80 ml-1">
                   ({kwhSavedToday.toFixed(2)} kWh)
@@ -684,7 +685,7 @@ export const DashboardPage: React.FC = () => {
               </span>
             </div>
             <p className="text-[11px] text-[#1e3f2b] font-medium">
-              Total ₹<CountUp value={costSavedAllTime} decimals={2} /> avoided across all recorded actions.
+              Total {currency}<CountUp value={costSavedAllTime} decimals={2} /> avoided across all recorded actions.
             </p>
           </Card>
 
@@ -715,7 +716,7 @@ export const DashboardPage: React.FC = () => {
                         +{comp.kWh.toFixed(2)} kWh
                       </p>
                       <p className="text-[11px] text-[#1e3f2b] tabular-nums font-semibold">
-                        +₹{comp.costSaved.toFixed(2)}
+                        +{currency}{comp.costSaved.toFixed(2)}
                       </p>
                     </div>
                   </div>

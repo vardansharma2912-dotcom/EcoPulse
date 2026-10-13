@@ -63,6 +63,7 @@ describe('Welcome Screen Flag & Reset Behavior (Not Login)', () => {
       settings: {
         displayName: 'Sam',
         tariffPerKwh: 10,
+        currency: '₹',
         notificationsEnabled: true,
       },
       lastUpdated: new Date().toISOString(),
