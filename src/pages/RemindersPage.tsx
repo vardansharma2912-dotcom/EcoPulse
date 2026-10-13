@@ -2,6 +2,7 @@ import React, { useState, useMemo } from 'react'
 import { useSearchParams } from 'react-router-dom'
 import { motion, AnimatePresence } from 'motion/react'
 import { PageHeader } from '../components/layout/PageHeader'
+import { Breadcrumbs } from '../components/layout/Breadcrumbs'
 import { Card } from '../components/ui/Card'
 import { Badge } from '../components/ui/Badge'
 import { Button } from '../components/ui/Button'
@@ -278,6 +279,7 @@ export const RemindersPage: React.FC = () => {
   return (
     <div className="space-y-6">
       <PageHeader
+        breadcrumbs={<Breadcrumbs items={[{ label: 'Reminders' }]} />}
         title="Energy-Saving Habits & Scheduled Reminders"
         description="Daily schedules to power down, unplug, and optimize household and campus appliances."
         action={

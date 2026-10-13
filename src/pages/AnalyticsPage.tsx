@@ -1,6 +1,8 @@
 import React, { useState, useMemo } from 'react'
+import { Link } from 'react-router-dom'
 import { motion } from 'motion/react'
 import { PageHeader } from '../components/layout/PageHeader'
+import { Breadcrumbs } from '../components/layout/Breadcrumbs'
 import { Card } from '../components/ui/Card'
 import { Badge } from '../components/ui/Badge'
 import { Button } from '../components/ui/Button'
@@ -34,6 +36,7 @@ import {
   Layers,
   Lock,
   Check,
+  ArrowRight,
 } from 'lucide-react'
 
 export const AnalyticsPage: React.FC = () => {
@@ -74,6 +77,7 @@ export const AnalyticsPage: React.FC = () => {
       className="space-y-6"
     >
       <PageHeader
+        breadcrumbs={<Breadcrumbs items={[{ label: 'Analytics' }]} />}
         title="Energy Conservation Trends & Habit Analytics"
         description="Historical trends, weekly activity breakdowns, habit streaks, and milestone achievements."
       />
@@ -243,6 +247,17 @@ export const AnalyticsPage: React.FC = () => {
                 </div>
               )
             })}
+          </div>
+
+          <div className="mt-4 pt-3 border-t border-emerald-900/10 flex items-center justify-between text-xs flex-wrap gap-2">
+            <span className="text-[#1e3f2b] font-medium">Keep your habit streak active every day:</span>
+            <Link
+              to="/reminders"
+              className="inline-flex items-center gap-1.5 font-bold text-emerald-900 hover:text-emerald-950 hover:underline"
+            >
+              Manage Scheduled Reminders
+              <ArrowRight className="w-3.5 h-3.5 text-emerald-800" />
+            </Link>
           </div>
         </Card>
       </motion.div>

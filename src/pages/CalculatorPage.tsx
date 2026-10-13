@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { motion } from 'motion/react'
 import { PageHeader } from '../components/layout/PageHeader'
+import { Breadcrumbs } from '../components/layout/Breadcrumbs'
 import { Card } from '../components/ui/Card'
 import { Button } from '../components/ui/Button'
 import { Input } from '../components/ui/Input'
@@ -20,6 +21,9 @@ import {
   PlusCircle,
   HelpCircle,
   Sparkles,
+  ArrowRight,
+  BookOpen,
+  Bell,
 } from 'lucide-react'
 
 interface AppliancePreset {
@@ -142,6 +146,7 @@ export const CalculatorPage: React.FC = () => {
       className="space-y-6"
     >
       <PageHeader
+        breadcrumbs={<Breadcrumbs items={[{ label: 'Calculator' }]} />}
         title="Appliance Energy Cost & What-If Calculator"
         description={`Estimate electrical energy (kWh) and bill savings (${currency}) by turning off or unplugging specific appliances.`}
       />
@@ -403,6 +408,44 @@ export const CalculatorPage: React.FC = () => {
                 1 unit of electricity equals 1 kilowatt-hour (1 kWh = 1000 Watt-hours).
                 Calculations represent potential avoided consumption. Real savings depend on continuous appliance operation and seasonal duty cycles.
               </p>
+            </Card>
+          </motion.div>
+
+          {/* Contextual Navigation Links */}
+          <motion.div variants={cardVariants}>
+            <Card variant="glass" className="p-4 space-y-3">
+              <h3 className="text-xs font-bold uppercase tracking-wider text-emerald-950">
+                Connected Energy Actions
+              </h3>
+              <div className="space-y-2 text-xs">
+                <Link
+                  to="/reminders"
+                  className="group flex items-center justify-between p-2.5 rounded-xl bg-white/60 hover:bg-white/90 border border-emerald-900/10 transition-all text-slate-800"
+                >
+                  <div className="flex items-center gap-2">
+                    <Bell className="w-4 h-4 text-emerald-700 shrink-0" />
+                    <div>
+                      <p className="font-semibold text-emerald-950">Turn Estimates into Habits</p>
+                      <p className="text-[11px] text-slate-600">Schedule recurring power-down alerts in Energy Reminders</p>
+                    </div>
+                  </div>
+                  <ArrowRight className="w-3.5 h-3.5 text-emerald-700 transition-transform group-hover:translate-x-1 shrink-0" />
+                </Link>
+
+                <Link
+                  to="/learn"
+                  className="group flex items-center justify-between p-2.5 rounded-xl bg-white/60 hover:bg-white/90 border border-emerald-900/10 transition-all text-slate-800"
+                >
+                  <div className="flex items-center gap-2">
+                    <BookOpen className="w-4 h-4 text-emerald-700 shrink-0" />
+                    <div>
+                      <p className="font-semibold text-emerald-950">Campus Conservation Principles</p>
+                      <p className="text-[11px] text-slate-600">Explore dorm appliance habits in Energy Conservation Guides</p>
+                    </div>
+                  </div>
+                  <ArrowRight className="w-3.5 h-3.5 text-emerald-700 transition-transform group-hover:translate-x-1 shrink-0" />
+                </Link>
+              </div>
             </Card>
           </motion.div>
         </div>

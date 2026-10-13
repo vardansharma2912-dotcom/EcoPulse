@@ -314,18 +314,27 @@ export const DashboardPage: React.FC = () => {
             </div>
 
             {dueTodayReminders.length === 0 ? (
-              <div className="p-5 rounded-2xl bg-white/50 border border-white/70 text-center space-y-2">
+              <div className="p-5 rounded-2xl bg-white/50 border border-white/70 text-center space-y-2.5">
                 <p className="text-xs font-bold text-[#102819]">No Reminders Due Today</p>
-                <p className="text-[11px] text-[#1e3f2b]">All quiet! You can add custom schedules anytime.</p>
-                <Button
-                  variant="primary"
-                  size="sm"
-                  icon={<Plus className="w-3.5 h-3.5" />}
-                  onClick={() => setAddDialogOpen(true)}
-                  className="mx-auto"
-                >
-                  Add Reminder
-                </Button>
+                <p className="text-[11px] text-[#1e3f2b]">All quiet! You can add custom schedules or estimate appliance power draw.</p>
+                <div className="flex items-center justify-center gap-2 flex-wrap pt-1">
+                  <Button
+                    variant="primary"
+                    size="sm"
+                    icon={<Plus className="w-3.5 h-3.5" />}
+                    onClick={() => setAddDialogOpen(true)}
+                  >
+                    Add Reminder
+                  </Button>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    icon={<Calculator className="w-3.5 h-3.5" />}
+                    onClick={() => navigate('/calculator')}
+                  >
+                    Calculator
+                  </Button>
+                </div>
               </div>
             ) : (() => {
               const pendingItem = dueTodayReminders.find((r) => !isReminderDoneToday(r.id))
@@ -578,16 +587,26 @@ export const DashboardPage: React.FC = () => {
             <EmptyState
               icon={<Calendar className="w-6 h-6 text-emerald-800" />}
               title="No Reminders Due Today"
-              description="You have no active energy reminders scheduled for today. You can add new reminders or check recurrence settings."
+              description="You have no active energy reminders scheduled for today. Create custom schedules or calculate prospective appliance savings."
               action={
-                <Button
-                  variant="primary"
-                  size="sm"
-                  icon={<Plus className="w-3.5 h-3.5" />}
-                  onClick={() => setAddDialogOpen(true)}
-                >
-                  Create a Reminder
-                </Button>
+                <div className="flex items-center justify-center gap-2 flex-wrap">
+                  <Button
+                    variant="primary"
+                    size="sm"
+                    icon={<Plus className="w-3.5 h-3.5" />}
+                    onClick={() => setAddDialogOpen(true)}
+                  >
+                    Add Reminder
+                  </Button>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    icon={<Calculator className="w-3.5 h-3.5" />}
+                    onClick={() => navigate('/calculator')}
+                  >
+                    Appliance Calculator
+                  </Button>
+                </div>
               }
             />
           ) : (
@@ -706,7 +725,16 @@ export const DashboardPage: React.FC = () => {
             <EmptyState
               icon={<AlertCircle className="w-6 h-6 text-emerald-800" />}
               title="No Actions Completed Yet"
-              description="When you mark reminders as done, your estimated energy savings and timestamps will be logged here."
+              description="When you mark reminders as done, your estimated energy savings and timestamps will appear here. In the meantime, explore dorm conservation guides."
+              action={
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => navigate('/learn')}
+                >
+                  Explore Energy Guides
+                </Button>
+              }
             />
           ) : (
             <Card variant="glass" className="p-3 divide-y divide-emerald-900/10">

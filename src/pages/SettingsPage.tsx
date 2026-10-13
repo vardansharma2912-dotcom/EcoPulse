@@ -1,6 +1,7 @@
 import React, { useState, useRef } from 'react'
 import { motion } from 'motion/react'
 import { PageHeader } from '../components/layout/PageHeader'
+import { Breadcrumbs } from '../components/layout/Breadcrumbs'
 import { Card } from '../components/ui/Card'
 import { Button } from '../components/ui/Button'
 import { Input } from '../components/ui/Input'
@@ -304,6 +305,7 @@ export const SettingsPage: React.FC = () => {
       className="space-y-6 max-w-2xl"
     >
       <PageHeader
+        breadcrumbs={<Breadcrumbs items={[{ label: 'Settings' }]} />}
         title="EcoPulse Settings & Energy Tariff Preferences"
         description="Configure your domestic electricity tariff, manage browser alerts, and handle application data."
       />
@@ -738,7 +740,7 @@ export const SettingsPage: React.FC = () => {
     </motion.div>
 
     {/* Credits Card */}
-    <motion.div variants={cardVariants}>
+    <motion.div variants={cardVariants} id="credits">
       <Card variant="glass" className="space-y-4 p-5 sm:p-6">
         <div className="flex items-center gap-2.5 text-[#102819] pb-2 border-b border-black/5">
           <Users className="w-5 h-5 text-emerald-800" />

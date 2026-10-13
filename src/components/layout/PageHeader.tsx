@@ -6,6 +6,7 @@ export interface PageHeaderProps {
   description?: string
   action?: React.ReactNode
   badge?: React.ReactNode
+  breadcrumbs?: React.ReactNode
   className?: string
 }
 
@@ -14,6 +15,7 @@ export const PageHeader: React.FC<PageHeaderProps> = ({
   description,
   action,
   badge,
+  breadcrumbs,
   className,
 }) => {
   return (
@@ -24,6 +26,7 @@ export const PageHeader: React.FC<PageHeaderProps> = ({
       }
     >
       <div>
+        {breadcrumbs}
         <div className="flex items-center gap-3">
           {/* Title reveals left-to-right via clip-path 450ms with vertical safety padding */}
           <motion.h1

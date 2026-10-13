@@ -1,5 +1,7 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react'
+import { Link } from 'react-router-dom'
 import { PageHeader } from '../components/layout/PageHeader'
+import { Breadcrumbs } from '../components/layout/Breadcrumbs'
 import { Badge } from '../components/ui/Badge'
 import { Button } from '../components/ui/Button'
 import { Dialog } from '../components/ui/Dialog'
@@ -22,6 +24,9 @@ import {
   Pause,
   Maximize2,
   Compass,
+  Calculator,
+  Bell,
+  ArrowRight,
 } from 'lucide-react'
 
 interface HabitCard {
@@ -277,6 +282,7 @@ export const LearnPage: React.FC = () => {
       className="space-y-2 sm:space-y-3"
     >
       <PageHeader
+        breadcrumbs={<Breadcrumbs items={[{ label: 'Learn' }]} />}
         className="flex flex-col md:flex-row md:items-center justify-between gap-3 pt-0 pb-2.5 mb-1.5 sm:mb-2 border-b border-emerald-900/10"
         title="Practical Energy Conservation Habits & Guides"
         description="Practical habits and conservation principles for college dormitories and campus living."
@@ -650,6 +656,39 @@ export const LearnPage: React.FC = () => {
               }`}
             />
           ))}
+        </div>
+
+        {/* Contextual Internal Navigation Links */}
+        <div className="mt-4 pt-3 border-t border-emerald-900/10">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
+            <Link
+              to="/calculator"
+              className="group flex items-center justify-between p-3 rounded-xl bg-white/60 hover:bg-white/90 border border-emerald-900/10 transition-all text-slate-800"
+            >
+              <div className="flex items-center gap-2.5">
+                <Calculator className="w-4 h-4 text-emerald-700 shrink-0" />
+                <div>
+                  <p className="font-semibold text-emerald-950">Appliance Energy Calculator</p>
+                  <p className="text-[11px] text-slate-600">Simulate daily kWh costs & what-if savings</p>
+                </div>
+              </div>
+              <ArrowRight className="w-3.5 h-3.5 text-emerald-700 transition-transform group-hover:translate-x-1 shrink-0" />
+            </Link>
+
+            <Link
+              to="/reminders"
+              className="group flex items-center justify-between p-3 rounded-xl bg-white/60 hover:bg-white/90 border border-emerald-900/10 transition-all text-slate-800"
+            >
+              <div className="flex items-center gap-2.5">
+                <Bell className="w-4 h-4 text-emerald-700 shrink-0" />
+                <div>
+                  <p className="font-semibold text-emerald-950">Scheduled Energy Reminders</p>
+                  <p className="text-[11px] text-slate-600">Convert guide habits into daily recurring alerts</p>
+                </div>
+              </div>
+              <ArrowRight className="w-3.5 h-3.5 text-emerald-700 transition-transform group-hover:translate-x-1 shrink-0" />
+            </Link>
+          </div>
         </div>
       </section>
     </motion.div>
