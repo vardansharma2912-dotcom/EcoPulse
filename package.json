@@ -23,6 +23,7 @@
     "build": "tsc -b && vite build && node scripts/prerender.mjs",
     "lint": "oxlint",
     "test": "vitest run",
+    "test:scroll": "node scripts/test-scroll-restoration.mjs",
     "preview": "vite preview"
   },
   "dependencies": {

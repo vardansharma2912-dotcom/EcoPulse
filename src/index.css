@@ -64,6 +64,12 @@ button, a, input, select, textarea, [role="button"] {
   outline-offset: 2px;
 }
 
+/* Programmatic navigation focus suppression when not keyboard-navigated */
+h1:focus:not(:focus-visible),
+main:focus:not(:focus-visible) {
+  outline: none;
+}
+
 /* Glassmorphism Surface Utility Classes */
 .glass-card {
   background: rgba(255, 255, 255, 0.45);

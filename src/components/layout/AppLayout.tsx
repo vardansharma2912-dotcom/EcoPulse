@@ -2,12 +2,7 @@ import React, { useMemo, useState, Suspense } from 'react'
 import { NavLink, Link, Outlet, useLocation } from 'react-router-dom'
 import { motion, AnimatePresence, useReducedMotion } from 'motion/react'
 import {
-  LayoutDashboard,
   Bell,
-  Calculator,
-  BarChart3,
-  BookOpen,
-  Settings as SettingsIcon,
   Search,
 } from 'lucide-react'
 import { LeafBackground } from './LeafBackground'
@@ -18,6 +13,7 @@ import { MobileSearchSheet } from './MobileSearchSheet'
 import { MobileAlertsPopover } from './MobileAlertsPopover'
 import { NotchDock } from '../navigation/NotchDock'
 import { ScrollThumb } from '../ui/ScrollThumb'
+import { ScrollManager } from './ScrollManager'
 const WelcomeScreen = React.lazy(() =>
   import('../welcome/WelcomeScreen').then((m) => ({ default: m.WelcomeScreen }))
 )
@@ -134,6 +130,9 @@ export const AppLayout: React.FC = () => {
         >
           {/* Fixed Botanical Background Layer */}
           <LeafBackground />
+
+          {/* Scroll Restoration & Navigation Focus Manager */}
+          <ScrollManager />
 
           {/* Touch Custom Scrollbar Indicator */}
           <ScrollThumb />
