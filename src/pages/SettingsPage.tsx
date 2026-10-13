@@ -375,7 +375,7 @@ export const SettingsPage: React.FC = () => {
               if (tariffError) setTariffError(null)
             }}
             error={tariffError || undefined}
-            hint={`Default is ${currency}8/unit (placeholder, set from your electricity bill. Must be > 0).`}
+            hint={`Default is ${currency}8/unit (standard domestic benchmark, set from your electricity bill. Must be > 0).`}
           />
 
           <div className="flex items-center justify-between pt-4 border-t border-emerald-950/10">
@@ -433,7 +433,7 @@ export const SettingsPage: React.FC = () => {
               <span className="font-bold text-[#0f2819]">1 Kilowatt-hour (kWh):</span> One commercial unit of electricity (1000 Watt-hours), equal to running a 1000 W appliance for 1 hour.
             </div>
             <div>
-              <span className="font-bold text-[#0f2819]">Tariff Placeholder:</span> Domestic rates vary by utility slab. Default rate is {currency}8/kWh.
+              <span className="font-bold text-[#0f2819]">Tariff Benchmark:</span> Domestic rates vary by utility slab. Default rate is {currency}8/kWh.
             </div>
           </div>
         </div>
