@@ -1,5 +1,5 @@
 import React, { useState, useMemo } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { motion, AnimatePresence } from 'motion/react'
 import { PageHeader } from '../components/layout/PageHeader'
 import { Card } from '../components/ui/Card'
@@ -7,6 +7,7 @@ import { Badge } from '../components/ui/Badge'
 import { Button } from '../components/ui/Button'
 import { EmptyState } from '../components/ui/EmptyState'
 import { CountUp } from '../components/ui/CountUp'
+import { StreakBadge } from '../components/ui/StreakBadge'
 import { SemiCircleGauge } from '../components/charts/SemiCircleGauge'
 import { PillBarChart } from '../components/charts/PillBarChart'
 import { useToast } from '../context/useToast'
@@ -36,7 +37,6 @@ import {
   Clock,
   CheckCircle2,
   AlertCircle,
-  Flame,
   Plus,
   Calculator,
   RotateCcw,
@@ -256,19 +256,32 @@ export const DashboardPage: React.FC = () => {
         <motion.div variants={cardVariants}>
           <Card variant="glass" className="p-4 group h-full flex flex-col justify-between">
             <div>
-              <div className="flex items-center justify-between text-[#14301f] mb-1">
+              <div className="flex items-center justify-between text-[#14301f] mb-2">
                 <span className="text-xs font-bold uppercase tracking-wider">Action Streak</span>
-                <div className="flex items-center gap-1 text-amber-700">
-                  <Flame className="w-4 h-4" />
+                <Link
+                  to="/analytics"
+                  className="flex items-center gap-1 text-emerald-900 hover:text-emerald-700 text-[11px] font-semibold"
+                  title="View streak tier progression in Analytics"
+                >
+                  <span>Tiers</span>
                   <ArrowUpRight className="w-3 h-3 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
-                </div>
+                </Link>
               </div>
-              <p className="text-2xl sm:text-3xl font-extrabold text-amber-900 tabular-nums tracking-tight flex items-baseline gap-1">
-                <CountUp value={currentStreak} />
-                <span className="text-sm font-semibold text-[#1e3f2b]">day{currentStreak === 1 ? '' : 's'}</span>
-              </p>
+
+              <div className="pt-0.5">
+                <StreakBadge
+                  days={currentStreak}
+                  size="md"
+                  showLabel={true}
+                  showProgress={true}
+                  showDaysCount={true}
+                />
+              </div>
             </div>
-            <p className="text-[11px] text-[#1e3f2b] font-medium mt-1">Consecutive days active</p>
+
+            <p className="text-[11px] text-[#1e3f2b] font-medium mt-2">
+              Consecutive days conserving energy
+            </p>
           </Card>
         </motion.div>
       </div>

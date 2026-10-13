@@ -18,6 +18,8 @@ import {
   getAchievements,
 } from '../lib/analytics'
 import { containerVariants, cardVariants } from '../lib/motionVariants'
+import { StreakBadge } from '../components/ui/StreakBadge'
+import { STREAK_TIERS, getStreakTier } from '../lib/streakTiers'
 import {
   Zap,
   TrendingUp,
@@ -30,6 +32,8 @@ import {
   ChevronDown,
   Info,
   Layers,
+  Lock,
+  Check,
 } from 'lucide-react'
 
 export const AnalyticsPage: React.FC = () => {
@@ -43,6 +47,7 @@ export const AnalyticsPage: React.FC = () => {
   const weeklyData = useMemo(() => weeklySeries(state.completions, now), [state.completions, now])
   const weekComparison = useMemo(() => getWeekComparison(state.completions, now), [state.completions, now])
   const streaks = useMemo(() => computeStreaksFromCompletions(state.completions, now), [state.completions, now])
+  const currentTier = useMemo(() => getStreakTier(streaks.currentStreak), [streaks.currentStreak])
   const groupedHistory = useMemo(() => groupCompletionsByDate(state.completions), [state.completions])
   const achievements = useMemo(() => getAchievements(state.completions, streaks), [state.completions, streaks])
 
@@ -118,20 +123,129 @@ export const AnalyticsPage: React.FC = () => {
         </motion.div>
 
         <motion.div variants={cardVariants}>
-          <Card variant="glass" className="p-4">
-            <div className="flex items-center justify-between text-[#14301f] mb-1">
-              <span className="text-xs font-bold uppercase tracking-wider">Active Habit Streak</span>
-              <Flame className="w-4 h-4 text-amber-700" />
+          <Card variant="glass" className="p-4 flex flex-col justify-between h-full">
+            <div>
+              <div className="flex items-center justify-between text-[#14301f] mb-1.5">
+                <span className="text-xs font-bold uppercase tracking-wider">Active Habit Streak</span>
+              </div>
+              <div className="pt-0.5">
+                <StreakBadge
+                  days={streaks.currentStreak}
+                  size="md"
+                  showLabel={true}
+                  showProgress={true}
+                  showDaysCount={true}
+                />
+              </div>
             </div>
-            <p className="text-2xl sm:text-3xl font-extrabold text-amber-900 tabular-nums tracking-tight">
-              <CountUp value={streaks.currentStreak} /> <span className="text-sm font-semibold text-[#1e3f2b]">day{streaks.currentStreak === 1 ? '' : 's'}</span>
-            </p>
-            <p className="text-[11px] text-[#1e3f2b] font-medium mt-1">
+            <p className="text-[11px] text-[#1e3f2b] font-medium mt-2">
               Longest record: {streaks.longestStreak} day{streaks.longestStreak === 1 ? '' : 's'}
             </p>
           </Card>
         </motion.div>
       </div>
+
+      {/* Streak Levels & Mastery Progression Strip */}
+      <motion.div variants={cardVariants}>
+        <Card variant="glass-strong" className="p-4 sm:p-5 space-y-3">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+            <div className="flex items-center gap-2">
+              <Flame className="w-4 h-4 text-amber-600" />
+              <h2 className="text-sm font-bold text-[#0f2819] uppercase tracking-wide">
+                Streak Levels &amp; Tier Progression
+              </h2>
+            </div>
+            <div className="flex items-center gap-2">
+              <span className="text-xs font-medium text-[#1e3f2b]">Current Level:</span>
+              <span
+                className="px-2.5 py-0.5 rounded-full text-[11px] font-black uppercase tracking-wider border shadow-xs"
+                style={{
+                  backgroundColor: currentTier.colors.bg,
+                  color: currentTier.colors.text,
+                  borderColor: currentTier.colors.border,
+                }}
+              >
+                {currentTier.name} ({streaks.currentStreak}d)
+              </span>
+            </div>
+          </div>
+
+          <p className="text-xs text-[#1e3f2b]">
+            Build consistent daily conservation habits to advance through 8 animated mastery tiers, unlocking vibrant color palettes, energy aura rings, and radiant sparkle particles.
+          </p>
+
+          {/* Horizontal Strip of All 8 Tiers */}
+          <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 gap-2.5 pt-1">
+            {STREAK_TIERS.map((t) => {
+              const isCurrent = t.id === currentTier.id
+              const isUnlocked = streaks.currentStreak >= t.minDays
+              const isSurpassed = t.nextAt !== null && streaks.currentStreak >= t.nextAt
+
+              return (
+                <div
+                  key={t.id}
+                  className={`relative rounded-xl p-2.5 flex flex-col items-center text-center transition-all border ${
+                    isCurrent
+                      ? 'shadow-md scale-[1.03] z-10'
+                      : isUnlocked
+                      ? 'bg-white/60 border-white/80'
+                      : 'bg-white/20 border-black/5 opacity-50 grayscale-[35%]'
+                  }`}
+                  style={{
+                    backgroundColor: isCurrent ? t.colors.bg : undefined,
+                    borderColor: isCurrent ? t.colors.primary : undefined,
+                  }}
+                >
+                  {isCurrent && (
+                    <span
+                      className="absolute -top-2 px-1.5 py-0.2 rounded-full text-[9px] font-extrabold uppercase tracking-tight text-white shadow-xs"
+                      style={{ backgroundColor: t.colors.primary }}
+                    >
+                      Active
+                    </span>
+                  )}
+
+                  <div className="my-1">
+                    <StreakBadge
+                      days={Math.max(t.minDays, isCurrent ? streaks.currentStreak : t.minDays)}
+                      size="sm"
+                      compact={true}
+                    />
+                  </div>
+
+                  <p className="text-xs font-bold text-[#0f2819] leading-tight mt-0.5">
+                    {t.name}
+                  </p>
+
+                  <p className="text-[10px] text-[#1e3f2b] font-semibold tabular-nums mt-0.5">
+                    {t.nextAt === null
+                      ? '100+ d'
+                      : t.minDays === 0
+                      ? '0 d'
+                      : `${t.minDays}–${t.nextAt - 1} d`}
+                  </p>
+
+                  <div className="mt-1">
+                    {isCurrent ? (
+                      <span className="text-[10px] font-black" style={{ color: t.colors.text }}>
+                        ★ Current
+                      </span>
+                    ) : isSurpassed ? (
+                      <span className="text-[10px] font-semibold text-emerald-800 flex items-center gap-0.5">
+                        <Check className="w-3 h-3" /> Reached
+                      </span>
+                    ) : (
+                      <span className="text-[10px] text-slate-500 flex items-center gap-0.5">
+                        <Lock className="w-2.5 h-2.5" /> Locked
+                      </span>
+                    )}
+                  </div>
+                </div>
+              )
+            })}
+          </div>
+        </Card>
+      </motion.div>
 
       {/* Side-by-Side Activity & Comparative Trend Charts (2 Columns) */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
