@@ -76,6 +76,7 @@ describe('Browser Notification Utilities', () => {
   })
 
   it('falls back to no-icon notification if constructor fails with icon', () => {
+    const warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {})
     const mockClose = vi.fn()
     let callCount = 0
 
@@ -95,5 +96,6 @@ describe('Browser Notification Utilities', () => {
     const res = sendBrowserNotification('Switch off fan', { body: 'Save power' })
     expect(res.success).toBe(true)
     expect(callCount).toBe(2) // 1 failed with icon, 1 succeeded without icon
+    warnSpy.mockRestore()
   })
 })
