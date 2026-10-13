@@ -141,11 +141,13 @@ export const AnalyticsTrendChart: React.FC<AnalyticsTrendChartProps> = ({
                   return (
                     <div className="rounded-xl border border-white/80 bg-white/95 px-3 py-2 shadow-lg backdrop-blur-md text-xs">
                       <p className="font-bold text-[#0f2819]">{data.dayLabel} ({data.currentDate})</p>
-                      <p className="font-semibold text-emerald-800 mt-1">
-                        This period: {data.thisPeriodKwh.toFixed(2)} kWh
+                      <p className="font-semibold text-emerald-800 mt-1 flex items-baseline justify-between gap-3">
+                        <span>This period:</span>
+                        <span className="font-mono tabular-nums font-bold">{data.thisPeriodKwh.toFixed(2)} kWh</span>
                       </p>
-                      <p className="text-stone-600">
-                        Previous 7d: {data.previousPeriodKwh.toFixed(2)} kWh
+                      <p className="text-stone-600 flex items-baseline justify-between gap-3">
+                        <span>Previous 7d:</span>
+                        <span className="font-mono tabular-nums font-semibold">{data.previousPeriodKwh.toFixed(2)} kWh</span>
                       </p>
                     </div>
                   )
