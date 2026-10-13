@@ -762,10 +762,11 @@ export const SettingsPage: React.FC = () => {
             </div>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3.5 pt-1">
+          <div role="list" aria-label="Project Team Members" className="grid grid-cols-1 sm:grid-cols-3 gap-3.5 pt-1">
             {creditsTeam.map((member, idx) => (
               <div
                 key={member.name}
+                role="listitem"
                 className="flex items-center gap-3 p-3 rounded-xl bg-white/60 border border-emerald-950/10 shadow-xs transition-all hover:bg-white/80"
               >
                 <div
