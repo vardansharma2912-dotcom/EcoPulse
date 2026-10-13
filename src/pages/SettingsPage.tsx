@@ -15,6 +15,7 @@ import { sendBrowserNotification } from '../lib/notifications'
 import { containerVariants, cardVariants } from '../lib/motionVariants'
 import type { AppState, CurrencySymbol } from '../types'
 import { SUPPORTED_CURRENCIES } from '../lib/energy'
+import { getCreditsTeam } from '../lib/credits'
 import {
   Save,
   RotateCcw,
@@ -34,6 +35,7 @@ import {
   Download,
   Upload,
   Database,
+  Users,
 } from 'lucide-react'
 import { Logo } from '../components/ui/Logo'
 
@@ -43,6 +45,7 @@ export const SettingsPage: React.FC = () => {
   const { state, updateSettings, resetData, loadSampleData, removeSampleData, replaceState } = useAppState()
   const { showToast } = useToast()
   const { openTour } = useTour()
+  const [creditsTeam] = useState(() => getCreditsTeam())
   const [displayName, setDisplayName] = useState(state.settings.displayName)
   const [tariff, setTariff] = useState(state.settings.tariffPerKwh.toString())
   const [currency, setCurrency] = useState<CurrencySymbol>(state.settings.currency || '₹')
@@ -731,6 +734,54 @@ export const SettingsPage: React.FC = () => {
             Reset All
           </Button>
         </div>
+      </Card>
+    </motion.div>
+
+    {/* Credits Card */}
+    <motion.div variants={cardVariants}>
+      <Card variant="glass" className="space-y-4 p-5 sm:p-6">
+        <div className="flex items-center gap-2.5 text-[#102819] pb-2 border-b border-black/5">
+          <Users className="w-5 h-5 text-emerald-800" />
+          <div>
+            <h2 className="text-base sm:text-lg font-bold text-[#0f2819]">Built by</h2>
+            <p className="text-xs text-[#1e3f2b] font-medium">
+              CHE110 Environmental Studies Project Team
+            </p>
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-1">
+          {creditsTeam.map((member, idx) => (
+            <div
+              key={member.name}
+              className="flex items-center gap-3 p-3 rounded-xl bg-white/60 border border-emerald-950/10 shadow-xs transition-all hover:bg-white/80"
+            >
+              <div
+                className="w-9 h-9 rounded-full bg-emerald-700/15 border border-emerald-700/25 text-emerald-900 font-bold flex items-center justify-center text-sm shrink-0 select-none shadow-xs"
+                aria-hidden="true"
+              >
+                {member.initial}
+              </div>
+              <div className="min-w-0 flex-1">
+                <div className="flex items-center gap-1.5 flex-wrap">
+                  <p className="text-sm font-bold text-[#0f2819] truncate">{member.name}</p>
+                  {idx === 0 && (
+                    <span className="text-[10px] font-semibold text-emerald-900 bg-emerald-700/15 border border-emerald-700/20 px-1.5 py-0.5 rounded-md leading-none">
+                      Lead
+                    </span>
+                  )}
+                </div>
+                {member.role && (
+                  <p className="text-[11px] text-[#1e3f2b] truncate font-medium">{member.role}</p>
+                )}
+              </div>
+            </div>
+          ))}
+        </div>
+
+        <p className="text-[11px] text-[#2c533c] text-center pt-1 font-medium">
+          Developed with a focus on campus energy conservation, privacy-first offline architecture, and measurable sustainability habits.
+        </p>
       </Card>
     </motion.div>
 
