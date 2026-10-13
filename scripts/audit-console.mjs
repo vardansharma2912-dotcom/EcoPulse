@@ -148,7 +148,7 @@ async function startDevServer() {
     stdio: 'pipe',
   })
 
-  await new Promise((resolve, reject) => {
+  await new Promise((resolve) => {
     proc.stdout.on('data', (d) => {
       const str = d.toString()
       if (str.includes(`localhost:${DEV_PORT}`) || str.includes('Local:')) {
