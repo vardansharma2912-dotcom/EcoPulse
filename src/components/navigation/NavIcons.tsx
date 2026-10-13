@@ -16,7 +16,6 @@ export interface NavIconProps {
 export const DashboardNavIcon: React.FC<NavIconProps> = ({
   className = 'w-4 h-4',
   isHovered = false,
-  isActive = false,
 }) => {
   const reducedMotion = useReducedMotion()
   const [internalTrigger, setInternalTrigger] = useState(0)
