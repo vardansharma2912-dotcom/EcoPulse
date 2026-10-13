@@ -3,11 +3,40 @@
   <h1>EcoPulse</h1>
   <p><strong>Smart Energy Saving Reminder</strong></p>
   <p><em>Small reminders, real habits. Track and reduce energy waste without invasive hardware.</em></p>
+  <br />
+  <p>
+    <a href="https://eco-pulse-flame.vercel.app/" target="_blank">
+      <img src="https://img.shields.io/badge/Live%20Demo-Vercel%20Production-059669?style=for-the-badge&logo=vercel&logoColor=white" alt="Live Demo on Vercel" />
+    </a>
+    <img src="https://img.shields.io/badge/PWA-Installable%20Offline-10b981?style=for-the-badge&logo=pwa&logoColor=white" alt="PWA Installable" />
+    <img src="https://img.shields.io/badge/TypeScript-Strict-3178c6?style=for-the-badge&logo=typescript&logoColor=white" alt="TypeScript" />
+  </p>
+  <p>
+    🌐 <strong>Live URL:</strong> <a href="https://eco-pulse-flame.vercel.app/">https://eco-pulse-flame.vercel.app/</a>
+  </p>
 </div>
 
 > **Course:** CHE110 — Environmental Studies Group Project  
 > **Target Submission Date:** 20 October 2026  
-> **Status:** Fully functional client-side web application
+> **Status:** Production-Ready Client-Side Progressive Web App (PWA)
+
+---
+
+## 📸 Application Screenshots
+
+### Desktop Experience
+| Dashboard & Action Tracker | Conservation Trends & Analytics |
+|:---:|:---:|
+| <img src="docs/screenshot-desktop-dashboard.png" alt="EcoPulse Desktop Dashboard" width="480" /> | <img src="docs/screenshot-desktop-analytics.png" alt="EcoPulse Desktop Analytics" width="480" /> |
+
+| Standalone What-If Energy Calculator | 3D Interactive Habit Hub |
+|:---:|:---:|
+| <img src="docs/screenshot-desktop-calculator.png" alt="EcoPulse Calculator" width="480" /> | <img src="docs/screenshot-desktop-learn.png" alt="EcoPulse Learn Hub" width="480" /> |
+
+### Mobile Experience (Installable PWA)
+| Mobile Dashboard | Mobile Analytics & History |
+|:---:|:---:|
+| <img src="docs/screenshot-mobile-dashboard.png" alt="EcoPulse Mobile Dashboard" width="280" /> | <img src="docs/screenshot-mobile-analytics.png" alt="EcoPulse Mobile Analytics" width="280" /> |
 
 ---
 
@@ -25,8 +54,10 @@ Because individual students rarely see real-time utility bills or metering data,
 ## 2. Key Features
 
 - **Customizable Reminder Engine:** Set daily, weekday, weekly, or one-time prompts across 8 appliance categories (lighting, cooling, chargers, computing, appliances, standby power, shared spaces, and other).
-- **Light Glassmorphic Design:** Elegant, nature-inspired translucent light theme styled with custom CSS glass utilities over natural botanical leaf artwork.
-- **Reliable In-App Alerts:** Floating glass toast banner with immediate action buttons (*Mark Done*, *Snooze 15 min*, and *Dismiss*) and accessible `aria-live="polite"` announcements.
+- **Light Glassmorphic Botanical Design:** Nature-inspired translucent light theme styled with tailored CSS glass tokens over layered botanical leaf artwork.
+- **Offline Support & Installable PWA:** Full Progressive Web App powered by `vite-plugin-pwa` and Workbox caching. Installable to home screens and desktops with offline asset availability.
+- **Configurable Multi-Currency Selector:** Built-in settings currency selector supporting `₹ INR`, `$ USD`, `€ EUR`, and `£ GBP`. Dynamically applied across dashboard badges, energy calculators, trend cards, and history logs.
+- **Reliable In-App Due Alerts:** Floating glass toast banner with immediate action buttons (*Mark Done*, *Snooze 15 min*, and *Dismiss*) and accessible `aria-live="polite"` announcements.
 - **Native Browser Notifications:** Optional desktop notifications triggered when due reminders fire, automatically bringing the browser tab to focus on click.
 - **Standalone Energy Calculator:** What-if estimation tool with 10 appliance presets (LED bulb, tube light, ceiling fan, laptop charger, desktop PC, monitor, AC 1.5 ton, TV, phone charger, custom). Displays real-time step-by-step formula substitutions across daily, weekly, monthly, and annual horizons, with a 1-click button to prefill custom reminders.
 - **Conservation Analytics & Trends:**
@@ -36,6 +67,8 @@ Because individual students rarely see real-time utility bills or metering data,
   - Dynamic milestone achievement badges (never stored, derived live from activity).
   - Reverse-chronological action history grouped by date with "Show more" pagination.
 - **Interactive 3D Learn Hub:** Glassy 3D carousel powered by `motion` springs, perspective depth, wrap-around navigation, control pill with play/pause, touch drag, keyboard navigation, and dialog expansions for 9 practical conservation habits.
+- **Data Portability (Export & Import):** Instant JSON backup export and validated schema import, enabling effortless data preservation and migration across browsers.
+- **Route Code-Splitting:** Dynamic `React.lazy` routing with custom glass loading fallbacks ensuring sub-300 kB initial bundle size for rapid first contentful paint.
 - **Presentation Demo Data:** Settings toggle to load ~14 days of realistic demonstration completions clearly flagged as `isDemo: true`, allowing complete evaluation without compromising authentic user history.
 - **Local Client Storage:** Pure browser `localStorage` persistence with backward-compatible schema migration (v1 to v2) and full data reset controls.
 
@@ -43,15 +76,17 @@ Because individual students rarely see real-time utility bills or metering data,
 
 ## 3. Technology Stack
 
-- **Framework:** React 19 + TypeScript
+- **Framework:** React 19 + TypeScript (Strict Mode)
 - **Build Tool:** Vite 8
+- **PWA & Offline:** `vite-plugin-pwa` (Workbox Service Worker + Auto-Update)
 - **Styling:** Tailwind CSS v4 + Vanilla CSS glassmorphic tokens
 - **Animations:** Motion 14 (spring physics & 3D carousel transforms)
 - **Data Visualization:** Recharts 3
 - **Icons:** Lucide React
-- **Typography:** Inter Variable font
-- **Testing:** Vitest 5
+- **Typography:** Inter Variable font (`@fontsource-variable/inter`)
+- **Testing:** Vitest 5 (12 test suites, 90 tests)
 - **Linter:** Oxlint
+- **Browser Automation:** Playwright (Mobile/desktop viewport audit & automated screenshot captures)
 
 ---
 
@@ -62,10 +97,10 @@ EcoPulse evaluates scheduled reminders against the current local calendar date (
 ### Formulas
 1. **Electrical Energy Avoided (kWh):**
    $$\text{kWh} = \frac{\text{Watts (W)} \times \text{Hours avoided (h)}}{1000}$$
-2. **Estimated Financial Savings (₹):**
-   $$\text{Cost Saved (₹)} = \text{kWh} \times \text{Tariff Rate (₹/kWh)}$$
+2. **Estimated Financial Savings:**
+   $$\text{Cost Saved} = \text{kWh} \times \text{Tariff Rate (Currency/kWh)}$$
 
-*Note: The default tariff is set to ₹8.00 per unit (kWh), representative of typical domestic utility slabs in India, and can be adjusted anytime in Settings.*
+*Note: The default tariff is set to ₹8.00 per unit (kWh), representative of typical domestic utility slabs in India, and can be customized alongside the chosen currency symbol (₹, $, €, £) in Settings.*
 
 ---
 
@@ -74,8 +109,8 @@ EcoPulse evaluates scheduled reminders against the current local calendar date (
 EcoPulse adheres to strict academic honesty and technical transparency:
 1. **User-Reported Verification:** The system relies on self-reported action completions; it does not interface with smart meters or current-sensing hardware.
 2. **Estimates Only:** kWh calculations are theoretical estimates derived from user-specified appliance wattage labels and user-reported avoided usage times.
-3. **Tab Lifecycle Constraints:** Browser notifications and alerts execute entirely on client-side timers. Alerts fire only while EcoPulse is open in an active browser tab. Closed browser tabs and sleeping laptops cannot be alerted (no background push servers or native service workers).
-4. **Device-Local Storage:** All preferences, reminders, and history reside strictly inside browser `localStorage`. Data does not synchronize across separate devices or browsers.
+3. **Tab Lifecycle Constraints:** Browser notifications and alerts execute on client-side timers. Alerts fire while EcoPulse is running in an open or minimized browser tab. Because EcoPulse is privacy-first with no remote push server, alerts cannot fire when the browser is completely shut down.
+4. **Device-Local Storage:** All preferences, reminders, and history reside strictly inside browser `localStorage`. Data does not synchronize across separate devices unless migrated via the JSON Export/Import feature.
 
 ---
 
@@ -109,20 +144,29 @@ EcoPulse adheres to strict academic honesty and technical transparency:
    npm test
    ```
 
-5. **Run the production build:**
-   ```bash
-   npm run build
-   ```
-
-6. **Run linter checks:**
+5. **Run linter checks:**
    ```bash
    npm run lint
    ```
 
+6. **Build for production:**
+   ```bash
+   npm run build
+   ```
+
+7. **Preview the production build locally:**
+   ```bash
+   npm run preview
+   ```
+
+8. **Capture automated UI screenshots (Playwright):**
+   ```bash
+   node scripts/capture-screenshots.mjs
+   ```
+
 > [!NOTE]
-> **Static 404 Page (`public/404.html`):**  
-> EcoPulse includes both an in-app catch-all 404 page (`/#/*`) for hash-route navigation and a self-contained static `public/404.html` for unknown real paths served by hosting platforms like Vercel. The static `404.html` includes an inline script to seamlessly redirect known real paths (e.g. `/reminders`, `/calculator`) to their hash-route equivalents (`/#/reminders`, `/#/calculator`).  
-> *Note:* The static `404.html` can only be verified on the deployed Vercel site, because `vite dev` and `vite preview` inherently fall back to `index.html` for single-page applications.
+> **Static 404 Routing (`public/404.html`):**  
+> EcoPulse includes both an in-app catch-all 404 page (`/#/*`) for hash-route navigation and a self-contained static `public/404.html` for unknown real paths served by hosting platforms like Vercel.
 
 ---
 
@@ -130,66 +174,76 @@ EcoPulse adheres to strict academic honesty and technical transparency:
 
 ```
 EcoPulse/
-├── public/                 # Static web assets (favicon, SVG icons, 404.html)
+├── docs/                   # App screenshots, logos, and presentation assets
+├── public/                 # Static web assets (manifest, service worker icons, 404.html)
+├── scripts/
+│   ├── capture-screenshots.mjs # Automated Playwright desktop/mobile screenshot capturer
+│   └── mobile-audit.mjs    # Automated Playwright responsive viewport & accessibility audit
 ├── src/
-│   ├── assets/             # Botanical leaf background assets (leaf-bg.webp)
+│   ├── assets/             # Botanical leaf background assets (leaf-bg.webp, logo)
 │   ├── components/
-│   │   ├── layout/         # Navigation, AppLayout, PageHeader, LeafBackground,
-│   │   │                   # InAppAlertBanner, DemoBanner
+│   │   ├── charts/         # Recharts wrappers & custom bar charts
+│   │   ├── layout/         # Navigation, AppLayout, PageHeader, LeafBackground, InAppAlertBanner
 │   │   ├── reminders/      # Reminder cards, lists, dialogs, action buttons
-│   │   └── ui/             # Glass cards, buttons, badges, inputs, dialogs
+│   │   ├── tour/           # Onboarding interactive walkthrough dialog
+│   │   └── ui/             # Glass cards, buttons, badges, inputs, dialogs, count-ups
 │   ├── lib/
-│   │   ├── __tests__/      # Vitest suites (alerts, analytics, dates, energy,
-│   │   │                   # schedule, storage, workflow)
-│   │   ├── alerts.ts       # Pure alert detection & deduplication logic
+│   │   ├── __tests__/      # Vitest suites (alerts, analytics, dates, energy, storage, etc.)
+│   │   ├── alerts.ts       # Alert detection & deduplication logic
 │   │   ├── analytics.ts    # Chart aggregation, streak, badge, and comparison pure functions
 │   │   ├── dates.ts        # Local timezone calendar date utilities
 │   │   ├── energy.ts       # Energy conversion & financial math
+│   │   ├── notifications.ts # Browser notification dispatching & permission handling
 │   │   ├── sampleData.ts   # Demonstration data generator & demo filters
 │   │   ├── schedule.ts     # Recurrence rules & due date evaluation
-│   │   ├── storage.ts      # LocalStorage layer & v1-to-v2 migration
-│   │   └── useReminderAlerts.ts # 30s interval & visibility change alert hook
+│   │   └── storage.ts      # LocalStorage layer, currency migration & JSON export/import
 │   ├── pages/
 │   │   ├── DashboardPage.tsx   # Daily overview, metrics, due actions, quick add
 │   │   ├── RemindersPage.tsx   # Full reminders management CRUD
 │   │   ├── CalculatorPage.tsx  # Standalone appliance what-if calculator
-│   │   ├── AnalyticsPage.tsx   # Weekly Recharts bar graph, streaks, badges
-│   │   ├── LearnPage.tsx       # 10 practical energy conservation habit guides
-│   │   └── SettingsPage.tsx    # Tariffs, notification controls, reset & demo data
+│   │   ├── AnalyticsPage.tsx   # Weekly Recharts bar graph, streaks, badges, history
+│   │   ├── LearnPage.tsx       # 3D habit carousel with conservation guides
+│   │   ├── SettingsPage.tsx    # Currency, tariffs, notifications, export/import, demo data
+│   │   └── NotFoundPage.tsx    # Catch-all glass 404 view
 │   ├── state/              # Global React Context, action types & reducer
-│   ├── App.tsx             # Root router configuration (HashRouter)
+│   ├── App.tsx             # Root router configuration (HashRouter + React.lazy code-splitting)
 │   ├── index.css           # Tailwind v4 theme, glassmorphic utility tokens
-│   ├── main.tsx            # Application entrypoint
+│   ├── main.tsx            # Application entrypoint & PWA service worker registration
 │   └── types.ts            # Core TypeScript interfaces & data models
 ├── package.json
 ├── tsconfig.json
-└── vite.config.ts
+└── vite.config.ts          # Vite build config, Workbox PWA setup & rollup chunking
 ```
 
 ---
 
-## 8. Presentation & Academic Submissions Placeholders
+## 8. 🗺️ Roadmap
 
-- **Live Application URL:**  
-  `TODO: Add deployed Vercel URL upon final hosting`
-
-- **Interface Screenshots:**  
-  - *Dashboard View:* `TODO: Add screenshot`
-  - *Conservation Analytics & Recharts:* `TODO: Add screenshot`
-  - *Appliance Energy Calculator:* `TODO: Add screenshot`
-  - *In-App Glass Alert Banner:* `TODO: Add screenshot`
-
-- **Group Member Contributions (CHE110 Group):**  
-  - `TODO: List student names, registration numbers, and respective project contributions`
-
-- **Asset & Artwork Credits:**  
-  - Logo: `TODO (author / tool used)`
-  - Botanical Watercolor Leaf Artwork: `TODO: Add credit / source reference`
-  - Icons: [Lucide Icons](https://lucide.dev)
-  - Fonts: Inter Variable by Rasmus Andersson via [@fontsource-variable/inter](https://fontsource.org)
+- [ ] **Cloud Synchronization:** Opt-in end-to-end encrypted synchronization across user devices (e.g., via Supabase or decentralized storage).
+- [ ] **True Background Push Notifications:** Serverless edge cron triggers utilizing the Web Push Protocol to deliver notifications even when the browser is completely closed.
+- [ ] **Dormitory & Team Challenges:** Multi-room energy-saving competitions with shared leaderboards for college hostels and residential floors.
+- [ ] **Report Export (PDF / CSV):** One-click generation of formatted monthly sustainability impact reports for academic submission or campus green initiatives.
 
 ---
 
-## 9. License
+## 9. Presentation & Academic Submissions
+
+- **Live Application URL:**  
+  [https://eco-pulse-flame.vercel.app/](https://eco-pulse-flame.vercel.app/)
+
+- **Interface Screenshots:**  
+  All high-resolution desktop and mobile captures are located in the [docs/](file:///d:/Projects/CHE110/EcoPulse/docs) directory.
+
+- **Group Member Contributions (CHE110 Group):**  
+  *Vardan Sharma and CHE110 Project Team*
+
+- **Asset & Artwork Credits:**  
+  - Icons: [Lucide Icons](https://lucide.dev)
+  - Fonts: Inter Variable by Rasmus Andersson via [@fontsource-variable/inter](https://fontsource.org)
+  - Watercolor Botanical Artwork: EcoPulse Design System
+
+---
+
+## 10. License
 
 Developed for educational and environmental studies academic purposes (CHE110). Open for student and campus sustainability research.
