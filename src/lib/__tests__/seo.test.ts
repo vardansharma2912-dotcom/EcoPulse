@@ -61,6 +61,44 @@ describe('SEO Configuration & Route Metadata', () => {
         { '@type': 'Person', name: 'Shashank' },
         { '@type': 'Person', name: 'Raina Deep' },
       ])
+
+      // Ensure NO LocalBusiness schema exists
+      const localBiz = jsonLd['@graph'].find((item) => item['@type'] === 'LocalBusiness')
+      expect(localBiz).toBeUndefined()
+
+      // Ensure NO aggregateRating or fake reviews exist anywhere in graph
+      for (const entity of jsonLd['@graph']) {
+        expect(entity.aggregateRating).toBeUndefined()
+        expect(entity.review).toBeUndefined()
+      }
     }
   })
+
+  it('generates truthful WebApplication schema for home route', () => {
+    const jsonLd = getJsonLd('/') as { '@graph': any[] }
+    const app = jsonLd['@graph'].find((item) => item['@type'] === 'WebApplication')
+    expect(app).toBeDefined()
+    expect(app.applicationCategory).toBe('UtilitiesApplication')
+    expect(app.operatingSystem).toBe('Any')
+    expect(app.offers).toEqual({
+      '@type': 'Offer',
+      price: '0',
+      priceCurrency: 'USD',
+    })
+    expect(app.aggregateRating).toBeUndefined()
+  })
+
+  it('generates Article schema for /learn and BreadcrumbList for subpages', () => {
+    const learnJson = getJsonLd('/learn') as { '@graph': any[] }
+    const article = learnJson['@graph'].find((item) => item['@type'] === 'Article')
+    expect(article).toBeDefined()
+    expect(article.headline).toBe(ROUTES_META['/learn'].h1)
+
+    const breadcrumbs = learnJson['@graph'].find((item) => item['@type'] === 'BreadcrumbList')
+    expect(breadcrumbs).toBeDefined()
+    expect(breadcrumbs.itemListElement).toHaveLength(2)
+    expect(breadcrumbs.itemListElement[0].name).toBe('Dashboard')
+    expect(breadcrumbs.itemListElement[1].name).toBe('Learn')
+  })
 })
+
