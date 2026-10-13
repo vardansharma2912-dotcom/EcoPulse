@@ -4,7 +4,6 @@ import { motion, AnimatePresence, useReducedMotion } from 'motion/react'
 import {
   Bell,
   Search,
-  Settings as SettingsIcon,
 } from 'lucide-react'
 import { LeafBackground } from './LeafBackground'
 import { useReminderAlerts } from '../../lib/useReminderAlerts'
@@ -284,6 +283,7 @@ export const AppLayout: React.FC = () => {
             <NavLink
               to="/settings"
               aria-label="Settings"
+              title="Settings"
               className={({ isActive }) =>
                 `w-8 h-8 rounded-full flex items-center justify-center border-2 border-white/90 shadow-xs transition-all active:scale-95 ${
                   isActive
@@ -292,7 +292,7 @@ export const AppLayout: React.FC = () => {
                 }`
               }
             >
-              <SettingsIcon className="w-4 h-4" />
+              <SettingsNavIcon className="w-4 h-4 text-white" />
             </NavLink>
           </div>
         </header>
