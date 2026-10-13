@@ -82,12 +82,6 @@ export const AppLayout: React.FC = () => {
   // Sync document title with current route ("Dashboard · EcoPulse", etc.)
   useDocumentTitle(pageTitle)
 
-  // User initials for mobile avatar chip
-  const userInitial = useMemo(() => {
-    const name = state.settings.displayName?.trim()
-    return name ? name.charAt(0).toUpperCase() : 'G'
-  }, [state.settings.displayName])
-
   // Compute pending reminders due today for the nav badge
   const pendingTodayCount = useMemo(() => {
     const dueToday = state.reminders.filter((r) => isDueOn(r, today))
@@ -268,13 +262,19 @@ export const AppLayout: React.FC = () => {
               )}
             </button>
 
-            {/* Avatar Chip linking to Settings */}
+            {/* Settings button linking to Settings */}
             <NavLink
               to="/settings"
               aria-label="Settings"
-              className="w-8 h-8 rounded-full bg-emerald-800 text-white font-extrabold text-xs flex items-center justify-center border-2 border-white/90 shadow-xs hover:bg-emerald-900 active:scale-95 transition-all"
+              className={({ isActive }) =>
+                `w-8 h-8 rounded-full flex items-center justify-center border-2 border-white/90 shadow-xs active:scale-95 transition-all ${
+                  isActive
+                    ? 'bg-emerald-950 text-emerald-200 ring-2 ring-emerald-600/30'
+                    : 'bg-emerald-800 text-white hover:bg-emerald-900'
+                }`
+              }
             >
-              {userInitial}
+              <SettingsIcon className="w-4 h-4" />
             </NavLink>
           </div>
         </header>
