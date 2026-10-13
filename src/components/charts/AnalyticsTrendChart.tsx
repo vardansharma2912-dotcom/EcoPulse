@@ -105,7 +105,12 @@ export const AnalyticsTrendChart: React.FC<AnalyticsTrendChartProps> = ({
         </div>
       </div>
 
-      <div style={{ height: `${height}px` }} className="w-full pt-2">
+      <div
+        role="img"
+        aria-label="7-day comparative energy conservation trend area chart"
+        style={{ height: `${height}px` }}
+        className="w-full pt-2"
+      >
         <ResponsiveContainer width="100%" height="100%">
           <AreaChart data={chartData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
             <defs>

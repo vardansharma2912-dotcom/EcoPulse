@@ -47,6 +47,7 @@ export const NotFoundPage: React.FC = () => {
           <div className="relative w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-gradient-to-br from-emerald-100 via-emerald-50 to-emerald-200/80 border border-emerald-600/25 shadow-inner flex items-center justify-center overflow-hidden">
             {/* Faint Botanical Watermark Leaf */}
             <svg
+              aria-hidden="true"
               className="absolute inset-0 w-full h-full text-emerald-800/15 p-2 pointer-events-none"
               viewBox="0 0 24 24"
               fill="none"

@@ -220,6 +220,7 @@ export const NotchDock: React.FC = () => {
     >
       {/* SVG Notch Plate */}
       <svg
+        aria-hidden="true"
         className="absolute inset-0 w-full h-full pointer-events-none drop-shadow-[0_-4px_16px_rgba(10,56,30,0.08)]"
         viewBox={`0 0 ${dockWidth} ${barHeight}`}
         preserveAspectRatio="none"

@@ -16,6 +16,8 @@ export const LeafBackground: React.FC = () => {
       <img
         src={leafBgImg}
         alt=""
+        width={1920}
+        height={1080}
         className="w-full h-full object-cover object-center"
       />
       {/* Soft ambient tint to blend beautifully with the light glass surfaces */}

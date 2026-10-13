@@ -377,7 +377,7 @@ export const DashboardPage: React.FC = () => {
                     size="sm"
                     className="w-full justify-center"
                     icon={
-                      <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.5}>
+                      <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.5} aria-hidden="true">
                         <path d="M5 13l4 4L19 7" strokeLinecap="round" strokeLinejoin="round" />
                       </svg>
                     }
@@ -670,7 +670,7 @@ export const DashboardPage: React.FC = () => {
                                 variant="primary"
                                 size="sm"
                                 icon={
-                                  <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.5}>
+                                  <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.5} aria-hidden="true">
                                     <motion.path
                                       d="M5 13l4 4L19 7"
                                       initial={{ pathLength: 0 }}

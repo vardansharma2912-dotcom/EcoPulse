@@ -31,7 +31,7 @@ export const PillBarChart: React.FC<PillBarChartProps> = ({
     return (
       <div className={`flex flex-col items-center justify-center p-8 text-center rounded-2xl bg-white/40 border border-white/60 ${className}`}>
         <div className="w-10 h-10 rounded-full bg-emerald-900/10 flex items-center justify-center text-emerald-900 mb-2">
-          <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
           </svg>
         </div>
