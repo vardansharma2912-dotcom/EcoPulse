@@ -43,7 +43,9 @@ import {
   TrendingUp,
   Calendar,
   ArrowUpRight,
+  Sparkles,
 } from 'lucide-react'
+import { getGreeting } from '../lib/greetings'
 
 export const DashboardPage: React.FC = () => {
   const { state, completeReminder, undoCompletion, addReminder } = useAppState()
@@ -60,6 +62,20 @@ export const DashboardPage: React.FC = () => {
   const dueTodayReminders = useMemo(() => {
     return state.reminders.filter((r) => isDueOn(r, today))
   }, [state.reminders, today])
+
+  // Personalized greeting picked once per dashboard visit (does not change on re-render)
+  const [greeting] = useState(() => {
+    return getGreeting(
+      state.settings.displayName,
+      {
+        totalDueToday: state.reminders.filter((r) => isDueOn(r, today)).length,
+        completedToday: state.completions.filter((c) => c.date === today).length,
+        currentStreak: computeStreak(state.completions, today),
+        totalCompletionsCount: state.completions.length,
+      },
+      now
+    )
+  })
 
   const totalDueToday = dueTodayReminders.length
 
@@ -182,6 +198,25 @@ export const DashboardPage: React.FC = () => {
           </div>
         }
       />
+      {/* Personalized Time & Context-Aware Greeting Banner */}
+      <motion.div variants={cardVariants}>
+        <div className="relative overflow-hidden rounded-2xl glass-card p-4 sm:p-5 border border-white/80 shadow-xs flex items-start gap-3.5">
+          <div
+            className="w-10 h-10 rounded-xl bg-emerald-800/15 border border-emerald-800/25 text-emerald-900 flex items-center justify-center shrink-0 shadow-xs mt-0.5"
+            aria-hidden="true"
+          >
+            <Sparkles className="w-5 h-5 text-emerald-800" />
+          </div>
+          <div className="min-w-0 flex-1">
+            <h2 className="text-base sm:text-lg font-bold text-[#0d2818] tracking-tight">
+              {greeting.headline}
+            </h2>
+            <p className="text-xs sm:text-sm text-[#1e3f2b] mt-1 leading-relaxed font-medium">
+              {greeting.subline}
+            </p>
+          </div>
+        </div>
+      </motion.div>
 
       <DemoBanner />
 
