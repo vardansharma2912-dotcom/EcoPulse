@@ -1,5 +1,5 @@
 import React, { Suspense } from 'react'
-import { HashRouter, Routes, Route, Navigate } from 'react-router-dom'
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
 import { MotionConfig } from 'motion/react'
 import { AppStateProvider } from './state'
 import { ToastProvider } from './context/ToastContext'
@@ -51,7 +51,7 @@ export default function App(): React.JSX.Element {
     <AppStateProvider>
       <MotionConfig reducedMotion="user">
         <ToastProvider>
-          <HashRouter>
+          <BrowserRouter>
             <TourProvider>
               <Suspense fallback={<GlassLoadingFallback />}>
                 <Routes>
@@ -68,7 +68,7 @@ export default function App(): React.JSX.Element {
                 </Routes>
               </Suspense>
             </TourProvider>
-          </HashRouter>
+          </BrowserRouter>
         </ToastProvider>
       </MotionConfig>
     </AppStateProvider>

@@ -13,23 +13,6 @@
   <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16.png">
   <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 
-  <!-- Tiny inline route redirector: converts real-path misses for known routes into hash routes -->
-  <script>
-    (function () {
-      try {
-        var path = window.location.pathname.replace(/^\/+|\/+$/g, '').toLowerCase();
-        var first = path.split('/')[0];
-        var known = ['dashboard', 'reminders', 'calculator', 'analytics', 'learn', 'settings'];
-        if (known.indexOf(first) !== -1) {
-          var target = '/#/' + path + (window.location.search || '') + (window.location.hash || '');
-          window.location.replace(target);
-        }
-      } catch (e) {
-        /* Fallback: render 404 page content */
-      }
-    })();
-  </script>
-
   <!-- Fully self-contained inline CSS (no external fonts or stylesheets) -->
   <style>
     *, *::before, *::after {
