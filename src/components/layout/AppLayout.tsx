@@ -4,6 +4,7 @@ import { motion, AnimatePresence, useReducedMotion } from 'motion/react'
 import {
   Bell,
   Search,
+  Settings as SettingsIcon,
 } from 'lucide-react'
 import { LeafBackground } from './LeafBackground'
 import { useReminderAlerts } from '../../lib/useReminderAlerts'
@@ -86,12 +87,6 @@ export const AppLayout: React.FC = () => {
 
   // Update document title, meta tags, Open Graph, canonical, and JSON-LD
   useSeo(location.pathname)
-
-  // User initials for mobile avatar chip
-  const userInitial = useMemo(() => {
-    const name = state.settings.displayName?.trim()
-    return name ? name.charAt(0).toUpperCase() : 'G'
-  }, [state.settings.displayName])
 
   // Compute pending reminders due today for the nav badge
   const pendingTodayCount = useMemo(() => {
@@ -285,13 +280,19 @@ export const AppLayout: React.FC = () => {
               )}
             </button>
 
-            {/* Avatar Chip linking to Settings */}
+            {/* Mobile Settings Button with Classic Gear Icon */}
             <NavLink
               to="/settings"
               aria-label="Settings"
-              className="w-8 h-8 rounded-full bg-emerald-800 text-white font-extrabold text-xs flex items-center justify-center border-2 border-white/90 shadow-xs hover:bg-emerald-900 active:scale-95 transition-all"
+              className={({ isActive }) =>
+                `w-8 h-8 rounded-full flex items-center justify-center border-2 border-white/90 shadow-xs transition-all active:scale-95 ${
+                  isActive
+                    ? 'bg-emerald-900 text-white ring-2 ring-emerald-400/50'
+                    : 'bg-emerald-800 text-white hover:bg-emerald-900'
+                }`
+              }
             >
-              {userInitial}
+              <SettingsIcon className="w-4 h-4" />
             </NavLink>
           </div>
         </header>
