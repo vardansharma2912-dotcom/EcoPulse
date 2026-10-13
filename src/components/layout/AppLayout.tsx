@@ -350,10 +350,14 @@ export const AppLayout: React.FC = () => {
         {/* Small Glass Footer: Accessible Internal Links + Credits, Desktop and Mobile Safe */}
         <footer className="mt-auto border-t border-emerald-900/10 bg-white/40 backdrop-blur-md py-6 px-4 sm:px-8 text-xs text-slate-700 pb-28 lg:pb-6">
           <div className="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
-            <div className="flex items-center gap-2 text-emerald-950 font-bold">
-              <Logo size={20} />
-              <span>EcoPulse</span>
-              <span className="font-normal text-slate-600 hidden sm:inline">· Smart Energy Saving Habit Tracker</span>
+            <div className="flex flex-col items-center md:items-start gap-1 shrink-0">
+              <div className="flex items-center gap-2 text-emerald-950 font-bold">
+                <Logo size={20} />
+                <span>EcoPulse</span>
+              </div>
+              <p className="text-[11px] text-slate-600 font-medium text-center md:text-left whitespace-nowrap">
+                Smart Energy Saving Habit Tracker
+              </p>
             </div>
             <nav aria-label="Footer navigation" className="flex flex-wrap items-center justify-center gap-x-4 gap-y-2 font-medium">
               <Link to="/" className="hover:text-emerald-950 hover:underline transition-colors">
