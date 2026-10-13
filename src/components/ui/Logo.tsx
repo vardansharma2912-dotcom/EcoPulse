@@ -30,14 +30,23 @@ export const Logo: React.FC<LogoProps> = ({
   )
 
   if (withWordmark) {
+    const isLarge = numericSize >= 40
     return (
-      <div className={`flex items-center gap-3 ${className}`}>
+      <div className={`flex items-center gap-3.5 ${className}`}>
         {imgElement}
         <div className="min-w-0">
-          <span className="font-bold text-base text-[#14301f] tracking-tight block leading-tight truncate">
+          <span
+            className={`font-black text-[#112d1b] tracking-tight block leading-tight truncate ${
+              isLarge ? 'text-lg xl:text-xl' : 'text-base'
+            }`}
+          >
             EcoPulse
           </span>
-          <p className="text-[11px] text-[#1e3f2b] font-semibold leading-tight truncate">
+          <p
+            className={`text-[#1e3f2b] font-semibold leading-tight truncate ${
+              isLarge ? 'text-xs xl:text-[13px]' : 'text-[11px]'
+            }`}
+          >
             Smart Energy Reminder
           </p>
         </div>

@@ -29,14 +29,22 @@ import { Logo } from '../ui/Logo'
 import { useSeo } from '../../lib/seo'
 import { isWelcomeHandled, isTourSeen } from '../../lib/storage'
 import { useTour } from '../../context/useTour'
+import {
+  DashboardNavIcon,
+  RemindersNavIcon,
+  CalculatorNavIcon,
+  AnalyticsNavIcon,
+  LearnNavIcon,
+  SettingsNavIcon,
+} from '../navigation/NavIcons'
 
 const navItems = [
-  { to: '/', label: 'Dashboard', icon: LayoutDashboard },
-  { to: '/reminders', label: 'Reminders', icon: Bell },
-  { to: '/calculator', label: 'Calculator', icon: Calculator },
-  { to: '/analytics', label: 'Analytics', icon: BarChart3 },
-  { to: '/learn', label: 'Learn', icon: BookOpen },
-  { to: '/settings', label: 'Settings', icon: SettingsIcon },
+  { to: '/', label: 'Dashboard', icon: DashboardNavIcon },
+  { to: '/reminders', label: 'Reminders', icon: RemindersNavIcon },
+  { to: '/calculator', label: 'Calculator', icon: CalculatorNavIcon },
+  { to: '/analytics', label: 'Analytics', icon: AnalyticsNavIcon },
+  { to: '/learn', label: 'Learn', icon: LearnNavIcon },
+  { to: '/settings', label: 'Settings', icon: SettingsNavIcon },
 ]
 
 export const AppLayout: React.FC = () => {
@@ -49,6 +57,7 @@ export const AppLayout: React.FC = () => {
   const [searchOpen, setSearchOpen] = useState(false)
   const [alertsPopoverOpen, setAlertsPopoverOpen] = useState(false)
   const [welcomeDismissed, setWelcomeDismissed] = useState(false)
+  const [hoveredTab, setHoveredTab] = useState<string | null>(null)
 
   // Welcome screen is shown once on first launch or after reset when displayName is empty
   const isReset = !isWelcomeHandled() && !state.settings.displayName
@@ -154,7 +163,7 @@ export const AppLayout: React.FC = () => {
         <div>
           {/* Logo & Project Banner */}
           <div className="px-2 py-1 mb-4 xl:mb-5">
-            <Logo size={40} withWordmark />
+            <Logo size={48} withWordmark />
           </div>
 
           {/* Navigation Links with Shared Sliding Pill & 3px Indicator */}
@@ -171,7 +180,9 @@ export const AppLayout: React.FC = () => {
                   key={item.to}
                   to={item.to}
                   end={item.to === '/'}
-                  className={`relative flex items-center gap-3 px-3.5 py-2 xl:py-2.5 rounded-xl text-sm font-semibold transition-colors ${
+                  onMouseEnter={() => setHoveredTab(item.to)}
+                  onMouseLeave={() => setHoveredTab(null)}
+                  className={`relative flex items-center gap-3 px-3.5 py-2 xl:py-2.5 rounded-xl text-sm font-semibold transition-colors group ${
                     isActive ? 'text-white' : 'text-slate-700 hover:text-[#14301f] hover:bg-white/60'
                   }`}
                 >
@@ -193,7 +204,11 @@ export const AppLayout: React.FC = () => {
                     />
                   )}
 
-                  <Icon className="w-4 h-4 shrink-0" />
+                  <Icon
+                    className="w-4 h-4 shrink-0 transition-transform duration-200 group-hover:scale-110"
+                    isHovered={hoveredTab === item.to}
+                    isActive={isActive}
+                  />
                   <span>{item.label}</span>
 
                   {/* Reminders Pending Count Badge */}
@@ -233,13 +248,13 @@ export const AppLayout: React.FC = () => {
         {/* Mobile Compact Glass Header (< 1024px) */}
         <header className="lg:hidden glass-panel border-b border-white/60 px-3.5 py-2.5 flex items-center justify-between sticky top-0 z-30 backdrop-blur-md">
           {/* Left: Logo & Current Page Title */}
-          <div className="flex items-center gap-2 min-w-0">
-            <Logo size={28} className="shrink-0" />
+          <div className="flex items-center gap-2.5 min-w-0">
+            <Logo size={32} className="shrink-0" />
             <div className="min-w-0">
-              <span className="font-bold text-sm text-[#14301f] leading-tight truncate block">
+              <span className="font-extrabold text-base text-[#14301f] leading-tight truncate block">
                 {pageTitle}
               </span>
-              <p className="text-[10px] text-emerald-900 font-semibold leading-none">
+              <p className="text-[11px] text-emerald-900 font-bold leading-none">
                 EcoPulse
               </p>
             </div>

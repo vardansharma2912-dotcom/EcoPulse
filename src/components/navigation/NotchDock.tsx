@@ -3,12 +3,12 @@ import { createPortal } from 'react-dom'
 import { NavLink, useLocation } from 'react-router-dom'
 import { motion, useMotionValue, animate, useReducedMotion } from 'motion/react'
 import {
-  LayoutDashboard,
-  Bell,
-  Calculator,
-  BarChart3,
-  BookOpen,
-} from 'lucide-react'
+  DashboardNavIcon,
+  RemindersNavIcon,
+  CalculatorNavIcon,
+  AnalyticsNavIcon,
+  LearnNavIcon,
+} from './NavIcons'
 import { useAppState } from '../../state'
 import { todayKey } from '../../lib/dates'
 import { isDueOn } from '../../lib/schedule'
@@ -16,15 +16,15 @@ import { isDueOn } from '../../lib/schedule'
 interface DockTab {
   to: string
   label: string
-  icon: React.ComponentType<{ className?: string }>
+  icon: React.ComponentType<{ className?: string; isHovered?: boolean; isActive?: boolean }>
 }
 
 const DOCK_TABS: DockTab[] = [
-  { to: '/', label: 'Dashboard', icon: LayoutDashboard },
-  { to: '/reminders', label: 'Reminders', icon: Bell },
-  { to: '/calculator', label: 'Calculator', icon: Calculator },
-  { to: '/analytics', label: 'Analytics', icon: BarChart3 },
-  { to: '/learn', label: 'Learn', icon: BookOpen },
+  { to: '/', label: 'Dashboard', icon: DashboardNavIcon },
+  { to: '/reminders', label: 'Reminders', icon: RemindersNavIcon },
+  { to: '/calculator', label: 'Calculator', icon: CalculatorNavIcon },
+  { to: '/analytics', label: 'Analytics', icon: AnalyticsNavIcon },
+  { to: '/learn', label: 'Learn', icon: LearnNavIcon },
 ]
 
 function computeFlatPath(w: number, h: number): string {
@@ -246,7 +246,7 @@ export const NotchDock: React.FC = () => {
           }}
           className="absolute z-20 flex items-center justify-center rounded-full bg-gradient-to-b from-[#1f7a4d] to-[#0a381e] text-white shadow-[0_6px_18px_rgba(20,48,31,0.32)] border border-emerald-300/40 pointer-events-none"
         >
-          <ActiveIcon className="w-5 h-5" />
+          <ActiveIcon className="w-5 h-5" isActive={true} isHovered={true} />
           {activeIndex === 1 && pendingCount > 0 && (
             <span className="absolute -top-1 -right-1 min-w-[16px] h-4 px-1 rounded-full bg-amber-400 text-amber-950 text-[10px] font-extrabold flex items-center justify-center border border-white">
               {pendingCount}
