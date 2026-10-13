@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useRef } from 'react'
 import { motion } from 'motion/react'
 import { PageHeader } from '../components/layout/PageHeader'
 import { Card } from '../components/ui/Card'
@@ -9,10 +9,11 @@ import { Badge } from '../components/ui/Badge'
 import { useAppState } from '../state'
 import { useToast } from '../context/useToast'
 import { useTour } from '../context/useTour'
-import { ALERTED_KEYS_STORAGE_KEY, clearState } from '../lib/storage'
+import { ALERTED_KEYS_STORAGE_KEY, clearState, createExportPayload, parseAndValidateImport } from '../lib/storage'
 import { hasDemoCompletions } from '../lib/sampleData'
 import { sendBrowserNotification } from '../lib/notifications'
 import { containerVariants, cardVariants } from '../lib/motionVariants'
+import type { AppState } from '../types'
 import {
   Save,
   RotateCcw,
@@ -29,13 +30,16 @@ import {
   CheckCircle2,
   XCircle,
   ExternalLink,
+  Download,
+  Upload,
+  Database,
 } from 'lucide-react'
 import { Logo } from '../components/ui/Logo'
 
 type PermissionState = 'unsupported' | 'not asked yet' | 'granted' | 'denied'
 
 export const SettingsPage: React.FC = () => {
-  const { state, updateSettings, resetData, loadSampleData, removeSampleData } = useAppState()
+  const { state, updateSettings, resetData, loadSampleData, removeSampleData, replaceState } = useAppState()
   const { showToast } = useToast()
   const { openTour } = useTour()
   const [displayName, setDisplayName] = useState(state.settings.displayName)
@@ -47,6 +51,9 @@ export const SettingsPage: React.FC = () => {
   const [resetConfirmInput, setResetConfirmInput] = useState('')
   const [testAlertSent, setTestAlertSent] = useState(false)
   const [testFeedback, setTestFeedback] = useState<{ type: 'success' | 'error'; message: string } | null>(null)
+  const [importConfirmOpen, setImportConfirmOpen] = useState(false)
+  const [pendingImportData, setPendingImportData] = useState<AppState | null>(null)
+  const fileInputRef = useRef<HTMLInputElement>(null)
 
   const isDemoActive = hasDemoCompletions(state.completions)
 
@@ -210,6 +217,75 @@ export const SettingsPage: React.FC = () => {
   const handleRemoveSample = () => {
     removeSampleData()
     showToast('Sample data removed!')
+  }
+
+  const handleExport = () => {
+    try {
+      const payloadString = createExportPayload(state)
+      const blob = new Blob([payloadString], { type: 'application/json' })
+      const url = URL.createObjectURL(blob)
+      const dateStr = new Date().toISOString().split('T')[0]
+      const a = document.createElement('a')
+      a.href = url
+      a.download = `ecopulse-backup-${dateStr}.json`
+      document.body.appendChild(a)
+      a.click()
+      document.body.removeChild(a)
+      URL.revokeObjectURL(url)
+      showToast('Data exported successfully! Check your downloads folder.')
+    } catch (err) {
+      console.error('[EcoPulse] Export error:', err)
+      showToast('Failed to export data. Please try again.')
+    }
+  }
+
+  const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (!file) return
+
+    const reader = new FileReader()
+    reader.onload = (event) => {
+      const text = event.target?.result
+      if (typeof text !== 'string') {
+        showToast('Could not read the selected backup file.')
+        if (fileInputRef.current) fileInputRef.current.value = ''
+        return
+      }
+
+      const result = parseAndValidateImport(text)
+      if (!result.success || !result.data) {
+        showToast(result.error || 'Failed to validate backup file.')
+        if (fileInputRef.current) fileInputRef.current.value = ''
+        return
+      }
+
+      setPendingImportData(result.data)
+      setImportConfirmOpen(true)
+    }
+
+    reader.onerror = () => {
+      showToast('Error reading the selected file. Please try again.')
+      if (fileInputRef.current) fileInputRef.current.value = ''
+    }
+
+    reader.readAsText(file)
+  }
+
+  const handleConfirmImport = () => {
+    if (!pendingImportData) return
+    replaceState(pendingImportData)
+    setDisplayName(pendingImportData.settings.displayName)
+    setTariff(pendingImportData.settings.tariffPerKwh.toString())
+    setImportConfirmOpen(false)
+    setPendingImportData(null)
+    if (fileInputRef.current) fileInputRef.current.value = ''
+    showToast('Data imported successfully! Your reminders and history are restored.')
+  }
+
+  const handleCancelImport = () => {
+    setImportConfirmOpen(false)
+    setPendingImportData(null)
+    if (fileInputRef.current) fileInputRef.current.value = ''
   }
 
   return (
@@ -528,6 +604,54 @@ export const SettingsPage: React.FC = () => {
       </Card>
     </motion.div>
 
+    {/* Data Backup & Portability Section */}
+    <motion.div variants={cardVariants}>
+      <Card variant="glass" className="space-y-4 p-5">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div>
+            <div className="flex items-center gap-2">
+              <Database className="w-4 h-4 text-emerald-800" />
+              <h3 className="text-sm font-bold text-[#0f2819]">Data Backup & Portability</h3>
+            </div>
+            <p className="text-xs text-[#1e3f2b] mt-1 max-w-md leading-relaxed">
+              Export your reminders, completion history, and tariff settings to a dated JSON backup, or import an existing file.
+            </p>
+          </div>
+
+          <div className="flex items-center gap-2.5 self-start sm:self-auto flex-wrap">
+            <input
+              ref={fileInputRef}
+              type="file"
+              accept=".json,application/json"
+              onChange={handleFileSelect}
+              className="hidden"
+              aria-label="Select backup file to import"
+            />
+
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              icon={<Download className="w-3.5 h-3.5 text-emerald-800" />}
+              onClick={handleExport}
+            >
+              Export data
+            </Button>
+
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              icon={<Upload className="w-3.5 h-3.5 text-emerald-800" />}
+              onClick={() => fileInputRef.current?.click()}
+            >
+              Import data
+            </Button>
+          </div>
+        </div>
+      </Card>
+    </motion.div>
+
     {/* Data Management & Reset Section */}
     <motion.div variants={cardVariants}>
       <Card variant="glass" className="border-rose-400/50 bg-rose-50/60 p-5">
@@ -602,6 +726,72 @@ export const SettingsPage: React.FC = () => {
               onClick={handleConfirmReset}
             >
               Confirm Reset
+            </Button>
+          </div>
+        </div>
+      </Dialog>
+
+      {/* Import Confirmation Dialog */}
+      <Dialog
+        open={importConfirmOpen}
+        onClose={handleCancelImport}
+        title="Confirm Data Import"
+        description="Replace current EcoPulse data with imported backup?"
+      >
+        <div className="space-y-4">
+          <p className="text-sm text-[#183624] leading-relaxed font-medium">
+            Are you sure you want to replace your current data? This will overwrite your active reminders, logged completions, and settings with the contents of the imported file.
+          </p>
+
+          {pendingImportData && (
+            <div className="rounded-xl bg-white/70 border border-emerald-950/10 p-3.5 space-y-2 text-xs text-[#0f2819]">
+              <div className="font-semibold text-emerald-900 flex items-center gap-1.5">
+                <CheckCircle2 className="w-3.5 h-3.5 text-emerald-700" /> Backup Summary:
+              </div>
+              <div className="grid grid-cols-2 gap-2 text-xs">
+                <div>
+                  <span className="text-[#1e3f2b] font-medium">Reminders: </span>
+                  <span className="font-bold">{pendingImportData.reminders.length}</span>
+                </div>
+                <div>
+                  <span className="text-[#1e3f2b] font-medium">Completions: </span>
+                  <span className="font-bold">{pendingImportData.completions.length}</span>
+                </div>
+                <div>
+                  <span className="text-[#1e3f2b] font-medium">Tariff: </span>
+                  <span className="font-bold">₹{pendingImportData.settings.tariffPerKwh}/unit</span>
+                </div>
+                <div>
+                  <span className="text-[#1e3f2b] font-medium">Profile: </span>
+                  <span className="font-bold">{pendingImportData.settings.displayName || 'Guest'}</span>
+                </div>
+              </div>
+            </div>
+          )}
+
+          <div className="rounded-xl bg-amber-500/10 border border-amber-300/40 p-3 text-xs text-amber-950 font-medium">
+            Make sure to export a backup of your current data first if you want to keep a copy.
+          </div>
+
+          <div className="flex flex-col-reverse sm:flex-row sm:items-center justify-end gap-2.5 sm:gap-3 pt-4 border-t border-emerald-950/10">
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              className="w-full sm:w-auto justify-center"
+              onClick={handleCancelImport}
+            >
+              Cancel
+            </Button>
+            <Button
+              type="button"
+              variant="primary"
+              size="sm"
+              icon={<Upload className="w-3.5 h-3.5" />}
+              className="w-full sm:w-auto justify-center"
+              onClick={handleConfirmImport}
+            >
+              Confirm Import
             </Button>
           </div>
         </div>

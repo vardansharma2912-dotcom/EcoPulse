@@ -5,8 +5,11 @@ import {
   migrateCompletions,
   STORAGE_KEY,
   PREVIOUS_STORAGE_KEY,
+  createExportPayload,
+  parseAndValidateImport,
+  isValidState,
 } from '../storage'
-import type { Reminder } from '../../types'
+import type { Reminder, AppState } from '../../types'
 
 // Provide in-memory localStorage polyfill for Node test environment
 const mockStore = new Map<string, string>()
@@ -240,3 +243,214 @@ describe('Storage v1 to v2 Migration & Persistence', () => {
     expect(filteredCompletions[0].title).toBe('Authentic Action')
   })
 })
+
+describe('Data Export and Import Round-Trip & Schema Validation', () => {
+  const sampleState: AppState = {
+    reminders: [
+      {
+        id: 'rem-export-1',
+        title: 'Switch off study desk LED',
+        category: 'lighting',
+        time: '23:00',
+        recurrence: 'daily',
+        applianceWatts: 12,
+        avoidedHours: 4,
+        active: true,
+        createdAt: '2026-10-10T12:00:00.000Z',
+      },
+      {
+        id: 'rem-export-2',
+        title: 'Unplug phone charger overnight',
+        category: 'chargers',
+        time: '07:30',
+        recurrence: 'weekdays',
+        applianceWatts: 10,
+        avoidedHours: 8,
+        active: true,
+        createdAt: '2026-10-11T12:00:00.000Z',
+      },
+    ],
+    completions: [
+      {
+        id: 'comp-export-1',
+        reminderId: 'rem-export-1',
+        title: 'Switch off study desk LED',
+        date: '2026-10-12',
+        completedAt: '2026-10-12T23:05:00.000Z',
+        kWh: 0.048,
+        costSaved: 0.384,
+        tariffAtTime: 8,
+      },
+    ],
+    settings: {
+      displayName: 'Eco Pioneer',
+      tariffPerKwh: 9.5,
+      notificationsEnabled: true,
+    },
+    lastUpdated: '2026-10-12T23:10:00.000Z',
+  }
+
+  it('createExportPayload serializes state into valid JSON containing version, reminders, completions, and settings', () => {
+    const json = createExportPayload(sampleState)
+    expect(typeof json).toBe('string')
+
+    const parsed = JSON.parse(json)
+    expect(parsed.version).toBe(2)
+    expect(parsed.exportedAt).toBeDefined()
+    expect(parsed.settings.displayName).toBe('Eco Pioneer')
+    expect(parsed.settings.tariffPerKwh).toBe(9.5)
+    expect(parsed.settings.notificationsEnabled).toBe(true)
+    expect(parsed.reminders).toHaveLength(2)
+    expect(parsed.reminders[0].title).toBe('Switch off study desk LED')
+    expect(parsed.completions).toHaveLength(1)
+    expect(parsed.completions[0].kWh).toBe(0.048)
+  })
+
+  it('ROUND-TRIP: parseAndValidateImport successfully reconstructs exported state with data integrity', () => {
+    const exportedJson = createExportPayload(sampleState)
+    const result = parseAndValidateImport(exportedJson)
+
+    expect(result.success).toBe(true)
+    expect(result.error).toBeUndefined()
+    expect(result.data).toBeDefined()
+
+    const imported = result.data!
+    expect(imported.settings.displayName).toBe('Eco Pioneer')
+    expect(imported.settings.tariffPerKwh).toBe(9.5)
+    expect(imported.settings.notificationsEnabled).toBe(true)
+    expect(imported.reminders).toHaveLength(2)
+    expect(imported.reminders[0].id).toBe('rem-export-1')
+    expect(imported.reminders[1].id).toBe('rem-export-2')
+    expect(imported.completions).toHaveLength(1)
+    expect(imported.completions[0].id).toBe('comp-export-1')
+    expect(imported.completions[0].costSaved).toBe(0.384)
+  })
+
+  it('REJECTS: rejects empty or whitespace-only input', () => {
+    const emptyResult = parseAndValidateImport('')
+    expect(emptyResult.success).toBe(false)
+    expect(emptyResult.error).toContain('empty')
+
+    const whitespaceResult = parseAndValidateImport('   \n  \t  ')
+    expect(whitespaceResult.success).toBe(false)
+    expect(whitespaceResult.error).toContain('empty')
+  })
+
+  it('REJECTS: rejects non-JSON or malformed strings', () => {
+    const badJson = parseAndValidateImport('{ bad json: true, ...')
+    expect(badJson.success).toBe(false)
+    expect(badJson.error).toContain('Invalid JSON')
+
+    const plainText = parseAndValidateImport('hello world')
+    expect(plainText.success).toBe(false)
+  })
+
+  it('REJECTS: rejects primitive JSON values like numbers, booleans, or null', () => {
+    expect(parseAndValidateImport('123').success).toBe(false)
+    expect(parseAndValidateImport('"some string"').success).toBe(false)
+    expect(parseAndValidateImport('null').success).toBe(false)
+    expect(parseAndValidateImport('true').success).toBe(false)
+  })
+
+  it('REJECTS: rejects JSON missing required top-level arrays or settings', () => {
+    // Missing reminders
+    expect(
+      parseAndValidateImport(
+        JSON.stringify({ completions: [], settings: { tariffPerKwh: 8 } })
+      ).success
+    ).toBe(false)
+
+    // Missing completions
+    expect(
+      parseAndValidateImport(
+        JSON.stringify({ reminders: [], settings: { tariffPerKwh: 8 } })
+      ).success
+    ).toBe(false)
+
+    // Missing settings
+    expect(
+      parseAndValidateImport(JSON.stringify({ reminders: [], completions: [] }))
+        .success
+    ).toBe(false)
+  })
+
+  it('REJECTS: rejects invalid or negative tariff rates in settings', () => {
+    // NaN tariff
+    expect(
+      parseAndValidateImport(
+        JSON.stringify({
+          reminders: [],
+          completions: [],
+          settings: { tariffPerKwh: 'invalid' },
+        })
+      ).success
+    ).toBe(false)
+
+    // Zero or negative tariff
+    expect(
+      parseAndValidateImport(
+        JSON.stringify({
+          reminders: [],
+          completions: [],
+          settings: { tariffPerKwh: 0 },
+        })
+      ).success
+    ).toBe(false)
+
+    expect(
+      parseAndValidateImport(
+        JSON.stringify({
+          reminders: [],
+          completions: [],
+          settings: { tariffPerKwh: -5 },
+        })
+      ).success
+    ).toBe(false)
+  })
+
+  it('REJECTS: rejects corrupted items within reminders or completions arrays', () => {
+    // Reminders array with non-objects or missing required id/title
+    expect(
+      parseAndValidateImport(
+        JSON.stringify({
+          reminders: ['just-a-string-not-an-object'],
+          completions: [],
+          settings: { tariffPerKwh: 8 },
+        })
+      ).success
+    ).toBe(false)
+
+    expect(
+      parseAndValidateImport(
+        JSON.stringify({
+          reminders: [{ id: 'rem-1' /* missing title */ }],
+          completions: [],
+          settings: { tariffPerKwh: 8 },
+        })
+      ).success
+    ).toBe(false)
+
+    // Completions array with missing id or date
+    expect(
+      parseAndValidateImport(
+        JSON.stringify({
+          reminders: [],
+          completions: [{ reminderId: 'rem-1' /* missing id & date */ }],
+          settings: { tariffPerKwh: 8 },
+        })
+      ).success
+    ).toBe(false)
+  })
+
+  it('isValidState accurately validates compliant AppState and rejects non-compliant values', () => {
+    expect(isValidState(sampleState)).toBe(true)
+    expect(isValidState(null)).toBe(false)
+    expect(isValidState(undefined)).toBe(false)
+    expect(isValidState([])).toBe(false)
+    expect(isValidState({})).toBe(false)
+    expect(isValidState({ ...sampleState, reminders: 'not-an-array' })).toBe(false)
+    expect(isValidState({ ...sampleState, completions: null })).toBe(false)
+    expect(isValidState({ ...sampleState, settings: null })).toBe(false)
+  })
+})
+

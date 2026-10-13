@@ -16,6 +16,7 @@ export type AppAction =
   | { type: 'LOAD_SAMPLE_DATA' }
   | { type: 'REMOVE_SAMPLE_DATA' }
   | { type: 'RESET_DATA' }
+  | { type: 'REPLACE_STATE'; payload: AppState }
 
 export function appReducer(state: AppState, action: AppAction): AppState {
   switch (action.type) {
@@ -148,6 +149,13 @@ export function appReducer(state: AppState, action: AppAction): AppState {
 
     case 'RESET_DATA': {
       return getDefaultState()
+    }
+
+    case 'REPLACE_STATE': {
+      return {
+        ...action.payload,
+        lastUpdated: new Date().toISOString(),
+      }
     }
 
     default:

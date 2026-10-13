@@ -16,6 +16,7 @@ export interface AppContextValue {
   loadSampleData: () => void
   removeSampleData: () => void
   resetData: () => void
+  replaceState: (newState: AppState) => void
 }
 
 export const AppContext = createContext<AppContextValue | null>(null)

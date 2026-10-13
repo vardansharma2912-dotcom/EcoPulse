@@ -156,16 +156,96 @@ export function getDefaultState(): AppState {
 /**
  * Validates parsed object to ensure it conforms to AppState shape.
  */
-function isValidState(data: unknown): data is AppState {
+export function isValidState(data: unknown): data is AppState {
   if (!data || typeof data !== 'object') return false
   const candidate = data as Partial<AppState>
   
   if (!Array.isArray(candidate.reminders)) return false
   if (!Array.isArray(candidate.completions)) return false
   if (!candidate.settings || typeof candidate.settings !== 'object') return false
-  if (typeof candidate.settings.tariffPerKwh !== 'number' || isNaN(candidate.settings.tariffPerKwh)) return false
+  if (typeof candidate.settings.tariffPerKwh !== 'number' || isNaN(candidate.settings.tariffPerKwh) || candidate.settings.tariffPerKwh <= 0) {
+    return false
+  }
+
+  // Validate reminders structure
+  for (const r of candidate.reminders) {
+    if (!r || typeof r !== 'object') return false
+    const item = r as Partial<Reminder>
+    if (typeof item.id !== 'string' || typeof item.title !== 'string') return false
+  }
+
+  // Validate completions structure
+  for (const c of candidate.completions) {
+    if (!c || typeof c !== 'object') return false
+    const item = c as Partial<Completion>
+    if (typeof item.id !== 'string' || typeof item.date !== 'string') return false
+  }
   
   return true
+}
+
+/**
+ * Creates a formatted JSON backup string of the application state.
+ */
+export function createExportPayload(state: AppState): string {
+  const payload = {
+    version: CURRENT_VERSION,
+    exportedAt: new Date().toISOString(),
+    settings: {
+      displayName: state.settings.displayName ?? '',
+      tariffPerKwh: state.settings.tariffPerKwh,
+      notificationsEnabled: Boolean(state.settings.notificationsEnabled),
+    },
+    reminders: state.reminders,
+    completions: state.completions,
+  }
+  return JSON.stringify(payload, null, 2)
+}
+
+export interface ImportResult {
+  success: boolean
+  data?: AppState
+  error?: string
+}
+
+/**
+ * Parses and validates an imported JSON string against the EcoPulse schema.
+ */
+export function parseAndValidateImport(jsonString: string): ImportResult {
+  if (!jsonString || typeof jsonString !== 'string' || !jsonString.trim()) {
+    return { success: false, error: 'The selected file is empty.' }
+  }
+
+  let parsed: unknown
+  try {
+    parsed = JSON.parse(jsonString)
+  } catch {
+    return { success: false, error: 'Invalid JSON file. Please ensure the file contains valid JSON.' }
+  }
+
+  if (!isValidState(parsed)) {
+    return {
+      success: false,
+      error: 'Invalid backup file format. Missing or invalid reminders, completions, or tariff settings.',
+    }
+  }
+
+  const migratedCompletions = migrateCompletions(parsed.completions, parsed.reminders)
+  const normalizedState: AppState = {
+    reminders: parsed.reminders,
+    completions: migratedCompletions,
+    settings: {
+      displayName: typeof parsed.settings.displayName === 'string' ? parsed.settings.displayName : '',
+      tariffPerKwh: parsed.settings.tariffPerKwh,
+      notificationsEnabled: Boolean(parsed.settings.notificationsEnabled),
+    },
+    lastUpdated: new Date().toISOString(),
+  }
+
+  return {
+    success: true,
+    data: normalizedState,
+  }
 }
 
 /**

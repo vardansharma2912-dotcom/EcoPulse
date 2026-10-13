@@ -175,4 +175,52 @@ describe('reducer.ts - Completion Deduplication and Undo', () => {
     })
     expect(deletedState.reminders.length).toBe(2)
   })
+
+  it('REPLACE_STATE overrides state with imported state and sets current lastUpdated', () => {
+    const importedState: AppState = {
+      reminders: [
+        {
+          id: 'imported-1',
+          title: 'Imported Action',
+          category: 'cooling',
+          time: '14:00',
+          recurrence: 'daily',
+          active: true,
+          createdAt: '2026-10-01T00:00:00.000Z',
+        },
+      ],
+      completions: [
+        {
+          id: 'comp-imported-1',
+          reminderId: 'imported-1',
+          title: 'Imported Action',
+          date: '2026-10-12',
+          completedAt: '2026-10-12T14:05:00.000Z',
+          kWh: 0.1,
+          costSaved: 0.8,
+          tariffAtTime: 8,
+        },
+      ],
+      settings: {
+        displayName: 'Imported User',
+        tariffPerKwh: 12,
+        notificationsEnabled: true,
+      },
+      lastUpdated: '2026-10-01T00:00:00.000Z',
+    }
+
+    const nextState = appReducer(mockInitialState, {
+      type: 'REPLACE_STATE',
+      payload: importedState,
+    })
+
+    expect(nextState.settings.displayName).toBe('Imported User')
+    expect(nextState.settings.tariffPerKwh).toBe(12)
+    expect(nextState.reminders).toHaveLength(1)
+    expect(nextState.reminders[0].title).toBe('Imported Action')
+    expect(nextState.completions).toHaveLength(1)
+    expect(new Date(nextState.lastUpdated).getTime()).toBeGreaterThan(
+      new Date('2026-10-01').getTime()
+    )
+  })
 })

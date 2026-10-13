@@ -1,5 +1,5 @@
 import React, { useReducer, useEffect } from 'react'
-import type { Reminder, Settings } from '../types'
+import type { AppState, Reminder, Settings } from '../types'
 import { appReducer } from './reducer'
 import { loadState, saveState, getDefaultState, setWelcomeHandled } from '../lib/storage'
 import { AppContext, type AppContextValue } from './context'
@@ -55,6 +55,13 @@ export const AppStateProvider: React.FC<{ children: React.ReactNode }> = ({ chil
     setWelcomeHandled(false)
   }
 
+  const replaceState = (newState: AppState) => {
+    dispatch({ type: 'REPLACE_STATE', payload: newState })
+    if (newState.settings.displayName) {
+      setWelcomeHandled(true)
+    }
+  }
+
   const loadSampleData = () => {
     dispatch({ type: 'LOAD_SAMPLE_DATA' })
   }
@@ -77,6 +84,7 @@ export const AppStateProvider: React.FC<{ children: React.ReactNode }> = ({ chil
     loadSampleData,
     removeSampleData,
     resetData,
+    replaceState,
   }
 
   return <AppContext.Provider value={value}>{children}</AppContext.Provider>
