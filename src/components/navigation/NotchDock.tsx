@@ -16,7 +16,7 @@ import { isDueOn } from '../../lib/schedule'
 interface DockTab {
   to: string
   label: string
-  icon: React.ComponentType<{ className?: string; isHovered?: boolean; isActive?: boolean }>
+  icon: React.ComponentType<{ className?: string; isHovered?: boolean; isActive?: boolean; trigger?: number | boolean }>
 }
 
 const DOCK_TABS: DockTab[] = [
@@ -55,6 +55,7 @@ export const NotchDock: React.FC = () => {
   const [dockWidth, setDockWidth] = useState(360)
   const [isKeyboardOpen, setIsKeyboardOpen] = useState(false)
   const [isModalOpen, setIsModalOpen] = useState(false)
+  const [dockClicks, setDockClicks] = useState<Record<string, number>>({})
 
   const barHeight = 64
   const beadDiameter = 48
@@ -267,7 +268,11 @@ export const NotchDock: React.FC = () => {
           }}
           className="absolute z-20 flex items-center justify-center rounded-full bg-gradient-to-b from-[#1f7a4d] to-[#0a381e] text-white shadow-[0_6px_18px_rgba(20,48,31,0.32)] border border-emerald-300/40 pointer-events-none"
         >
-          <ActiveIcon className="w-5 h-5" isActive={true} isHovered={true} />
+          <ActiveIcon
+            className="w-5 h-5"
+            isActive={true}
+            trigger={dockClicks[DOCK_TABS[activeIndex]?.to] || 0}
+          />
           {activeIndex === 1 && pendingCount > 0 && (
             <span className="absolute -top-1 -right-1 min-w-[16px] h-4 px-1 rounded-full bg-amber-400 text-amber-950 text-[10px] font-extrabold flex items-center justify-center border border-white">
               {pendingCount}
@@ -289,6 +294,12 @@ export const NotchDock: React.FC = () => {
               end={tab.to === '/'}
               aria-label={tab.label}
               aria-current={isActive ? 'page' : undefined}
+              onClick={() =>
+                setDockClicks((prev) => ({
+                  ...prev,
+                  [tab.to]: (prev[tab.to] || 0) + 1,
+                }))
+              }
               onKeyDown={(e) => handleDockKeyDown(e, idx)}
               className={`flex-1 flex flex-col items-center justify-end pb-2 pt-1 relative transition-colors cursor-pointer group focus-visible:outline-2 focus-visible:outline-emerald-800 focus-visible:outline-offset-[-2px] rounded-xl ${
                 isActive ? 'text-[#0a381e]' : 'text-[#2d4a37] hover:text-[#0a381e]'
@@ -296,7 +307,7 @@ export const NotchDock: React.FC = () => {
             >
               {!isActive && (
                 <div className="relative p-1 text-[#2d4a37] group-hover:text-[#0a381e] group-active:scale-90 transition-transform">
-                  <Icon className="w-5 h-5" />
+                  <Icon className="w-5 h-5" trigger={dockClicks[tab.to] || 0} />
                   {tab.to === '/reminders' && pendingCount > 0 && (
                     <span className="absolute -top-1 -right-1 min-w-[16px] h-4 px-1 rounded-full bg-emerald-700 text-white text-[10px] font-bold flex items-center justify-center border border-white">
                       {pendingCount}

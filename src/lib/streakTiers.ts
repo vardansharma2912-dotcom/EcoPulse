@@ -25,6 +25,11 @@ export interface StreakTierColors {
   stroke: string
 }
 
+export interface StreakFireShape {
+  outer: string
+  inner: string
+}
+
 export interface StreakTier {
   id: StreakTierId
   name: string
@@ -35,6 +40,7 @@ export interface StreakTier {
   intensity: number // 0 (dormant) to 7 (legend)
   description: string
   animation: 'none' | 'subtle' | 'flame' | 'blaze' | 'inferno' | 'aurora' | 'shimmer' | 'legend'
+  flameShape: StreakFireShape
 }
 
 export const STREAK_TIERS: StreakTier[] = [
@@ -57,6 +63,11 @@ export const STREAK_TIERS: StreakTier[] = [
       stroke: '#475569',
     },
     glow: 'none',
+    flameShape: {
+      // Soft, quiet droplet ember (single calm droplet shape)
+      outer: 'M12 4.5 C10.8 7.5 8.5 10 8.5 13.5 C8.5 16.5 10.1 19 12 19 C13.9 19 15.5 16.5 15.5 13.5 C15.5 10 13.2 7.5 12 4.5 Z',
+      inner: 'M12 9 C11.2 11 10.2 12.8 10.2 14.5 C10.2 16 11 17 12 17 C13 17 13.8 16 13.8 14.5 C13.8 12.8 12.8 11 12 9 Z',
+    },
   },
   {
     id: 'spark',
@@ -77,6 +88,11 @@ export const STREAK_TIERS: StreakTier[] = [
       stroke: '#047857',
     },
     glow: '0 0 12px rgba(16, 185, 129, 0.35)',
+    flameShape: {
+      // Classic starter flame: clean single-tongue flame with gentle curve
+      outer: 'M12 2.5 C11.2 5 9.2 7.2 8.5 9.5 C7.5 12.2 8 15.2 10 17.5 C8.8 16.2 8.5 14.5 9 13 C9.5 11.5 10.8 10.2 11.6 9 C12.4 11.2 14 12.5 14.6 14.2 C15 15.5 14.5 17 13.5 18 C16.8 17.2 18.2 14 17.5 10.8 C16.8 8.2 14.2 5.2 12 2.5 Z',
+      inner: 'M12 9.5 L10.5 13.2 H12.6 L11 16.8 L14.2 12.2 H12.2 L13.2 9.5 H12 Z',
+    },
   },
   {
     id: 'flame',
@@ -97,6 +113,11 @@ export const STREAK_TIERS: StreakTier[] = [
       stroke: '#b45309',
     },
     glow: '0 0 16px rgba(245, 158, 11, 0.45)',
+    flameShape: {
+      // Dual-tongue campfire flame: main tongue + energetic secondary side flick
+      outer: 'M12 2 C11 4.5 8.8 6.8 8 9.5 C7 12.2 7.5 15.2 9.5 17.5 C8.2 16.2 7.8 14.2 8.4 12.8 C9 11.2 10.4 10 11.2 8.5 C11.8 10.5 13.2 11.8 14.5 11 C15.8 10.2 15.2 8.2 16.2 9.6 C17.8 11.8 18.4 14.5 17.6 17 C18.8 15.2 19 12.8 18.2 10.5 C17.5 7.8 14.8 4.6 12 2 Z',
+      inner: 'M12 8.5 C11.2 10.5 10 12 10.2 14 C11 13.5 11.6 12.6 12 11.5 C12.5 12.8 13.5 13.5 14.2 13 C13.8 11.6 13.2 10.2 12 8.5 Z',
+    },
   },
   {
     id: 'blaze',
@@ -117,6 +138,11 @@ export const STREAK_TIERS: StreakTier[] = [
       stroke: '#c2410c',
     },
     glow: '0 0 18px rgba(239, 68, 68, 0.5)',
+    flameShape: {
+      // Triple-tongued roaring fire: central soaring tongue flanked by two leaping side wings
+      outer: 'M12 1.5 C10.8 4.2 8.2 6.2 6.8 9 C5.5 11.5 5.5 14.2 6.8 16.8 C6.2 15 7 13.2 8 12.2 C9.2 11.2 10 12 10.5 13.5 C11 11.2 11.8 9.2 12 7 C12.6 9 13.6 10.5 14.5 9.5 C15.5 8.5 15.2 6.8 16.2 8.2 C18 10.5 18.8 13.5 18 16.8 C19.2 14.5 19.5 11.8 18.2 9 C17 6.2 14.5 3.8 12 1.5 Z',
+      inner: 'M12 7 C11 9.2 9.5 11 9.8 13.2 C10.5 12.5 11.2 11.8 12 10.5 C12.8 12 13.8 12.5 14.4 11.8 C14 10.2 13.2 8.8 12 7 Z',
+    },
   },
   {
     id: 'inferno',
@@ -138,6 +164,11 @@ export const STREAK_TIERS: StreakTier[] = [
       stroke: '#86198f',
     },
     glow: '0 0 20px rgba(192, 38, 211, 0.55)',
+    flameShape: {
+      // Four-crested aggressive crown fire with sharp dancing spurs
+      outer: 'M12 1.2 C11 3.8 8.2 5.5 6.5 8.5 C4.8 11.5 4.8 14.5 6.5 17.2 C5.8 15.2 6.8 13.2 8 12.2 C9.2 11.2 10 12.2 10.5 13.8 C11 11.2 11.8 8.8 12 6 C12.6 8.5 13.5 10.2 14.5 9 C15.5 7.8 15.2 5.8 16.5 7.8 C18 10 18.2 8.8 19.2 10.8 C20.5 13.2 20 16.5 18.5 19 C19.8 16.5 20.2 12.8 18.8 9.8 C17.5 6.5 14.8 3.8 12 1.2 Z',
+      inner: 'M12 6.2 L10 10.8 H12.5 L10.8 15.5 L14.5 10.5 H12.2 L13.5 6.2 Z',
+    },
   },
   {
     id: 'aurora',
@@ -159,6 +190,11 @@ export const STREAK_TIERS: StreakTier[] = [
       stroke: '#0891b2',
     },
     glow: '0 0 22px rgba(6, 182, 212, 0.6)',
+    flameShape: {
+      // Mystical sweeping celestial flame with flowing wings and cosmic aura
+      outer: 'M12 1 C10.5 3.8 7.2 6 5.5 9.5 C3.8 12.8 4.2 16.5 6.5 19.5 C5.8 17.2 6.8 14.8 8.2 13.5 C9.8 12 10.5 13.5 11.2 15 C11.8 12 12.5 9.5 12 6.5 C12.8 9 14 10.8 15.2 9.5 C16.5 8.2 16 6 17.2 8 C19.2 10.8 20.5 14 19.2 17.5 C20.5 14.8 20.8 11.5 19.2 8.5 C17.8 5.2 14.8 3 12 1 Z',
+      inner: 'M12 7 L10.2 11.5 H12.6 L10.8 16 L14.5 11.2 H12.2 L13.5 7 Z',
+    },
   },
   {
     id: 'platinum',
@@ -180,6 +216,11 @@ export const STREAK_TIERS: StreakTier[] = [
       stroke: '#0284c7',
     },
     glow: '0 0 24px rgba(56, 189, 248, 0.65)',
+    flameShape: {
+      // Crystalline 5-point royal flame: faceted diamond-crested tips with sharp royal spikes
+      outer: 'M12 0.8 L10.2 5.2 L7.5 4.5 L8.5 8.8 L5.2 9.5 L7.2 13.8 C6.2 15.5 6.5 17.8 8 19.5 C9.5 18 10 16 10.8 14.2 L12 16.5 L13.2 14.2 C14 16 14.5 18 16 19.5 C17.5 17.8 17.8 15.5 16.8 13.8 L18.8 9.5 L15.5 8.8 L16.5 4.5 L13.8 5.2 Z',
+      inner: 'M12 6.5 L9.8 11.2 H12.5 L10.8 16 L14.5 10.8 H12.2 L13.5 6.5 Z',
+    },
   },
   {
     id: 'legend',
@@ -201,6 +242,11 @@ export const STREAK_TIERS: StreakTier[] = [
       stroke: '#a16207',
     },
     glow: '0 0 26px rgba(234, 179, 8, 0.75)',
+    flameShape: {
+      // Grand Phoenix Emperor Flame: 5 majestic soaring plumes with royal crown points
+      outer: 'M12 0.5 C10.8 3.2 9.2 5 7 6.2 L8 9.2 C6 9.8 4.6 11.8 4 14.5 C5 13.5 6.2 13 7.5 13.5 C8.5 14 9.2 15.2 10 16.8 C10.6 13.5 11.4 10.2 12 6.5 C12.6 10.2 13.4 13.5 14 16.8 C14.8 15.2 15.5 14 16.5 13.5 C17.8 13 19 13.5 20 14.5 C19.4 11.8 18 9.8 16 9.2 L17 6.2 C14.8 5 13.2 3.2 12 0.5 Z',
+      inner: 'M12 5 L9.5 10.8 H12.8 L10.2 17.2 L15.2 10.2 H12.4 L14 5 Z',
+    },
   },
 ]
 

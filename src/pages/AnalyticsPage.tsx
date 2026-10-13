@@ -34,7 +34,6 @@ import {
   ChevronDown,
   Info,
   Layers,
-  Lock,
   Check,
   ArrowRight,
 } from 'lucide-react'
@@ -214,6 +213,8 @@ export const AnalyticsPage: React.FC = () => {
                       days={Math.max(t.minDays, isCurrent ? streaks.currentStreak : t.minDays)}
                       size="sm"
                       compact={true}
+                      isLocked={!isUnlocked}
+                      animated={isUnlocked}
                     />
                   </div>
 
@@ -239,8 +240,8 @@ export const AnalyticsPage: React.FC = () => {
                         <Check className="w-3 h-3" /> Reached
                       </span>
                     ) : (
-                      <span className="text-[10px] text-slate-500 flex items-center gap-0.5">
-                        <Lock className="w-2.5 h-2.5" /> Locked
+                      <span className="text-[10px] text-slate-400 font-semibold">
+                        Locked
                       </span>
                     )}
                   </div>

@@ -39,4 +39,18 @@ describe('StreakBadge Component', () => {
     expect(html).toContain('aria-label="Current streak: 15 days, Inferno level"')
     expect(html).toContain('svg')
   })
+
+  it('renders locked pill with lock icon and locked aria-label when isLocked is true', () => {
+    const html = renderToString(<StreakBadge days={14} compact={true} isLocked={true} animated={false} />)
+    expect(html).toContain('aria-label="Locked streak level: Inferno"')
+    // Renders lock icon and neutral slate pill, not the colored flame svg
+    expect(html).toContain('lucide-lock')
+    expect(html).not.toContain('stop-color')
+  })
+
+  it('renders static badge without crash when animated is false', () => {
+    const html = renderToString(<StreakBadge days={7} animated={false} />)
+    expect(html).toContain('aria-label="Current streak: 7 days, Blaze level"')
+    expect(html).toContain('Blaze')
+  })
 })

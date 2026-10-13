@@ -6,25 +6,47 @@ export interface NavIconProps {
   isHovered?: boolean
   isActive?: boolean
   size?: number
+  trigger?: number | boolean
+  onClick?: (e?: React.MouseEvent) => void
 }
 
 /**
  * 1. Dashboard Nav Icon
- * 4 asymmetrical boxes move clockwise and morph into the size of the box at their new location.
- * The overall layout remains identical before and after the animation.
+ * 4 asymmetrical boxes move clockwise into the adjacent slot ONCE per click.
+ * At rest and after each single shift, the overall grid looks exactly identical to LayoutDashboard.
  */
+const DASHBOARD_BOX_POSITIONS = [
+  { x: 3, y: 3, width: 7, height: 9 },   // Pos 0: Top-Left
+  { x: 14, y: 3, width: 7, height: 5 },  // Pos 1: Top-Right
+  { x: 14, y: 12, width: 7, height: 9 }, // Pos 2: Bottom-Right
+  { x: 3, y: 16, width: 7, height: 5 },  // Pos 3: Bottom-Left
+]
+
 export const DashboardNavIcon: React.FC<NavIconProps> = ({
   className = 'w-4 h-4',
-  isHovered = false,
+  trigger,
+  onClick,
 }) => {
   const reducedMotion = useReducedMotion()
-  const [internalTrigger, setInternalTrigger] = useState(0)
-  const triggered = isHovered || internalTrigger > 0
+  const [step, setStep] = useState(0)
+  const [prevTrigger, setPrevTrigger] = useState(trigger)
+
+  if (trigger !== prevTrigger) {
+    setPrevTrigger(trigger)
+    if ((typeof trigger === 'number' && trigger > 0) || trigger === true) {
+      setStep((s) => (s + 1) % 4)
+    }
+  }
+
+  const handleClick = (e: React.MouseEvent) => {
+    setStep((s) => (s + 1) % 4)
+    onClick?.(e)
+  }
 
   return (
     <span
-      className={`inline-flex items-center justify-center shrink-0 ${className}`}
-      onMouseEnter={() => setInternalTrigger((p) => p + 1)}
+      className={`inline-flex items-center justify-center shrink-0 cursor-pointer ${className}`}
+      onClick={handleClick}
     >
       <svg
         viewBox="0 0 24 24"
@@ -36,69 +58,21 @@ export const DashboardNavIcon: React.FC<NavIconProps> = ({
         className="w-full h-full overflow-visible"
         aria-hidden="true"
       >
-        {/* Box 1 (top-left): starts (3,3,7,9), moves clockwise to top-right (14,3,7,5) */}
-        <motion.rect
-          rx="1"
-          animate={
-            triggered && !reducedMotion
-              ? {
-                  x: [3, 14, 14, 3, 3],
-                  y: [3, 3, 12, 16, 3],
-                  width: [7, 7, 7, 7, 7],
-                  height: [9, 5, 9, 5, 9],
-                }
-              : { x: 3, y: 3, width: 7, height: 9 }
-          }
-          transition={{ duration: 0.9, ease: [0.34, 1.3, 0.64, 1] }}
-        />
-
-        {/* Box 2 (top-right): starts (14,3,7,5), moves clockwise to bottom-right (14,12,7,9) */}
-        <motion.rect
-          rx="1"
-          animate={
-            triggered && !reducedMotion
-              ? {
-                  x: [14, 14, 3, 3, 14],
-                  y: [3, 12, 16, 3, 3],
-                  width: [7, 7, 7, 7, 7],
-                  height: [5, 9, 5, 9, 5],
-                }
-              : { x: 14, y: 3, width: 7, height: 5 }
-          }
-          transition={{ duration: 0.9, ease: [0.34, 1.3, 0.64, 1] }}
-        />
-
-        {/* Box 3 (bottom-right): starts (14,12,7,9), moves clockwise to bottom-left (3,16,7,5) */}
-        <motion.rect
-          rx="1"
-          animate={
-            triggered && !reducedMotion
-              ? {
-                  x: [14, 3, 3, 14, 14],
-                  y: [12, 16, 3, 3, 12],
-                  width: [7, 7, 7, 7, 7],
-                  height: [9, 5, 9, 5, 9],
-                }
-              : { x: 14, y: 12, width: 7, height: 9 }
-          }
-          transition={{ duration: 0.9, ease: [0.34, 1.3, 0.64, 1] }}
-        />
-
-        {/* Box 4 (bottom-left): starts (3,16,7,5), moves clockwise to top-left (3,3,7,9) */}
-        <motion.rect
-          rx="1"
-          animate={
-            triggered && !reducedMotion
-              ? {
-                  x: [3, 3, 14, 14, 3],
-                  y: [16, 3, 3, 12, 16],
-                  width: [7, 7, 7, 7, 7],
-                  height: [5, 9, 5, 9, 5],
-                }
-              : { x: 3, y: 16, width: 7, height: 5 }
-          }
-          transition={{ duration: 0.9, ease: [0.34, 1.3, 0.64, 1] }}
-        />
+        {[0, 1, 2, 3].map((boxIndex) => {
+          const pos = DASHBOARD_BOX_POSITIONS[(boxIndex + step) % 4]
+          return (
+            <motion.rect
+              key={boxIndex}
+              rx="1"
+              animate={
+                reducedMotion
+                  ? { x: pos.x, y: pos.y, width: pos.width, height: pos.height }
+                  : { x: pos.x, y: pos.y, width: pos.width, height: pos.height }
+              }
+              transition={{ duration: 0.45, ease: [0.34, 1.3, 0.64, 1] }}
+            />
+          )
+        })}
       </svg>
     </span>
   )
@@ -106,21 +80,34 @@ export const DashboardNavIcon: React.FC<NavIconProps> = ({
 
 /**
  * 2. Reminders Nav Icon (Bell)
- * The bell swings back and forth around its top hanger,
- * and the ball (clapper) below the bell swings in dynamic follower motion.
+ * The bell swings back and forth around its top hanger, and the clapper follows.
+ * Triggers only when clicked.
  */
 export const RemindersNavIcon: React.FC<NavIconProps> = ({
   className = 'w-4 h-4',
-  isHovered = false,
+  trigger,
+  onClick,
 }) => {
   const reducedMotion = useReducedMotion()
-  const [internalTrigger, setInternalTrigger] = useState(0)
-  const triggered = isHovered || internalTrigger > 0
+  const [animKey, setAnimKey] = useState(0)
+  const [prevTrigger, setPrevTrigger] = useState(trigger)
+
+  if (trigger !== prevTrigger) {
+    setPrevTrigger(trigger)
+    if ((typeof trigger === 'number' && trigger > 0) || trigger === true) {
+      setAnimKey((k) => k + 1)
+    }
+  }
+
+  const handleClick = (e: React.MouseEvent) => {
+    setAnimKey((k) => k + 1)
+    onClick?.(e)
+  }
 
   return (
     <span
-      className={`inline-flex items-center justify-center shrink-0 ${className}`}
-      onMouseEnter={() => setInternalTrigger((p) => p + 1)}
+      className={`inline-flex items-center justify-center shrink-0 cursor-pointer ${className}`}
+      onClick={handleClick}
     >
       <svg
         viewBox="0 0 24 24"
@@ -134,31 +121,31 @@ export const RemindersNavIcon: React.FC<NavIconProps> = ({
       >
         {/* Bell Body swinging around top anchor (x: 12, y: 3) */}
         <motion.path
+          key={`bell-${animKey}`}
           d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"
-          style={{ originX: '12px', originY: '3px' }}
+          style={{ transformOrigin: '12px 3px' }}
           animate={
-            triggered && !reducedMotion
-              ? {
-                  rotate: [0, -22, 18, -14, 10, -5, 2, 0],
-                }
+            animKey > 0 && !reducedMotion
+              ? { rotate: [0, -22, 18, -14, 10, -5, 2, 0] }
               : { rotate: 0 }
           }
-          transition={{ duration: 0.95, ease: 'easeInOut' }}
+          transition={{ duration: 0.85, ease: 'easeInOut' }}
         />
 
-        {/* The ball / clapper below the bell swinging with energetic momentum */}
+        {/* The clapper below the bell swinging with follower momentum */}
         <motion.path
+          key={`clapper-${animKey}`}
           d="M10.3 21a1.94 1.94 0 0 0 3.4 0"
-          style={{ originX: '12px', originY: '17px' }}
+          style={{ transformOrigin: '12px 17px' }}
           animate={
-            triggered && !reducedMotion
+            animKey > 0 && !reducedMotion
               ? {
-                  x: [0, 3.2, -3.2, 2.2, -1.8, 1, 0],
-                  rotate: [0, 26, -22, 16, -12, 6, 0],
+                  x: [0, 3, -3, 2, -1.5, 0.8, 0],
+                  rotate: [0, 24, -20, 14, -10, 5, 0],
                 }
               : { x: 0, rotate: 0 }
           }
-          transition={{ duration: 0.95, ease: 'easeInOut' }}
+          transition={{ duration: 0.85, ease: 'easeInOut' }}
         />
       </svg>
     </span>
@@ -167,20 +154,33 @@ export const RemindersNavIcon: React.FC<NavIconProps> = ({
 
 /**
  * 3. Calculator Nav Icon
- * Subtle energetic button press ripple and screen shimmer.
+ * Subtle elastic punch and sequential keypad tap wave when clicked.
  */
 export const CalculatorNavIcon: React.FC<NavIconProps> = ({
   className = 'w-4 h-4',
-  isHovered = false,
+  trigger,
+  onClick,
 }) => {
   const reducedMotion = useReducedMotion()
-  const [internalTrigger, setInternalTrigger] = useState(0)
-  const triggered = isHovered || internalTrigger > 0
+  const [animKey, setAnimKey] = useState(0)
+  const [prevTrigger, setPrevTrigger] = useState(trigger)
+
+  if (trigger !== prevTrigger) {
+    setPrevTrigger(trigger)
+    if ((typeof trigger === 'number' && trigger > 0) || trigger === true) {
+      setAnimKey((k) => k + 1)
+    }
+  }
+
+  const handleClick = (e: React.MouseEvent) => {
+    setAnimKey((k) => k + 1)
+    onClick?.(e)
+  }
 
   return (
     <span
-      className={`inline-flex items-center justify-center shrink-0 ${className}`}
-      onMouseEnter={() => setInternalTrigger((p) => p + 1)}
+      className={`inline-flex items-center justify-center shrink-0 cursor-pointer ${className}`}
+      onClick={handleClick}
     >
       <svg
         viewBox="0 0 24 24"
@@ -192,85 +192,79 @@ export const CalculatorNavIcon: React.FC<NavIconProps> = ({
         className="w-full h-full overflow-visible"
         aria-hidden="true"
       >
-        {/* Calculator Outer Frame with quick elastic punch */}
         <motion.rect
+          key={`calc-frame-${animKey}`}
           x="4"
           y="2"
           width="16"
           height="20"
           rx="2"
+          style={{ transformOrigin: '12px 12px' }}
           animate={
-            triggered && !reducedMotion
+            animKey > 0 && !reducedMotion
               ? { scale: [1, 1.08, 0.96, 1.04, 1] }
               : { scale: 1 }
           }
-          style={{ originX: '12px', originY: '12px' }}
-          transition={{ duration: 0.5, ease: 'easeOut' }}
+          transition={{ duration: 0.45, ease: 'easeOut' }}
         />
 
         {/* Display Screen */}
         <line x1="8" x2="16" y1="6" y2="6" />
 
-        {/* Grid of 6 Keys with sequential tap wave */}
+        {/* Grid of Keys with sequential tap wave */}
         <motion.line
+          key={`calc-bar-${animKey}`}
           x1="16"
           x2="16"
           y1="14"
           y2="18"
           animate={
-            triggered && !reducedMotion
+            animKey > 0 && !reducedMotion
               ? { opacity: [1, 0.3, 1], y: [0, 1, 0] }
               : { opacity: 1, y: 0 }
           }
           transition={{ duration: 0.35, delay: 0.05 }}
         />
         <motion.path
+          key={`k1-${animKey}`}
           d="M16 10h.01"
-          animate={
-            triggered && !reducedMotion ? { scale: [1, 1.6, 1] } : { scale: 1 }
-          }
+          animate={animKey > 0 && !reducedMotion ? { scale: [1, 1.6, 1] } : { scale: 1 }}
           transition={{ duration: 0.3, delay: 0.0 }}
         />
         <motion.path
+          key={`k2-${animKey}`}
           d="M12 10h.01"
-          animate={
-            triggered && !reducedMotion ? { scale: [1, 1.6, 1] } : { scale: 1 }
-          }
+          animate={animKey > 0 && !reducedMotion ? { scale: [1, 1.6, 1] } : { scale: 1 }}
           transition={{ duration: 0.3, delay: 0.05 }}
         />
         <motion.path
+          key={`k3-${animKey}`}
           d="M8 10h.01"
-          animate={
-            triggered && !reducedMotion ? { scale: [1, 1.6, 1] } : { scale: 1 }
-          }
+          animate={animKey > 0 && !reducedMotion ? { scale: [1, 1.6, 1] } : { scale: 1 }}
           transition={{ duration: 0.3, delay: 0.1 }}
         />
         <motion.path
+          key={`k4-${animKey}`}
           d="M12 14h.01"
-          animate={
-            triggered && !reducedMotion ? { scale: [1, 1.6, 1] } : { scale: 1 }
-          }
+          animate={animKey > 0 && !reducedMotion ? { scale: [1, 1.6, 1] } : { scale: 1 }}
           transition={{ duration: 0.3, delay: 0.15 }}
         />
         <motion.path
+          key={`k5-${animKey}`}
           d="M8 14h.01"
-          animate={
-            triggered && !reducedMotion ? { scale: [1, 1.6, 1] } : { scale: 1 }
-          }
+          animate={animKey > 0 && !reducedMotion ? { scale: [1, 1.6, 1] } : { scale: 1 }}
           transition={{ duration: 0.3, delay: 0.2 }}
         />
         <motion.path
+          key={`k6-${animKey}`}
           d="M12 18h.01"
-          animate={
-            triggered && !reducedMotion ? { scale: [1, 1.6, 1] } : { scale: 1 }
-          }
+          animate={animKey > 0 && !reducedMotion ? { scale: [1, 1.6, 1] } : { scale: 1 }}
           transition={{ duration: 0.3, delay: 0.25 }}
         />
         <motion.path
+          key={`k7-${animKey}`}
           d="M8 18h.01"
-          animate={
-            triggered && !reducedMotion ? { scale: [1, 1.6, 1] } : { scale: 1 }
-          }
+          animate={animKey > 0 && !reducedMotion ? { scale: [1, 1.6, 1] } : { scale: 1 }}
           transition={{ duration: 0.3, delay: 0.3 }}
         />
       </svg>
@@ -280,20 +274,33 @@ export const CalculatorNavIcon: React.FC<NavIconProps> = ({
 
 /**
  * 4. Analytics Nav Icon (BarChart3)
- * Dynamic rising bar equalizer animation from bottom to top.
+ * Dynamic rising bar equalizer animation from bottom to top when clicked.
  */
 export const AnalyticsNavIcon: React.FC<NavIconProps> = ({
   className = 'w-4 h-4',
-  isHovered = false,
+  trigger,
+  onClick,
 }) => {
   const reducedMotion = useReducedMotion()
-  const [internalTrigger, setInternalTrigger] = useState(0)
-  const triggered = isHovered || internalTrigger > 0
+  const [animKey, setAnimKey] = useState(0)
+  const [prevTrigger, setPrevTrigger] = useState(trigger)
+
+  if (trigger !== prevTrigger) {
+    setPrevTrigger(trigger)
+    if ((typeof trigger === 'number' && trigger > 0) || trigger === true) {
+      setAnimKey((k) => k + 1)
+    }
+  }
+
+  const handleClick = (e: React.MouseEvent) => {
+    setAnimKey((k) => k + 1)
+    onClick?.(e)
+  }
 
   return (
     <span
-      className={`inline-flex items-center justify-center shrink-0 ${className}`}
-      onMouseEnter={() => setInternalTrigger((p) => p + 1)}
+      className={`inline-flex items-center justify-center shrink-0 cursor-pointer ${className}`}
+      onClick={handleClick}
     >
       <svg
         viewBox="0 0 24 24"
@@ -305,43 +312,39 @@ export const AnalyticsNavIcon: React.FC<NavIconProps> = ({
         className="w-full h-full overflow-visible"
         aria-hidden="true"
       >
-        {/* Baseline Axis */}
         <path d="M3 3v18h18" />
-
-        {/* Bar 1 (Left) */}
         <motion.path
+          key={`bar1-${animKey}`}
           d="M18 17V9"
-          style={{ originY: '20px' }}
+          style={{ transformOrigin: 'center 17px' }}
           animate={
-            triggered && !reducedMotion
+            animKey > 0 && !reducedMotion
               ? { scaleY: [1, 0.4, 1.25, 0.9, 1] }
               : { scaleY: 1 }
           }
-          transition={{ duration: 0.7, delay: 0.1, ease: 'easeInOut' }}
+          transition={{ duration: 0.65, delay: 0.1, ease: 'easeInOut' }}
         />
-
-        {/* Bar 2 (Center) */}
         <motion.path
+          key={`bar2-${animKey}`}
           d="M13 17V5"
-          style={{ originY: '20px' }}
+          style={{ transformOrigin: 'center 17px' }}
           animate={
-            triggered && !reducedMotion
+            animKey > 0 && !reducedMotion
               ? { scaleY: [1, 1.3, 0.5, 1.15, 1] }
               : { scaleY: 1 }
           }
-          transition={{ duration: 0.7, delay: 0.0, ease: 'easeInOut' }}
+          transition={{ duration: 0.65, delay: 0.0, ease: 'easeInOut' }}
         />
-
-        {/* Bar 3 (Right) */}
         <motion.path
+          key={`bar3-${animKey}`}
           d="M8 17v-3"
-          style={{ originY: '20px' }}
+          style={{ transformOrigin: 'center 17px' }}
           animate={
-            triggered && !reducedMotion
+            animKey > 0 && !reducedMotion
               ? { scaleY: [1, 0.3, 1.4, 0.8, 1] }
               : { scaleY: 1 }
           }
-          transition={{ duration: 0.7, delay: 0.18, ease: 'easeInOut' }}
+          transition={{ duration: 0.65, delay: 0.18, ease: 'easeInOut' }}
         />
       </svg>
     </span>
@@ -350,20 +353,34 @@ export const AnalyticsNavIcon: React.FC<NavIconProps> = ({
 
 /**
  * 5. Learn Nav Icon (BookOpen)
- * The book turns its page smoothly from right to left across the central spine.
+ * The book turns its page strictly from right to left like in real books.
+ * Triggers only when clicked.
  */
 export const LearnNavIcon: React.FC<NavIconProps> = ({
   className = 'w-4 h-4',
-  isHovered = false,
+  trigger,
+  onClick,
 }) => {
   const reducedMotion = useReducedMotion()
-  const [internalTrigger, setInternalTrigger] = useState(0)
-  const triggered = isHovered || internalTrigger > 0
+  const [flipKey, setFlipKey] = useState(0)
+  const [prevTrigger, setPrevTrigger] = useState(trigger)
+
+  if (trigger !== prevTrigger) {
+    setPrevTrigger(trigger)
+    if ((typeof trigger === 'number' && trigger > 0) || trigger === true) {
+      setFlipKey((k) => k + 1)
+    }
+  }
+
+  const handleClick = (e: React.MouseEvent) => {
+    setFlipKey((k) => k + 1)
+    onClick?.(e)
+  }
 
   return (
     <span
-      className={`inline-flex items-center justify-center shrink-0 ${className}`}
-      onMouseEnter={() => setInternalTrigger((p) => p + 1)}
+      className={`inline-flex items-center justify-center shrink-0 cursor-pointer ${className}`}
+      onClick={handleClick}
     >
       <svg
         viewBox="0 0 24 24"
@@ -381,20 +398,24 @@ export const LearnNavIcon: React.FC<NavIconProps> = ({
         {/* Right Book Page Base */}
         <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z" />
 
-        {/* Animated Turning Page Leaf (Turns from right to left around center spine x: 12) */}
-        <motion.path
-          d="M12 7c2-2 5-3 8-3v14c-3 0-6 1-8 3z"
-          style={{ originX: '12px', originY: '14px' }}
-          animate={
-            triggered && !reducedMotion
-              ? {
-                  scaleX: [1, 0.05, -1, 1],
-                  opacity: [1, 0.8, 0.95, 1],
-                }
-              : { scaleX: 1, opacity: 1 }
-          }
-          transition={{ duration: 0.85, ease: [0.4, 0, 0.2, 1] }}
-        />
+        {/* Turning Page Leaf: Turns from right to left around center spine (x: 12) */}
+        {flipKey > 0 && !reducedMotion && (
+          <motion.path
+            key={`flip-${flipKey}`}
+            d="M12 7c2-2 5-3 8-3v14c-3 0-6 1-8 3z"
+            style={{ transformOrigin: '12px 14px' }}
+            initial={{ scaleX: 1, opacity: 1 }}
+            animate={{
+              scaleX: [1, 0.05, -1, -1],
+              opacity: [1, 1, 0.85, 0],
+            }}
+            transition={{
+              duration: 0.65,
+              times: [0, 0.45, 0.85, 1],
+              ease: [0.4, 0, 0.2, 1],
+            }}
+          />
+        )}
       </svg>
     </span>
   )
@@ -402,20 +423,34 @@ export const LearnNavIcon: React.FC<NavIconProps> = ({
 
 /**
  * 6. Settings Nav Icon (Gear)
- * Smooth clockwise gear rotation with mechanical ease.
+ * Smooth clockwise gear rotation centered exactly about its center (12, 12).
+ * Triggers only when clicked.
  */
 export const SettingsNavIcon: React.FC<NavIconProps> = ({
   className = 'w-4 h-4',
-  isHovered = false,
+  trigger,
+  onClick,
 }) => {
   const reducedMotion = useReducedMotion()
-  const [internalTrigger, setInternalTrigger] = useState(0)
-  const triggered = isHovered || internalTrigger > 0
+  const [rotation, setRotation] = useState(0)
+  const [prevTrigger, setPrevTrigger] = useState(trigger)
+
+  if (trigger !== prevTrigger) {
+    setPrevTrigger(trigger)
+    if ((typeof trigger === 'number' && trigger > 0) || trigger === true) {
+      setRotation((r) => r + 180)
+    }
+  }
+
+  const handleClick = (e: React.MouseEvent) => {
+    setRotation((r) => r + 180)
+    onClick?.(e)
+  }
 
   return (
     <span
-      className={`inline-flex items-center justify-center shrink-0 ${className}`}
-      onMouseEnter={() => setInternalTrigger((p) => p + 1)}
+      className={`inline-flex items-center justify-center shrink-0 cursor-pointer ${className}`}
+      onClick={handleClick}
     >
       <svg
         viewBox="0 0 24 24"
@@ -428,13 +463,13 @@ export const SettingsNavIcon: React.FC<NavIconProps> = ({
         aria-hidden="true"
       >
         <motion.g
-          style={{ originX: '12px', originY: '12px' }}
+          style={{ transformOrigin: '12px 12px' }}
           animate={
-            triggered && !reducedMotion
-              ? { rotate: [0, 180] }
-              : { rotate: 0 }
+            reducedMotion
+              ? { rotate: 0 }
+              : { rotate: rotation }
           }
-          transition={{ duration: 0.75, ease: [0.34, 1.25, 0.64, 1] }}
+          transition={{ duration: 0.65, ease: [0.34, 1.25, 0.64, 1] }}
         >
           <path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z" />
           <circle cx="12" cy="12" r="3" />

@@ -53,7 +53,7 @@ export const AppLayout: React.FC = () => {
   const [searchOpen, setSearchOpen] = useState(false)
   const [alertsPopoverOpen, setAlertsPopoverOpen] = useState(false)
   const [welcomeDismissed, setWelcomeDismissed] = useState(false)
-  const [hoveredTab, setHoveredTab] = useState<string | null>(null)
+  const [navClicks, setNavClicks] = useState<Record<string, number>>({})
 
   // Welcome screen is shown once on first launch or after reset when displayName is empty
   const isReset = !isWelcomeHandled() && !state.settings.displayName
@@ -173,8 +173,12 @@ export const AppLayout: React.FC = () => {
                   key={item.to}
                   to={item.to}
                   end={item.to === '/'}
-                  onMouseEnter={() => setHoveredTab(item.to)}
-                  onMouseLeave={() => setHoveredTab(null)}
+                  onClick={() =>
+                    setNavClicks((prev) => ({
+                      ...prev,
+                      [item.to]: (prev[item.to] || 0) + 1,
+                    }))
+                  }
                   className={`relative flex items-center gap-3 px-3.5 py-2 xl:py-2.5 rounded-xl text-sm font-semibold transition-colors group ${
                     isActive ? 'text-white' : 'text-slate-700 hover:text-[#14301f] hover:bg-white/60'
                   }`}
@@ -198,9 +202,9 @@ export const AppLayout: React.FC = () => {
                   )}
 
                   <Icon
-                    className="w-4 h-4 shrink-0 transition-transform duration-200 group-hover:scale-110"
-                    isHovered={hoveredTab === item.to}
+                    className="w-4 h-4 shrink-0"
                     isActive={isActive}
+                    trigger={navClicks[item.to] || 0}
                   />
                   <span>{item.label}</span>
 
@@ -284,6 +288,12 @@ export const AppLayout: React.FC = () => {
               to="/settings"
               aria-label="Settings"
               title="Settings"
+              onClick={() =>
+                setNavClicks((prev) => ({
+                  ...prev,
+                  '/settings': (prev['/settings'] || 0) + 1,
+                }))
+              }
               className={({ isActive }) =>
                 `w-8 h-8 rounded-full flex items-center justify-center border-2 border-white/90 shadow-xs transition-all active:scale-95 ${
                   isActive
@@ -292,7 +302,10 @@ export const AppLayout: React.FC = () => {
                 }`
               }
             >
-              <SettingsNavIcon className="w-4 h-4 text-white" />
+              <SettingsNavIcon
+                className="w-4 h-4 text-white"
+                trigger={navClicks['/settings'] || 0}
+              />
             </NavLink>
           </div>
         </header>
