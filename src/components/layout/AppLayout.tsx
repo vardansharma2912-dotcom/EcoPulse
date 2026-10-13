@@ -27,7 +27,7 @@ import { isDueOn, computeStreak } from '../../lib/schedule'
 import { CountUp } from '../ui/CountUp'
 import { Logo } from '../ui/Logo'
 import { StreakBadge } from '../ui/StreakBadge'
-import { useDocumentTitle } from '../../lib/useDocumentTitle'
+import { useSeo } from '../../lib/seo'
 import { isWelcomeHandled, isTourSeen } from '../../lib/storage'
 import { useTour } from '../../context/useTour'
 
@@ -80,8 +80,8 @@ export const AppLayout: React.FC = () => {
     return 'Page not found'
   }, [location.pathname])
 
-  // Sync document title with current route ("Dashboard · EcoPulse", etc.)
-  useDocumentTitle(pageTitle)
+  // Update document title, meta tags, Open Graph, canonical, and JSON-LD
+  useSeo(location.pathname)
 
   // User initials for mobile avatar chip
   const userInitial = useMemo(() => {
@@ -255,9 +255,9 @@ export const AppLayout: React.FC = () => {
           <div className="flex items-center gap-2 min-w-0">
             <Logo size={28} className="shrink-0" />
             <div className="min-w-0">
-              <h1 className="font-bold text-sm text-[#14301f] leading-tight truncate">
+              <span className="font-bold text-sm text-[#14301f] leading-tight truncate block">
                 {pageTitle}
-              </h1>
+              </span>
               <p className="text-[10px] text-emerald-900 font-semibold leading-none">
                 EcoPulse
               </p>

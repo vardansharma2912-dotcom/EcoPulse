@@ -4,8 +4,11 @@
  */
 
 export const SITE_URL: string =
-  (import.meta.env?.VITE_SITE_URL as string | undefined)?.replace(/\/+$/, '') ||
-  'https://eco-pulse-flame.vercel.app'
+  ((typeof globalThis !== 'undefined' &&
+    (globalThis as unknown as { process?: { env?: { VITE_SITE_URL?: string } } }).process?.env?.VITE_SITE_URL) ||
+    (typeof import.meta !== 'undefined' &&
+      (import.meta as unknown as { env?: { VITE_SITE_URL?: string } }).env?.VITE_SITE_URL) ||
+    'https://eco-pulse-flame.vercel.app').replace(/\/+$/, '')
 
 export const SITE_NAME = 'EcoPulse'
 
