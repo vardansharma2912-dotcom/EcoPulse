@@ -186,6 +186,26 @@ async function main() {
       }))
     )
 
+    // 8. Validate sitemap.xml
+    const sitemapContent = fs.readFileSync(path.join(DIST_DIR, 'sitemap.xml'), 'utf-8')
+    if (!sitemapContent.includes('<loc>https://eco-pulse-flame.vercel.app/</loc>') || sitemapContent.includes('/settings')) {
+      throw new Error('dist/sitemap.xml missing required URLs or includes non-indexable routes')
+    }
+
+    // 9. Validate robots.txt
+    const robotsContent = fs.readFileSync(path.join(DIST_DIR, 'robots.txt'), 'utf-8')
+    if (!robotsContent.includes('Disallow: /settings') || !robotsContent.includes('Sitemap: https://eco-pulse-flame.vercel.app/sitemap.xml')) {
+      throw new Error('dist/robots.txt missing /settings disallow or Sitemap line')
+    }
+
+    // 10. Validate llms.txt
+    const llmsContent = fs.readFileSync(path.join(DIST_DIR, 'llms.txt'), 'utf-8')
+    if (!llmsContent.includes('# EcoPulse') || !llmsContent.includes('https://eco-pulse-flame.vercel.app/')) {
+      throw new Error('dist/llms.txt missing title or URLs')
+    }
+
+    console.log('\n[Verify] Prerendered artifacts (sitemap.xml, robots.txt, llms.txt) validated successfully.')
+
     if (anyFailed) {
       console.error('\n[Verify] FAILED: One or more route verification assertions failed.')
       process.exit(1)
