@@ -15,9 +15,12 @@ import {
 } from 'lucide-react'
 import { Card } from '../ui/Card'
 import { useAppState } from '../../state'
-
-const DISMISSED_KEY = 'ecopulse_getting_started_dismissed_v1'
-const CALC_VISITED_KEY = 'ecopulse_calc_visited_v1'
+import { CHECKLIST_DISMISSED_KEY } from '../../lib/storage'
+import {
+  CALC_VISITED_KEY,
+  getChecklistFirstSeenTimestamp,
+  isChecklistExpired,
+} from '../../lib/checklist'
 
 export interface GettingStartedCardProps {
   onOpenAddReminder?: () => void
@@ -25,9 +28,30 @@ export interface GettingStartedCardProps {
 
 export const GettingStartedCard: React.FC<GettingStartedCardProps> = ({ onOpenAddReminder }) => {
   const { state } = useAppState()
+
+  // Earliest reminder creation date as fallback for pre-existing users
+  const earliestReminderCreatedAt = useMemo(() => {
+    if (!state.reminders || state.reminders.length === 0) return undefined
+    let earliest = Infinity
+    for (const r of state.reminders) {
+      if (r.createdAt) {
+        const time = new Date(r.createdAt).getTime()
+        if (!isNaN(time) && time < earliest) {
+          earliest = time
+        }
+      }
+    }
+    return earliest !== Infinity ? new Date(earliest).toISOString() : undefined
+  }, [state.reminders])
+
+  const [isExpired] = useState(() => {
+    const firstSeen = getChecklistFirstSeenTimestamp(earliestReminderCreatedAt)
+    return isChecklistExpired(firstSeen)
+  })
+
   const [dismissed, setDismissed] = useState(() => {
     try {
-      return localStorage.getItem(DISMISSED_KEY) === 'true'
+      return localStorage.getItem(CHECKLIST_DISMISSED_KEY) === 'true'
     } catch {
       return false
     }
@@ -94,14 +118,14 @@ export const GettingStartedCard: React.FC<GettingStartedCardProps> = ({ onOpenAd
   const handleDismiss = () => {
     setDismissed(true)
     try {
-      localStorage.setItem(DISMISSED_KEY, 'true')
+      localStorage.setItem(CHECKLIST_DISMISSED_KEY, 'true')
     } catch {
       // Ignore
     }
   }
 
-  // Hides itself when all items are done or dismissed
-  if (dismissed || allCompleted) {
+  // Hides itself when expired (after 3 days), dismissed, or when all items are done
+  if (isExpired || dismissed || allCompleted) {
     return null
   }
 

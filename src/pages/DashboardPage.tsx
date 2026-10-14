@@ -200,18 +200,18 @@ export const DashboardPage: React.FC = () => {
       />
       {/* Personalized Time & Context-Aware Greeting Banner */}
       <motion.div variants={cardVariants}>
-        <div className="relative overflow-hidden rounded-2xl glass-card p-4 sm:p-5 border border-white/80 shadow-xs flex items-start gap-3.5">
+        <div className="relative overflow-hidden rounded-xl glass-card py-2.5 px-3.5 sm:py-3 sm:px-4 border border-white/80 shadow-xs flex items-center gap-2.5 sm:gap-3">
           <div
-            className="w-10 h-10 rounded-xl bg-emerald-800/15 border border-emerald-800/25 text-emerald-900 flex items-center justify-center shrink-0 shadow-xs mt-0.5"
+            className="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-emerald-800/15 border border-emerald-800/25 text-emerald-900 flex items-center justify-center shrink-0 shadow-xs"
             aria-hidden="true"
           >
-            <Sparkles className="w-5 h-5 text-emerald-800" />
+            <Sparkles className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-emerald-800" />
           </div>
           <div className="min-w-0 flex-1">
-            <h2 className="text-base sm:text-lg font-bold text-[#0d2818] tracking-tight">
+            <h2 className="text-xs sm:text-sm font-bold text-[#0d2818] tracking-tight">
               {greeting.headline}
             </h2>
-            <p className="text-xs sm:text-sm text-[#1e3f2b] mt-1 leading-relaxed font-medium">
+            <p className="text-[11px] sm:text-xs text-[#1e3f2b] font-medium leading-snug mt-0.5">
               {greeting.subline}
             </p>
           </div>
