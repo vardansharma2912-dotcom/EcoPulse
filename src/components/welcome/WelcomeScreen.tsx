@@ -177,22 +177,22 @@ export const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ onComplete }) => {
         </motion.div>
       </motion.div>
 
-      {/* Feature Row Under the Card (plain icon + text with thin dividers, non-clickable) */}
+      {/* Feature Row Under the Card */}
       <motion.div
         initial={{ opacity: 0, y: isReducedMotion ? 0 : 12 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: isReducedMotion ? 0 : 0.25, duration: isReducedMotion ? 0 : 0.35 }}
-        className="flex items-center justify-center gap-3 sm:gap-4 mt-3.5 text-xs font-semibold text-[#14301f]/85 select-none divide-x divide-emerald-900/20"
+        className="flex flex-wrap items-center justify-center gap-x-3.5 sm:gap-x-4 gap-y-1 mt-3 px-2 text-xs font-semibold text-[#14301f]/85 select-none"
       >
         <div className="flex items-center gap-1.5">
           <Bell className="w-3.5 h-3.5 text-emerald-800 shrink-0" />
           <span>Reminders</span>
         </div>
-        <div className="flex items-center gap-1.5 pl-3 sm:pl-4">
+        <div className="flex items-center gap-1.5">
           <Zap className="w-3.5 h-3.5 text-emerald-800 shrink-0" />
           <span>Estimated savings</span>
         </div>
-        <div className="flex items-center gap-1.5 pl-3 sm:pl-4">
+        <div className="flex items-center gap-1.5">
           <Flame className="w-3.5 h-3.5 text-amber-700 shrink-0" />
           <span>Streaks</span>
         </div>

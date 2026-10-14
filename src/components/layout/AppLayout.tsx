@@ -245,7 +245,7 @@ export const AppLayout: React.FC = () => {
       </aside>
 
       {/* Main Content Area: Document itself scrolls below 1024px */}
-      <div className="flex-1 flex flex-col min-w-0 z-10 pb-[calc(64px+env(safe-area-inset-bottom,0px)+24px)] lg:pb-0">
+      <div className="flex-1 flex flex-col min-w-0 z-10">
         {/* Mobile Compact Glass Header (< 1024px) */}
         <header className="lg:hidden glass-panel border-b border-white/60 px-3.5 py-2.5 flex items-center justify-between sticky top-0 z-30 backdrop-blur-md">
           {/* Left: Logo & Current Page Title */}
@@ -315,7 +315,7 @@ export const AppLayout: React.FC = () => {
         </header>
 
         {/* Page Content with Route AnimatePresence Transitions */}
-        <main className="flex-1 p-3.5 sm:p-5 lg:p-8 max-w-6xl w-full mx-auto pb-24 lg:pb-8">
+        <main className="flex-1 flex flex-col p-4 sm:p-6 lg:p-8 max-w-6xl w-full mx-auto pb-4 sm:pb-6 lg:pb-8">
           <AnimatePresence mode="wait">
             <motion.div
               key={location.pathname}
@@ -337,7 +337,7 @@ export const AppLayout: React.FC = () => {
                 duration: 0.35,
                 ease: [0.22, 1, 0.36, 1],
               }}
-              className="min-w-0"
+              className="min-w-0 flex-1 flex flex-col"
             >
               <Suspense
                 fallback={
@@ -365,7 +365,7 @@ export const AppLayout: React.FC = () => {
         </main>
 
         {/* Small Glass Footer: Accessible Internal Links + Credits, Desktop and Mobile Safe */}
-        <footer className="mt-auto border-t border-emerald-900/10 bg-white/40 backdrop-blur-md py-6 px-4 sm:px-8 text-xs text-slate-700 pb-28 lg:pb-6">
+        <footer className="mt-auto border-t border-emerald-900/10 bg-white/40 backdrop-blur-md pt-4 sm:pt-5 pb-24 lg:pt-5 lg:pb-5 px-4 sm:px-8 text-xs text-slate-700">
           <div className="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
             <div className="flex flex-col items-center md:items-start gap-1 shrink-0">
               <div className="flex items-center gap-2 text-emerald-950 font-bold">

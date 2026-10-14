@@ -301,7 +301,7 @@ export const SettingsPage: React.FC = () => {
       variants={containerVariants}
       initial="hidden"
       animate="visible"
-      className="space-y-6 w-full"
+      className="space-y-4 lg:space-y-6 w-full flex-1 flex flex-col"
     >
       <PageHeader
         title="EcoPulse Settings & Energy Tariff Preferences"

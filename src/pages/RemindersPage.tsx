@@ -276,7 +276,7 @@ export const RemindersPage: React.FC = () => {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4 lg:space-y-6 flex-1 flex flex-col">
       <PageHeader
         title="Energy-Saving Habits & Scheduled Reminders"
         description="Daily schedules to power down, unplug, and optimize household and campus appliances."

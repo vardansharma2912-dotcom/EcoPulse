@@ -111,11 +111,11 @@ export const DashboardPage: React.FC = () => {
     return weeklySeries(state.completions, now)
   }, [state.completions, now])
 
-  // Recent 8 completions sorted latest first
+  // Recent 4 completions sorted latest first (balanced with left column)
   const recentCompletions = useMemo(() => {
     return [...state.completions]
       .sort((a, b) => new Date(b.completedAt).getTime() - new Date(a.completedAt).getTime())
-      .slice(0, 8)
+      .slice(0, 4)
   }, [state.completions])
 
   const isReminderDoneToday = (reminderId: string) => {
@@ -172,7 +172,7 @@ export const DashboardPage: React.FC = () => {
       variants={containerVariants}
       initial="hidden"
       animate="visible"
-      className="space-y-6"
+      className="space-y-4 lg:space-y-6"
     >
       <PageHeader
         title="Smart Energy Saving Habit Dashboard"
@@ -794,6 +794,17 @@ export const DashboardPage: React.FC = () => {
                   </div>
                 )
               })}
+
+              {state.completions.length > 4 && (
+                <div className="pt-2 border-t border-emerald-900/10 text-center">
+                  <Link
+                    to="/analytics"
+                    className="text-xs font-bold text-emerald-800 hover:text-emerald-950 hover:underline"
+                  >
+                    View all in Analytics →
+                  </Link>
+                </div>
+              )}
             </Card>
           )}
         </motion.div>

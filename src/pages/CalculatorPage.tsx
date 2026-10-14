@@ -142,7 +142,7 @@ export const CalculatorPage: React.FC = () => {
       variants={containerVariants}
       initial="hidden"
       animate="visible"
-      className="space-y-6"
+      className="space-y-4 lg:space-y-6 flex-1 flex flex-col"
     >
       <PageHeader
         title="Appliance Energy Cost & What-If Calculator"

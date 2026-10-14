@@ -29,7 +29,7 @@ export const NotFoundPage: React.FC = () => {
   const requestedPath = location.pathname + (location.search || '')
 
   return (
-    <div className="min-h-[calc(100vh-14rem)] flex items-center justify-center py-6 sm:py-10 px-2 sm:px-4">
+    <div className="flex-1 flex items-center justify-center py-4 sm:py-8 px-2 sm:px-4 my-auto">
       {/* Centred Glass-Strong Card with Rise-in Transition */}
       <motion.div
         initial={shouldReduceMotion ? { opacity: 1 } : { opacity: 0, y: 18, scale: 0.98 }}

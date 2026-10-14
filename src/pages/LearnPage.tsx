@@ -278,7 +278,7 @@ export const LearnPage: React.FC = () => {
       variants={containerVariants}
       initial="hidden"
       animate="visible"
-      className="space-y-2 sm:space-y-3"
+      className="space-y-3 sm:space-y-4 flex-1 flex flex-col"
     >
       <PageHeader
         className="flex flex-col md:flex-row md:items-center justify-between gap-3 pt-0 pb-2.5 mb-1.5 sm:mb-2 border-b border-emerald-900/10"

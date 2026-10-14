@@ -72,7 +72,7 @@ export const AnalyticsPage: React.FC = () => {
       variants={containerVariants}
       initial="hidden"
       animate="visible"
-      className="space-y-6"
+      className="space-y-4 lg:space-y-6 flex-1 flex flex-col"
     >
       <PageHeader
         title="Energy Conservation Trends & Habit Analytics"
@@ -383,7 +383,7 @@ export const AnalyticsPage: React.FC = () => {
             {achievements.map((badge) => (
               <div
                 key={badge.id}
-                className={`rounded-2xl p-4 transition-all border ${
+                className={`rounded-2xl p-4 transition-all border flex flex-col justify-between h-full ${
                   badge.unlocked
                     ? 'border-emerald-500/40 bg-emerald-800/10 shadow-xs'
                     : 'border-white/50 bg-white/30 opacity-75'
@@ -420,9 +420,13 @@ export const AnalyticsPage: React.FC = () => {
                   </Badge>
                 </div>
 
-                {/* Progress track if locked */}
-                {!badge.unlocked && (
-                  <div className="mt-3">
+                {badge.unlocked ? (
+                  <div className="mt-2.5 pt-1.5 border-t border-emerald-800/10 flex items-center justify-between text-[10px] text-emerald-900 font-bold">
+                    <span>Milestone Achieved</span>
+                    <span className="text-emerald-700 font-extrabold">✓ Completed</span>
+                  </div>
+                ) : (
+                  <div className="mt-2.5">
                     <div className="h-1.5 w-full rounded-full bg-black/10 overflow-hidden">
                       <div
                         className="h-full bg-emerald-700 rounded-full transition-all duration-300"
