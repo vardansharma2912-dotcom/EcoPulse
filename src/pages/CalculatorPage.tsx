@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, Suspense } from 'react'
 import { Link } from 'react-router-dom'
 import { motion } from 'motion/react'
 import { PageHeader } from '../components/layout/PageHeader'
@@ -12,7 +12,10 @@ import { useAppState } from '../state'
 import { calculateKwh, calculateCost } from '../lib/energy'
 import { containerVariants, cardVariants } from '../lib/motionVariants'
 import { ReminderFormDialog } from '../components/reminders/ReminderFormDialog'
+import { isWelcomeHandled, isTourSeen } from '../lib/storage'
 import type { Reminder, ReminderCategory } from '../types'
+
+const PowerDownGame = React.lazy(() => import('../components/fun/PowerDownGame'))
 import {
   Zap,
   Clock,
@@ -49,6 +52,7 @@ const PRESETS: AppliancePreset[] = [
 export const CalculatorPage: React.FC = () => {
   const { state, addReminder } = useAppState()
   const { showToast } = useToast()
+  const showGame = isWelcomeHandled() && isTourSeen()
   const tariff = state.settings.tariffPerKwh
   const currency = state.settings.currency || '₹'
 
@@ -297,6 +301,15 @@ export const CalculatorPage: React.FC = () => {
               </div>
             </Card>
           </motion.div>
+
+          {/* Mini-Game: Power Down (Desktop only, lg+) */}
+          {showGame && (
+            <motion.div variants={cardVariants} className="hidden lg:block pt-1">
+              <Suspense fallback={null}>
+                <PowerDownGame />
+              </Suspense>
+            </motion.div>
+          )}
         </div>
 
         {/* Right Column: Projection Estimates with CountUp (5 cols) */}

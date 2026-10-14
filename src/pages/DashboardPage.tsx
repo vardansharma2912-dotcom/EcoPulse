@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react'
+import React, { useState, useMemo, Suspense } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { motion, AnimatePresence } from 'motion/react'
 import { PageHeader } from '../components/layout/PageHeader'
@@ -19,7 +19,10 @@ import { containerVariants, cardVariants, highlightCardVariants } from '../lib/m
 import { ReminderFormDialog } from '../components/reminders/ReminderFormDialog'
 import { DemoBanner } from '../components/layout/DemoBanner'
 import { GettingStartedCard } from '../components/dashboard/GettingStartedCard'
+import { isWelcomeHandled, isTourSeen } from '../lib/storage'
 import type { Reminder, ReminderCategory } from '../types'
+
+const PowerDownGame = React.lazy(() => import('../components/fun/PowerDownGame'))
 
 const CATEGORY_LABELS: Record<ReminderCategory, string> = {
   lighting: 'Lighting',
@@ -142,6 +145,13 @@ export const DashboardPage: React.FC = () => {
       pct: stats.total > 0 ? Math.round((stats.done / stats.total) * 100) : 0,
     }))
   }, [dueTodayReminders, todayCompletions])
+
+  // Mini-game condition: only when onboarding finished AND (all reminders done OR < 3 reminders)
+  const showDashboardGame = useMemo(() => {
+    const isFirstRunFinished = isWelcomeHandled() && isTourSeen()
+    if (!isFirstRunFinished) return false
+    return completedTodayCount >= totalDueToday || dueTodayReminders.length < 3
+  }, [completedTodayCount, totalDueToday, dueTodayReminders.length])
 
   const handleCreateReminder = (data: Omit<Reminder, 'id' | 'createdAt'> | Reminder) => {
     if (!('id' in data)) {
@@ -711,6 +721,15 @@ export const DashboardPage: React.FC = () => {
                   )
                 })}
               </AnimatePresence>
+            </div>
+          )}
+
+          {/* Mini-Game: Power Down (Desktop only, when reminders are done or < 3) */}
+          {showDashboardGame && (
+            <div className="hidden lg:block pt-1">
+              <Suspense fallback={null}>
+                <PowerDownGame />
+              </Suspense>
             </div>
           )}
         </motion.div>

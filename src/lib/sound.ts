@@ -285,6 +285,40 @@ export function playSnooze(options: PlayToneOptions = {}): void {
 }
 
 /**
+ * Plays a tiny soft click for UI interactions or mini-game taps.
+ */
+export function playClick(options: PlayToneOptions = {}): void {
+  const { volume = 60, muted = false } = options
+  if (muted || volume <= 0) return
+  const ctx = getAudioContext()
+  if (!ctx || ctx.state !== 'running') return
+
+  const gain = toSafeGain(volume) * 0.45
+  try {
+    const now = ctx.currentTime
+    const osc = ctx.createOscillator()
+    const gainNode = ctx.createGain()
+
+    osc.type = 'triangle'
+    osc.frequency.setValueAtTime(480, now)
+    osc.frequency.exponentialRampToValueAtTime(140, now + 0.035)
+
+    gainNode.gain.setValueAtTime(0.001, now)
+    gainNode.gain.linearRampToValueAtTime(gain, now + 0.004)
+    gainNode.gain.exponentialRampToValueAtTime(0.0001, now + 0.04)
+
+    osc.connect(gainNode)
+    gainNode.connect(ctx.destination)
+
+    osc.start(now)
+    osc.stop(now + 0.045)
+    trackNode(osc, gainNode, now + 0.045)
+  } catch {
+    // Fail silently
+  }
+}
+
+/**
  * Plays a short upbeat two-note success chime when completing a habit.
  */
 export function playTaskComplete(options: PlayToneOptions = {}): void {
