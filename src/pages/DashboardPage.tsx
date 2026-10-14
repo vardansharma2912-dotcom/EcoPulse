@@ -1,4 +1,4 @@
-import React, { useState, useMemo, Suspense } from 'react'
+import React, { useState, useMemo } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { motion, AnimatePresence } from 'motion/react'
 import { PageHeader } from '../components/layout/PageHeader'
@@ -19,10 +19,8 @@ import { containerVariants, cardVariants, highlightCardVariants } from '../lib/m
 import { ReminderFormDialog } from '../components/reminders/ReminderFormDialog'
 import { DemoBanner } from '../components/layout/DemoBanner'
 import { GettingStartedCard } from '../components/dashboard/GettingStartedCard'
-import { isWelcomeHandled, isTourSeen } from '../lib/storage'
+import { ThisWeekGlanceCard } from '../components/dashboard/ThisWeekGlanceCard'
 import type { Reminder, ReminderCategory } from '../types'
-
-const PowerDownGame = React.lazy(() => import('../components/fun/PowerDownGame'))
 
 const CATEGORY_LABELS: Record<ReminderCategory, string> = {
   lighting: 'Lighting',
@@ -146,13 +144,6 @@ export const DashboardPage: React.FC = () => {
     }))
   }, [dueTodayReminders, todayCompletions])
 
-  // Mini-game condition: only when onboarding finished AND (all reminders done OR < 3 reminders)
-  const showDashboardGame = useMemo(() => {
-    const isFirstRunFinished = isWelcomeHandled() && isTourSeen()
-    if (!isFirstRunFinished) return false
-    return completedTodayCount >= totalDueToday || dueTodayReminders.length < 3
-  }, [completedTodayCount, totalDueToday, dueTodayReminders.length])
-
   const handleCreateReminder = (data: Omit<Reminder, 'id' | 'createdAt'> | Reminder) => {
     if (!('id' in data)) {
       addReminder(data)
@@ -175,6 +166,9 @@ export const DashboardPage: React.FC = () => {
     undoCompletion(reminderId, today)
     showToast('Completion undone')
   }
+
+  // Column height balancer: if left column would end up taller than right column by > 24px, hide stat tiles
+  const shouldHideGlanceStats = dueTodayReminders.length > 0
 
   return (
     <motion.div
@@ -601,9 +595,9 @@ export const DashboardPage: React.FC = () => {
       </div>
 
       {/* Two Column Layout: Today's Reminders & Recent Activity Feed */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 items-start">
         {/* Today's Scheduled Reminders (2 Cols) */}
-        <motion.div variants={cardVariants} className="lg:col-span-2 space-y-3">
+        <motion.div variants={cardVariants} className="lg:col-span-2 space-y-3 flex flex-col">
           <div className="flex items-center justify-between">
             <h2 className="text-base font-bold text-[#102819] flex items-center gap-2">
               <Clock className="w-4 h-4 text-emerald-800" /> Today's Scheduled Reminders
@@ -724,18 +718,19 @@ export const DashboardPage: React.FC = () => {
             </div>
           )}
 
-          {/* Mini-Game: Power Down (Desktop only, when reminders are done or < 3) */}
-          {showDashboardGame && (
-            <div className="hidden lg:block pt-1">
-              <Suspense fallback={null}>
-                <PowerDownGame />
-              </Suspense>
-            </div>
-          )}
+          {/* This Week at a Glance Card (Desktop only, lg+) */}
+          <div className="hidden lg:block pt-1 flex-1 flex flex-col">
+            <ThisWeekGlanceCard
+              reminders={state.reminders}
+              completions={state.completions}
+              hideStats={shouldHideGlanceStats}
+              className="flex-1"
+            />
+          </div>
         </motion.div>
 
         {/* Recent Activity Log (1 Col) */}
-        <motion.div variants={cardVariants} className="space-y-3">
+        <motion.div variants={cardVariants} className="lg:col-span-1 space-y-3">
           <div className="flex items-center justify-between">
             <h2 className="text-base font-bold text-[#102819] flex items-center gap-2">
               <CheckCircle2 className="w-4 h-4 text-emerald-800" /> Recent Completed Actions

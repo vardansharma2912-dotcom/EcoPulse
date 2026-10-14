@@ -23,7 +23,6 @@ import { todayKey } from '../../lib/dates'
 import { isDueOn } from '../../lib/schedule'
 import { CountUp } from '../ui/CountUp'
 import { Logo } from '../ui/Logo'
-import { NavbarLogo } from './NavbarLogo'
 import { useSeo } from '../../lib/seo'
 import { isWelcomeHandled, isTourSeen } from '../../lib/storage'
 import { useTour } from '../../context/useTour'
@@ -149,7 +148,13 @@ export const AppLayout: React.FC = () => {
         <div>
           {/* Logo & Project Banner */}
           <div className="px-3.5 py-2.5 mb-2.5">
-            <NavbarLogo size={36} withWordmark />
+            <Link
+              to="/"
+              aria-label="EcoPulse home"
+              className="inline-flex items-center rounded-xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-600/50 transition-opacity hover:opacity-90"
+            >
+              <Logo size={36} withWordmark />
+            </Link>
           </div>
 
           {/* Navigation Links with Shared Sliding Pill & 3px Indicator */}
@@ -238,7 +243,13 @@ export const AppLayout: React.FC = () => {
         {/* Mobile Compact Glass Header (< 1024px) */}
         <header className="lg:hidden glass-panel border-b border-white/60 px-3.5 py-2.5 flex items-center justify-between sticky top-0 z-30 backdrop-blur-md">
           {/* Left: Brand Block (Logo + Name) */}
-          <NavbarLogo size={32} withWordmark className="min-w-0" />
+          <Link
+            to="/"
+            aria-label="EcoPulse home"
+            className="flex items-center rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-600/50 active:opacity-80 transition-opacity min-w-0"
+          >
+            <Logo size={32} withWordmark />
+          </Link>
 
           {/* Right: Search, Bell Popover, and Settings Avatar Chip */}
           <div className="flex items-center gap-1.5 shrink-0">

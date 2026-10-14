@@ -1,4 +1,4 @@
-import React, { useState, Suspense } from 'react'
+import React, { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { motion } from 'motion/react'
 import { PageHeader } from '../components/layout/PageHeader'
@@ -12,10 +12,7 @@ import { useAppState } from '../state'
 import { calculateKwh, calculateCost } from '../lib/energy'
 import { containerVariants, cardVariants } from '../lib/motionVariants'
 import { ReminderFormDialog } from '../components/reminders/ReminderFormDialog'
-import { isWelcomeHandled, isTourSeen } from '../lib/storage'
-import type { Reminder, ReminderCategory } from '../types'
-
-const PowerDownGame = React.lazy(() => import('../components/fun/PowerDownGame'))
+import type { Reminder } from '../types'
 import {
   Zap,
   Clock,
@@ -27,32 +24,12 @@ import {
   BookOpen,
   Bell,
 } from 'lucide-react'
-
-interface AppliancePreset {
-  name: string
-  watts: number
-  category: ReminderCategory
-  title: string
-  typicalHours: number
-}
-
-const PRESETS: AppliancePreset[] = [
-  { name: 'LED bulb (9 W)', watts: 9, category: 'lighting', title: 'Turn off LED bulb', typicalHours: 4 },
-  { name: 'Tube light (36 W)', watts: 36, category: 'lighting', title: 'Switch off tube light', typicalHours: 4 },
-  { name: 'Ceiling fan (75 W)', watts: 75, category: 'cooling', title: 'Switch off ceiling fan', typicalHours: 5 },
-  { name: 'Laptop charger (65 W)', watts: 65, category: 'chargers', title: 'Unplug laptop charger', typicalHours: 3 },
-  { name: 'Desktop PC (200 W)', watts: 200, category: 'computing', title: 'Power down desktop PC', typicalHours: 3 },
-  { name: 'Monitor (30 W)', watts: 30, category: 'computing', title: 'Turn off external monitor', typicalHours: 4 },
-  { name: 'AC 1.5 ton (1500 W)', watts: 1500, category: 'cooling', title: 'Power off air conditioner', typicalHours: 2 },
-  { name: 'TV (100 W)', watts: 100, category: 'standby', title: 'Switch off TV power strip', typicalHours: 4 },
-  { name: 'Phone charger (10 W)', watts: 10, category: 'chargers', title: 'Unplug phone charger', typicalHours: 8 },
-  { name: 'Custom', watts: 100, category: 'other', title: 'Turn off appliance', typicalHours: 3 },
-]
+import { PRESETS } from '../components/calculator/presets'
+import { QuickReferenceWattagesCard } from '../components/calculator/QuickReferenceWattagesCard'
 
 export const CalculatorPage: React.FC = () => {
   const { state, addReminder } = useAppState()
   const { showToast } = useToast()
-  const showGame = isWelcomeHandled() && isTourSeen()
   const tariff = state.settings.tariffPerKwh
   const currency = state.settings.currency || '₹'
 
@@ -153,9 +130,9 @@ export const CalculatorPage: React.FC = () => {
         description={`Estimate electrical energy (kWh) and bill savings (${currency}) by turning off or unplugging specific appliances.`}
       />
 
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
         {/* Left Column: Form & Math Formulas (7 cols) */}
-        <div className="lg:col-span-7 space-y-5">
+        <div className="lg:col-span-7 space-y-5 flex flex-col">
           <motion.div variants={cardVariants}>
             <Card variant="glass-strong" className="space-y-4">
               <h2 className="text-base font-bold text-[#14301f]">
@@ -302,14 +279,14 @@ export const CalculatorPage: React.FC = () => {
             </Card>
           </motion.div>
 
-          {/* Mini-Game: Power Down (Desktop only, lg+) */}
-          {showGame && (
-            <motion.div variants={cardVariants} className="hidden lg:block pt-1">
-              <Suspense fallback={null}>
-                <PowerDownGame />
-              </Suspense>
-            </motion.div>
-          )}
+          {/* Quick reference: appliance wattages (lg and up only) */}
+          <motion.div variants={cardVariants} className="hidden lg:block flex-1 flex flex-col">
+            <QuickReferenceWattagesCard
+              selectedPreset={selectedPreset}
+              onSelectPreset={handlePresetChange}
+              className="flex-1"
+            />
+          </motion.div>
         </div>
 
         {/* Right Column: Projection Estimates with CountUp (5 cols) */}
