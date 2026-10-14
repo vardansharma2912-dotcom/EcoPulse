@@ -227,7 +227,7 @@ export const DashboardPage: React.FC = () => {
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3.5">
         {/* Card 1: Highlighted Solid Deep Forest Hero Metric Card */}
         <motion.div variants={highlightCardVariants} className="h-full flex flex-col">
-          <div className="h-full rounded-2xl p-4 sm:p-4.5 bg-[#0a381e] text-white shadow-xl border border-emerald-500/20 group relative overflow-hidden transition-all duration-300 hover:shadow-2xl hover:shadow-emerald-950/30 flex flex-col justify-between">
+          <div className="h-full rounded-2xl p-3 sm:p-3.5 bg-[#0a381e] text-white shadow-xl border border-emerald-500/20 group relative overflow-hidden transition-all duration-300 hover:shadow-2xl hover:shadow-emerald-950/30 flex flex-col justify-between">
             <div>
               <div className="flex items-center justify-between text-emerald-100 mb-1">
                 <span className="text-xs font-bold uppercase tracking-wider text-emerald-300">Energy Saved Today</span>
@@ -240,7 +240,7 @@ export const DashboardPage: React.FC = () => {
                 <CountUp value={kwhSavedToday} decimals={2} /> <span className="text-sm font-bold text-emerald-300">kWh</span>
               </p>
             </div>
-            <div className="flex items-center gap-1.5 mt-2 text-[11px] text-emerald-200 font-semibold">
+            <div className="flex items-center gap-1.5 mt-1.5 text-[11px] text-emerald-200 font-semibold">
               <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse shrink-0" />
               <span>{completedTodayCount} action{completedTodayCount === 1 ? '' : 's'} logged today</span>
             </div>
@@ -249,7 +249,7 @@ export const DashboardPage: React.FC = () => {
 
         {/* Card 2: Due Today */}
         <motion.div variants={cardVariants} className="h-full flex flex-col">
-          <Card variant="glass" className="p-4 group h-full flex flex-col justify-between">
+          <Card variant="glass" className="p-3 sm:p-3.5 group h-full flex flex-col justify-between">
             <div>
               <div className="flex items-center justify-between text-[#14301f] mb-1">
                 <span className="text-xs font-bold uppercase tracking-wider">Due Today</span>
@@ -268,7 +268,7 @@ export const DashboardPage: React.FC = () => {
 
         {/* Card 3: Completed Today */}
         <motion.div variants={cardVariants} className="h-full flex flex-col">
-          <Card variant="glass" className="p-4 group h-full flex flex-col justify-between">
+          <Card variant="glass" className="p-3 sm:p-3.5 group h-full flex flex-col justify-between">
             <div>
               <div className="flex items-center justify-between text-[#14301f] mb-1">
                 <span className="text-xs font-bold uppercase tracking-wider">Completed Today</span>
@@ -289,9 +289,9 @@ export const DashboardPage: React.FC = () => {
 
         {/* Card 4: Action Streak */}
         <motion.div variants={cardVariants} className="h-full flex flex-col">
-          <Card variant="glass" className="p-4 group h-full flex flex-col justify-between overflow-hidden">
+          <Card variant="glass" className="p-3 sm:p-3.5 group h-full flex flex-col justify-between overflow-hidden">
             <div>
-              <div className="flex items-center justify-between text-[#14301f] mb-2">
+              <div className="flex items-center justify-between text-[#14301f] mb-1">
                 <span className="text-xs font-bold uppercase tracking-wider">Action Streak</span>
                 <Link
                   to="/analytics"
@@ -306,17 +306,13 @@ export const DashboardPage: React.FC = () => {
               <div className="pt-0.5 w-full min-w-0">
                 <StreakBadge
                   days={currentStreak}
-                  size="md"
+                  size="sm"
                   showLabel={true}
                   showProgress={true}
                   showDaysCount={true}
                 />
               </div>
             </div>
-
-            <p className="text-[11px] text-[#1e3f2b] font-medium mt-2">
-              Consecutive days conserving energy
-            </p>
           </Card>
         </motion.div>
       </div>
