@@ -153,7 +153,7 @@ export const AppLayout: React.FC = () => {
               aria-label="EcoPulse home"
               className="inline-flex items-center rounded-xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-600/50 transition-opacity hover:opacity-90"
             >
-              <Logo size={36} withWordmark />
+              <Logo size={44} withWordmark />
             </Link>
           </div>
 
@@ -248,7 +248,7 @@ export const AppLayout: React.FC = () => {
             aria-label="EcoPulse home"
             className="flex items-center rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-600/50 active:opacity-80 transition-opacity min-w-0"
           >
-            <Logo size={32} withWordmark />
+            <Logo size={36} withWordmark />
           </Link>
 
           {/* Right: Search, Bell Popover, and Settings Avatar Chip */}

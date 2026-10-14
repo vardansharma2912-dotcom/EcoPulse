@@ -31,15 +31,19 @@ export const Logo: React.FC<LogoProps> = ({
   )
 
   if (withWordmark) {
-    const isDesktop = numericSize >= 36
+    const textSizeClass =
+      numericSize >= 44
+        ? 'text-2xl'
+        : numericSize >= 36
+          ? 'text-xl'
+          : 'text-lg'
+
     return (
       <div className={`flex items-center gap-2.5 lg:gap-3 ${className}`}>
         {imgElement}
         <div className="min-w-0">
           <span
-            className={`font-semibold tracking-[-0.02em] leading-none text-[#123d29] whitespace-nowrap block font-sans ${
-              isDesktop ? 'text-xl' : 'text-lg'
-            }`}
+            className={`font-semibold tracking-[-0.02em] leading-none text-[#123d29] whitespace-nowrap block font-sans ${textSizeClass}`}
           >
             EcoPulse
           </span>

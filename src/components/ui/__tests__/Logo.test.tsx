@@ -15,7 +15,14 @@ describe('Logo Component', () => {
     expect(html).not.toContain('Smart Energy Reminder')
   })
 
-  it('applies text-xl for desktop sidebar sizes (>= 36)', () => {
+  it('applies text-2xl for prominent brand sizes (>= 44)', () => {
+    const html = renderToString(<Logo size={44} withWordmark />)
+    expect(html).toContain('text-2xl')
+    expect(html).toContain('font-semibold')
+    expect(html).toContain('whitespace-nowrap')
+  })
+
+  it('applies text-xl for desktop sidebar sizes (>= 36 and < 44)', () => {
     const html = renderToString(<Logo size={36} withWordmark />)
     expect(html).toContain('text-xl')
     expect(html).toContain('font-semibold')
