@@ -5,7 +5,10 @@
   "author": "EcoPulse Team (Vardaan, Shashank, Raina Deep)",
   "repository": {
     "type": "git",
-    "url": "https://github.com/vardansharma2912-dotcom/EcoPulse.git"
+    "url": "https://github.com/vardansharma2912-dotcom/EcoPulse-energy-saver.git"
+  },
+  "bugs": {
+    "url": "https://github.com/vardansharma2912-dotcom/EcoPulse-energy-saver/issues"
   },
   "homepage": "https://eco-pulse-flame.vercel.app",
   "keywords": [

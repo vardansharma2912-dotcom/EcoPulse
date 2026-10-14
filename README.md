@@ -55,7 +55,7 @@ Because individual students rarely see real-time utility bills or metering data,
 
 - **Customizable Reminder Engine:** Set daily, weekday, weekly, or one-time prompts across 8 appliance categories (lighting, cooling, chargers, computing, appliances, standby power, shared spaces, and other).
 - **Light Glassmorphic Botanical Design:** Nature-inspired translucent light theme styled with tailored CSS glass tokens over layered botanical leaf artwork.
-- **Offline Support & Installable PWA:** Full Progressive Web App powered by `vite-plugin-pwa` and Workbox caching. Installable to home screens and desktops with offline asset availability.
+- **Offline Support & Installable PWA:** Full Progressive Web App powered by `vite-plugin-pwa` and Workbox (`generateSW` with `autoUpdate`, `skipWaiting: true`, and `clientsClaim: true`). Pre-caches all built static application bundles, styling, fonts, and botanical media for complete offline capability. Note: Because EcoPulse operates entirely client-side without a remote push server, due reminder alerts and audio chimes trigger via local browser timers while the application tab remains open or minimized, rather than when the browser application is completely closed.
 - **Configurable Multi-Currency Selector:** Built-in settings currency selector supporting `₹ INR`, `$ USD`, `€ EUR`, and `£ GBP`. Dynamically applied across dashboard badges, energy calculators, trend cards, and history logs.
 - **Reliable In-App Due Alerts:** Floating glass toast banner with immediate action buttons (*Mark Done*, *Snooze 15 min*, and *Dismiss*) and accessible `aria-live="polite"` announcements.
 - **Native Browser Notifications:** Optional desktop notifications triggered when due reminders fire, automatically bringing the browser tab to focus on click.
@@ -83,8 +83,8 @@ Because individual students rarely see real-time utility bills or metering data,
 - **Animations:** Motion 14 (spring physics & 3D carousel transforms)
 - **Data Visualization:** Recharts 3
 - **Icons:** Lucide React
-- **Typography:** Inter Variable font (`@fontsource-variable/inter`)
-- **Testing:** Vitest 5 (12 test suites, 90 tests)
+- **Typography:** Geist Sans (`@fontsource/geist-sans`) for clean UI hierarchy and Geist Mono (`@fontsource/geist-mono`) for tabular numeric data (SIL Open Font License)
+- **Testing:** Vitest 5 (26 test files, 171 tests)
 - **Linter:** Oxlint
 - **Browser Automation:** Playwright (Mobile/desktop viewport audit & automated screenshot captures)
 
@@ -234,13 +234,16 @@ EcoPulse/
 - **Interface Screenshots:**  
   All high-resolution desktop and mobile captures are located in the [docs/](file:///d:/Projects/CHE110/EcoPulse/docs) directory.
 
-- **Group Member Contributions (CHE110 Group):**  
-  *Vardan Sharma and CHE110 Project Team*
+- **Group Member Contributions (CHE110 Group Project):**  
+  - **Vardaan** — Lead Developer & Architecture  
+  - **Shashank** — Research & Calculations  
+  - **Raina Deep** — Environmental Studies & Content  
 
 - **Asset & Artwork Credits:**  
-  - Icons: [Lucide Icons](https://lucide.dev)
-  - Fonts: Inter Variable by Rasmus Andersson via [@fontsource-variable/inter](https://fontsource.org)
-  - Watercolor Botanical Artwork: EcoPulse Design System
+  - Icons: [Lucide Icons](https://lucide.dev)  
+  - Fonts: Geist Sans & Geist Mono by Vercel via [@fontsource/geist-sans](https://fontsource.org/fonts/geist-sans) and [@fontsource/geist-mono](https://fontsource.org/fonts/geist-mono) (SIL Open Font License)  
+  - Watercolor Botanical Artwork: EcoPulse Design System (`src/assets/leaf-bg.webp`)  
+  - Vector Brand Identity: EcoPulse Design System (`public/favicon.svg`, `public/icon-512.png`)  
 
 ---
 
