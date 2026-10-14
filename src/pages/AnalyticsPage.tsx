@@ -83,72 +83,74 @@ export const AnalyticsPage: React.FC = () => {
       <DemoBanner />
 
       {/* Key All-Time Overview Cards with CountUp */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3.5">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
         <motion.div variants={cardVariants} className="h-full flex flex-col">
-          <Card variant="glass" className="p-4 h-full flex flex-col justify-between">
+          <Card variant="glass" padding="none" className="p-3 sm:p-3.5 h-full flex flex-col justify-between">
             <div>
-              <div className="flex items-center justify-between text-[#14301f] mb-1">
-                <span className="text-xs font-bold uppercase tracking-wider">Total Saved</span>
-                <Zap className="w-4 h-4 text-emerald-800" />
+              <div className="flex items-center justify-between text-[#14301f] mb-0.5">
+                <span className="text-[11px] sm:text-xs font-bold uppercase tracking-wider text-slate-700">Total Saved</span>
+                <Zap className="w-3.5 h-3.5 text-emerald-800" />
               </div>
-              <p className="text-2xl sm:text-3xl font-extrabold text-[#0f2819] tabular-nums tracking-tight">
-                <CountUp value={totalKwhAllTime} decimals={2} /> <span className="text-sm font-bold text-[#1b4332]">kWh</span>
+              <p className="text-xl sm:text-2xl lg:text-[26px] font-extrabold text-[#0f2819] tabular-nums tracking-tight">
+                <CountUp value={totalKwhAllTime} decimals={2} /> <span className="text-xs sm:text-sm font-bold text-[#1b4332]">kWh</span>
               </p>
             </div>
-            <p className="text-[11px] text-[#1e3f2b] font-medium mt-1">Estimated all-time energy</p>
+            <p className="text-[10px] sm:text-[11px] text-[#1e3f2b] font-medium mt-1">Estimated all-time energy</p>
           </Card>
         </motion.div>
 
         <motion.div variants={cardVariants} className="h-full flex flex-col">
-          <Card variant="glass" className="p-4 h-full flex flex-col justify-between">
+          <Card variant="glass" padding="none" className="p-3 sm:p-3.5 h-full flex flex-col justify-between">
             <div>
-              <div className="flex items-center justify-between text-[#14301f] mb-1">
-                <span className="text-xs font-bold uppercase tracking-wider">Cost Avoided</span>
-                <TrendingUp className="w-4 h-4 text-emerald-800" />
+              <div className="flex items-center justify-between text-[#14301f] mb-0.5">
+                <span className="text-[11px] sm:text-xs font-bold uppercase tracking-wider text-slate-700">Cost Avoided</span>
+                <TrendingUp className="w-3.5 h-3.5 text-emerald-800" />
               </div>
-              <p className="text-2xl sm:text-3xl font-extrabold text-[#0f2819] tabular-nums tracking-tight">
+              <p className="text-xl sm:text-2xl lg:text-[26px] font-extrabold text-[#0f2819] tabular-nums tracking-tight">
                 <CountUp value={totalCostAllTime} decimals={2} prefix={currency} />
               </p>
             </div>
-            <p className="text-[11px] text-[#1e3f2b] font-medium mt-1">Estimated at active tariffs</p>
+            <p className="text-[10px] sm:text-[11px] text-[#1e3f2b] font-medium mt-1">Estimated at active tariffs</p>
           </Card>
         </motion.div>
 
         <motion.div variants={cardVariants} className="h-full flex flex-col">
-          <Card variant="glass" className="p-4 h-full flex flex-col justify-between">
+          <Card variant="glass" padding="none" className="p-3 sm:p-3.5 h-full flex flex-col justify-between">
             <div>
-              <div className="flex items-center justify-between text-[#14301f] mb-1">
-                <span className="text-xs font-bold uppercase tracking-wider">Total Actions</span>
-                <CheckCircle2 className="w-4 h-4 text-emerald-700" />
+              <div className="flex items-center justify-between text-[#14301f] mb-0.5">
+                <span className="text-[11px] sm:text-xs font-bold uppercase tracking-wider text-slate-700">Total Actions</span>
+                <CheckCircle2 className="w-3.5 h-3.5 text-emerald-700" />
               </div>
-              <p className="text-2xl sm:text-3xl font-extrabold text-[#0f2819] tabular-nums tracking-tight">
+              <p className="text-xl sm:text-2xl lg:text-[26px] font-extrabold text-[#0f2819] tabular-nums tracking-tight">
                 <CountUp value={totalActionsAllTime} />
               </p>
             </div>
-            <p className="text-[11px] text-[#1e3f2b] font-medium mt-1">Energy-saving checks completed</p>
+            <p className="text-[10px] sm:text-[11px] text-[#1e3f2b] font-medium mt-1">Checks completed</p>
           </Card>
         </motion.div>
 
         <motion.div variants={cardVariants} className="h-full flex flex-col">
-          <Card variant="glass" className="p-4 h-full flex flex-col justify-between">
+          <Card variant="glass" padding="none" className="p-3 sm:p-3.5 h-full flex flex-col justify-between">
             <div>
-              <div className="flex items-center justify-between text-[#14301f] mb-1">
-                <span className="text-xs font-bold uppercase tracking-wider">Active Streak</span>
-                <Flame className="w-4 h-4 text-amber-600" />
+              <div className="flex items-center justify-between text-[#14301f] mb-0.5">
+                <span className="text-[11px] sm:text-xs font-bold uppercase tracking-wider text-slate-700">Active Streak</span>
+                <Flame className="w-3.5 h-3.5 text-amber-600" />
               </div>
-              <div className="flex items-center justify-between gap-1.5">
-                <p className="text-2xl sm:text-3xl font-extrabold text-[#0f2819] tabular-nums tracking-tight">
-                  <CountUp value={streaks.currentStreak} /> <span className="text-sm font-bold text-[#1b4332]">{streaks.currentStreak === 1 ? 'day' : 'days'}</span>
+              <div className="flex items-center justify-between gap-1">
+                <p className="text-xl sm:text-2xl lg:text-[26px] font-extrabold text-[#0f2819] tabular-nums tracking-tight whitespace-nowrap">
+                  <CountUp value={streaks.currentStreak} /> <span className="text-xs sm:text-sm font-bold text-[#1b4332]">{streaks.currentStreak === 1 ? 'day' : 'days'}</span>
                 </p>
-                <StreakBadge
-                  days={streaks.currentStreak}
-                  size="sm"
-                  compact={true}
-                />
+                <div className="shrink-0 scale-90 sm:scale-95 origin-right">
+                  <StreakBadge
+                    days={streaks.currentStreak}
+                    size="sm"
+                    compact={true}
+                  />
+                </div>
               </div>
             </div>
-            <p className="text-[11px] text-[#1e3f2b] font-medium mt-1 truncate">
-              {currentTier.name} level · Best: {streaks.longestStreak}d
+            <p className="text-[10px] sm:text-[11px] text-[#1e3f2b] font-medium mt-1 truncate">
+              {currentTier.name} · Best: {streaks.longestStreak}d
             </p>
           </Card>
         </motion.div>

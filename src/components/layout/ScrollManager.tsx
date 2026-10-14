@@ -153,7 +153,7 @@ export const ScrollManager: React.FC = () => {
     }
   }, [location.pathname, location.search, location.hash, location.key, navigationType])
 
-  // 4. Accessibility: Programmatic focus shift to <h1> or <main> and live region announcement
+  // 4. Accessibility: Programmatic focus shift to <h1> and live region announcement
   useEffect(() => {
     if (typeof document === 'undefined') return
 
@@ -161,20 +161,20 @@ export const ScrollManager: React.FC = () => {
     const timer = setTimeout(() => {
       const heading =
         document.querySelector<HTMLElement>('main h1') ||
-        document.querySelector<HTMLElement>('h1') ||
-        document.querySelector<HTMLElement>('main')
+        document.querySelector<HTMLElement>('h1')
 
       if (heading) {
         if (!heading.hasAttribute('tabindex')) {
           heading.setAttribute('tabindex', '-1')
         }
+        heading.style.outline = 'none'
         heading.focus({ preventScroll: true })
       }
 
       // Announce the page title to screen readers
       const title = document.title || 'Page loaded'
       setAnnouncement(title)
-    }, 60)
+    }, 100)
 
     return () => clearTimeout(timer)
   }, [location.pathname])

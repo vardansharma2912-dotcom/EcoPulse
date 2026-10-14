@@ -239,7 +239,7 @@ export const AppLayout: React.FC = () => {
       </aside>
 
       {/* Main Content Area: Document itself scrolls below 1024px */}
-      <div className="flex-1 flex flex-col min-w-0 z-10">
+      <div className="flex-1 flex flex-col min-w-0 z-10 focus:outline-none outline-none" style={{ outline: 'none' }}>
         {/* Mobile Compact Glass Header (< 1024px) */}
         <header className="lg:hidden glass-panel border-b border-white/60 px-3.5 py-2.5 flex items-center justify-between sticky top-0 z-30 backdrop-blur-md">
           {/* Left: Brand Block (Logo + Name) */}
@@ -305,7 +305,11 @@ export const AppLayout: React.FC = () => {
         </header>
 
         {/* Page Content with Route AnimatePresence Transitions */}
-        <main className="flex-1 flex flex-col p-4 sm:p-6 lg:p-8 max-w-6xl w-full mx-auto pb-4 sm:pb-6 lg:pb-8">
+        <main
+          tabIndex={-1}
+          style={{ outline: 'none' }}
+          className="flex-1 flex flex-col p-4 sm:p-6 lg:p-8 max-w-6xl w-full mx-auto pb-4 sm:pb-6 lg:pb-8 focus:outline-none focus-visible:outline-none outline-none"
+        >
           <AnimatePresence mode="wait">
             <motion.div
               key={location.pathname}

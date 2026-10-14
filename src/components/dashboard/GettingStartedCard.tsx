@@ -177,11 +177,10 @@ export const GettingStartedCard: React.FC<GettingStartedCardProps> = ({ onOpenAd
         {items.map((item) => {
           const Content = (
             <div
-              className={`flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-semibold transition-all ${
-                item.done
+              className={`flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-semibold transition-all ${item.done
                   ? 'bg-emerald-100/60 text-emerald-950'
                   : 'bg-white/70 text-slate-700 hover:bg-white hover:text-emerald-950 hover:shadow-xs'
-              }`}
+                }`}
             >
               {item.done ? (
                 <CheckCircle2 className="w-4 h-4 text-emerald-700 shrink-0" />

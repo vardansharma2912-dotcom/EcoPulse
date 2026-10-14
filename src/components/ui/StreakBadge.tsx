@@ -81,24 +81,23 @@ export const StreakBadge: React.FC<StreakBadgeProps> = ({
   // Only achieved streak levels are animated; locked or dormant tiers are static
   const canAnimate = isVisible && !reducedMotion && animated && !isLocked && tier.intensity > 0
 
-  // Real organic fire animation: base-anchored flame physics with skew, sway, elongation, and flicker
+  // Real organic fire animation: base-anchored flame physics with thermal updraft, skew, sway, and lick (zero jumping)
   const getFlameAnimation = () => {
     if (!canAnimate) return {}
 
     if (tier.id === 'spark' || tier.animation === 'subtle') {
       return {
-        transformOrigin: '12px 20px',
-        rotate: [0, -1.8, 1.5, -1.2, 1.8, -0.6, 0],
-        skewX: [0, -2.2, 2.0, -1.5, 1.5, -0.8, 0],
-        scaleY: [1, 1.06, 0.97, 1.05, 0.98, 1.02, 1],
-        scaleX: [1, 0.96, 1.02, 0.97, 1.01, 0.98, 1],
-        y: [0, -1.5, 0.3, -1.2, 0.2, -0.6, 0],
+        transformOrigin: '12px 21px',
+        rotate: [0, -2.5, 2.0, -1.8, 2.8, -1.0, 0],
+        skewX: [0, -3.0, 2.5, -2.0, 2.8, -1.2, 0],
+        scaleY: [1, 1.08, 0.95, 1.10, 0.97, 1.04, 1],
+        scaleX: [1, 0.95, 1.03, 0.93, 1.02, 0.98, 1],
         filter: [
-          `drop-shadow(0 0 2px ${tier.colors.primary}55)`,
-          `drop-shadow(0 0 7px ${tier.colors.primary}bb)`,
-          `drop-shadow(0 0 3px ${tier.colors.primary}66)`,
-          `drop-shadow(0 0 8px ${tier.colors.primary}cc)`,
-          `drop-shadow(0 0 2px ${tier.colors.primary}55)`,
+          `drop-shadow(0 -1px 3px ${tier.colors.primary}55)`,
+          `drop-shadow(0 -3px 8px ${tier.colors.primary}bb)`,
+          `drop-shadow(0 -2px 4px ${tier.colors.primary}77)`,
+          `drop-shadow(0 -4px 10px ${tier.colors.primary}cc)`,
+          `drop-shadow(0 -1px 3px ${tier.colors.primary}55)`,
         ],
         transition: { duration: 1.8, repeat: Infinity, ease: 'easeInOut' as const },
       }
@@ -106,115 +105,109 @@ export const StreakBadge: React.FC<StreakBadgeProps> = ({
 
     if (tier.id === 'flame' || tier.animation === 'flame') {
       return {
-        transformOrigin: '12px 20px',
-        rotate: [0, -2.8, 2.5, -2.0, 2.2, -1.2, 0],
-        skewX: [0, -3.2, 3.0, -2.2, 2.4, -1.0, 0],
-        scaleY: [1, 1.09, 0.95, 1.07, 0.96, 1.03, 1],
-        scaleX: [1, 0.94, 1.03, 0.95, 1.02, 0.97, 1],
-        y: [0, -2.2, 0.5, -1.8, 0.3, -1.0, 0],
+        transformOrigin: '12px 21px',
+        rotate: [0, -3.8, 3.2, -2.6, 3.6, -1.6, 0],
+        skewX: [0, -4.2, 3.8, -3.0, 3.8, -1.8, 0],
+        scaleY: [1, 1.12, 0.93, 1.15, 0.96, 1.06, 1],
+        scaleX: [1, 0.93, 1.04, 0.91, 1.03, 0.97, 1],
         filter: [
-          `drop-shadow(0 0 3px ${tier.colors.primary}77)`,
-          `drop-shadow(0 0 11px ${tier.colors.primary}ee)`,
-          `drop-shadow(0 0 4px ${tier.colors.primary}88)`,
-          `drop-shadow(0 0 13px ${tier.colors.secondary}ff)`,
-          `drop-shadow(0 0 3px ${tier.colors.primary}77)`,
+          `drop-shadow(0 -2px 4px ${tier.colors.primary}77)`,
+          `drop-shadow(0 -4px 13px ${tier.colors.primary}ee)`,
+          `drop-shadow(0 -3px 6px ${tier.colors.primary}99)`,
+          `drop-shadow(0 -5px 15px ${tier.colors.secondary}ff)`,
+          `drop-shadow(0 -2px 4px ${tier.colors.primary}77)`,
         ],
-        transition: { duration: 1.5, repeat: Infinity, ease: 'easeInOut' as const },
+        transition: { duration: 1.45, repeat: Infinity, ease: 'easeInOut' as const },
       }
     }
 
     if (tier.id === 'blaze' || tier.animation === 'blaze') {
       return {
-        transformOrigin: '12px 20px',
-        rotate: [0, -3.6, 3.2, -2.6, 3.0, -1.6, 0],
-        skewX: [0, -4.0, 3.8, -3.0, 3.2, -1.5, 0],
-        scaleY: [1, 1.12, 0.93, 1.10, 0.95, 1.04, 1],
-        scaleX: [1, 0.92, 1.04, 0.94, 1.02, 0.96, 1],
-        y: [0, -2.8, 0.7, -2.2, 0.4, -1.4, 0],
+        transformOrigin: '12px 21px',
+        rotate: [0, -4.8, 4.2, -3.5, 4.5, -2.2, 0],
+        skewX: [0, -5.5, 4.8, -4.0, 5.0, -2.4, 0],
+        scaleY: [1, 1.16, 0.91, 1.19, 0.94, 1.08, 1],
+        scaleX: [1, 0.90, 1.05, 0.88, 1.04, 0.96, 1],
         filter: [
-          `drop-shadow(0 0 4px ${tier.colors.primary}88)`,
-          `drop-shadow(0 0 15px ${tier.colors.secondary}ff)`,
-          `drop-shadow(0 0 5px ${tier.colors.primary}99)`,
-          `drop-shadow(0 0 17px ${tier.colors.secondary}ff)`,
-          `drop-shadow(0 0 4px ${tier.colors.primary}88)`,
+          `drop-shadow(0 -2px 5px ${tier.colors.primary}88)`,
+          `drop-shadow(0 -5px 17px ${tier.colors.secondary}ff)`,
+          `drop-shadow(0 -3px 7px ${tier.colors.primary}aa)`,
+          `drop-shadow(0 -6px 20px ${tier.colors.secondary}ff)`,
+          `drop-shadow(0 -2px 5px ${tier.colors.primary}88)`,
         ],
-        transition: { duration: 1.25, repeat: Infinity, ease: 'easeInOut' as const },
+        transition: { duration: 1.2, repeat: Infinity, ease: 'easeInOut' as const },
       }
     }
 
     if (tier.id === 'inferno' || tier.animation === 'inferno') {
       return {
-        transformOrigin: '12px 20px',
-        rotate: [0, -4.5, 4.0, -3.5, 3.8, -2.0, 0],
-        skewX: [0, -5.2, 4.8, -3.8, 4.2, -2.2, 0],
-        scaleY: [1, 1.15, 0.91, 1.13, 0.93, 1.05, 1],
-        scaleX: [1, 0.90, 1.05, 0.92, 1.03, 0.95, 1],
-        y: [0, -3.4, 0.9, -2.8, 0.5, -1.8, 0],
+        transformOrigin: '12px 21px',
+        rotate: [0, -6.0, 5.2, -4.5, 5.8, -2.8, 0],
+        skewX: [0, -6.8, 6.0, -5.0, 6.2, -3.2, 0],
+        scaleY: [1, 1.20, 0.89, 1.24, 0.92, 1.10, 1],
+        scaleX: [1, 0.88, 1.07, 0.86, 1.05, 0.94, 1],
         filter: [
-          `drop-shadow(0 0 6px ${tier.colors.primary}99)`,
-          `drop-shadow(0 0 18px ${tier.colors.secondary}ff)`,
-          `drop-shadow(0 0 7px ${tier.colors.primary}aa)`,
-          `drop-shadow(0 0 21px ${tier.colors.secondary}ff)`,
-          `drop-shadow(0 0 6px ${tier.colors.primary}99)`,
+          `drop-shadow(0 -3px 7px ${tier.colors.primary}aa)`,
+          `drop-shadow(0 -6px 22px ${tier.colors.secondary}ff)`,
+          `drop-shadow(0 -4px 9px ${tier.colors.primary}cc)`,
+          `drop-shadow(0 -7px 26px ${tier.colors.secondary}ff)`,
+          `drop-shadow(0 -3px 7px ${tier.colors.primary}aa)`,
         ],
-        transition: { duration: 1.05, repeat: Infinity, ease: 'easeInOut' as const },
+        transition: { duration: 0.95, repeat: Infinity, ease: 'easeInOut' as const },
       }
     }
 
     if (tier.id === 'aurora' || tier.animation === 'aurora') {
       return {
-        transformOrigin: '12px 20px',
-        rotate: [0, -3.2, 2.8, -2.4, 3.0, -1.4, 0],
-        skewX: [0, -3.8, 3.5, -2.6, 3.2, -1.6, 0],
-        scaleY: [1, 1.08, 0.95, 1.07, 0.96, 1.02, 1],
-        scaleX: [1, 0.94, 1.03, 0.95, 1.02, 0.97, 1],
-        y: [0, -2.2, 0.5, -1.8, 0.3, -1.0, 0],
+        transformOrigin: '12px 21px',
+        rotate: [0, -4.2, 3.8, -3.2, 4.0, -2.0, 0],
+        skewX: [0, -5.0, 4.5, -3.6, 4.4, -2.2, 0],
+        scaleY: [1, 1.12, 0.94, 1.15, 0.96, 1.05, 1],
+        scaleX: [1, 0.92, 1.04, 0.90, 1.03, 0.96, 1],
         filter: [
-          `drop-shadow(0 0 7px ${tier.colors.primary}aa)`,
-          `drop-shadow(0 0 19px ${tier.colors.secondary}ee)`,
-          `drop-shadow(0 0 8px ${tier.colors.primary}bb)`,
-          `drop-shadow(0 0 20px ${tier.colors.secondary}ff)`,
-          `drop-shadow(0 0 7px ${tier.colors.primary}aa)`,
+          `drop-shadow(0 -2px 8px ${tier.colors.primary}aa)`,
+          `drop-shadow(0 -5px 21px ${tier.colors.secondary}ee)`,
+          `drop-shadow(0 -3px 10px ${tier.colors.primary}cc)`,
+          `drop-shadow(0 -6px 24px ${tier.colors.secondary}ff)`,
+          `drop-shadow(0 -2px 8px ${tier.colors.primary}aa)`,
         ],
-        transition: { duration: 1.9, repeat: Infinity, ease: 'easeInOut' as const },
+        transition: { duration: 1.75, repeat: Infinity, ease: 'easeInOut' as const },
       }
     }
 
     if (tier.id === 'platinum' || tier.animation === 'shimmer') {
       return {
-        transformOrigin: '12px 20px',
-        rotate: [0, -2.2, 2.0, -1.6, 1.9, -0.8, 0],
-        skewX: [0, -2.5, 2.2, -1.8, 2.0, -1.0, 0],
-        scaleY: [1, 1.07, 0.96, 1.06, 0.97, 1.02, 1],
-        scaleX: [1, 0.95, 1.02, 0.96, 1.01, 0.98, 1],
-        y: [0, -1.8, 0.4, -1.4, 0.2, -0.8, 0],
+        transformOrigin: '12px 21px',
+        rotate: [0, -3.2, 2.8, -2.2, 3.0, -1.4, 0],
+        skewX: [0, -3.8, 3.2, -2.6, 3.4, -1.6, 0],
+        scaleY: [1, 1.10, 0.95, 1.13, 0.96, 1.04, 1],
+        scaleX: [1, 0.94, 1.03, 0.92, 1.02, 0.97, 1],
         filter: [
-          `drop-shadow(0 0 5px rgba(56, 189, 248, 0.7))`,
-          `drop-shadow(0 0 17px rgba(226, 232, 240, 1))`,
-          `drop-shadow(0 0 7px rgba(56, 189, 248, 0.8))`,
-          `drop-shadow(0 0 20px rgba(226, 232, 240, 1))`,
-          `drop-shadow(0 0 5px rgba(56, 189, 248, 0.7))`,
+          `drop-shadow(0 -2px 6px rgba(56, 189, 248, 0.75))`,
+          `drop-shadow(0 -5px 19px rgba(226, 232, 240, 1))`,
+          `drop-shadow(0 -3px 8px rgba(56, 189, 248, 0.9))`,
+          `drop-shadow(0 -6px 22px rgba(226, 232, 240, 1))`,
+          `drop-shadow(0 -2px 6px rgba(56, 189, 248, 0.75))`,
         ],
-        transition: { duration: 1.5, repeat: Infinity, ease: 'easeInOut' as const },
+        transition: { duration: 1.35, repeat: Infinity, ease: 'easeInOut' as const },
       }
     }
 
     if (tier.id === 'legend' || tier.animation === 'legend') {
       return {
-        transformOrigin: '12px 20px',
-        rotate: [0, -3.8, 3.4, -2.8, 3.2, -1.5, 0],
-        skewX: [0, -4.5, 4.0, -3.2, 3.6, -1.8, 0],
-        scaleY: [1, 1.13, 0.92, 1.11, 0.94, 1.04, 1],
-        scaleX: [1, 0.91, 1.04, 0.93, 1.02, 0.96, 1],
-        y: [0, -3.0, 0.8, -2.4, 0.4, -1.5, 0],
+        transformOrigin: '12px 21px',
+        rotate: [0, -5.2, 4.6, -3.8, 4.8, -2.4, 0],
+        skewX: [0, -6.0, 5.2, -4.4, 5.4, -2.8, 0],
+        scaleY: [1, 1.18, 0.90, 1.22, 0.93, 1.08, 1],
+        scaleX: [1, 0.89, 1.06, 0.87, 1.04, 0.95, 1],
         filter: [
-          `drop-shadow(0 0 9px rgba(245, 158, 11, 0.85))`,
-          `drop-shadow(0 0 23px rgba(253, 224, 71, 1))`,
-          `drop-shadow(0 0 11px rgba(245, 158, 11, 0.95))`,
-          `drop-shadow(0 0 26px rgba(253, 224, 71, 1))`,
-          `drop-shadow(0 0 9px rgba(245, 158, 11, 0.85))`,
+          `drop-shadow(0 -3px 10px rgba(245, 158, 11, 0.9))`,
+          `drop-shadow(0 -6px 25px rgba(253, 224, 71, 1))`,
+          `drop-shadow(0 -4px 13px rgba(245, 158, 11, 0.98))`,
+          `drop-shadow(0 -8px 29px rgba(253, 224, 71, 1))`,
+          `drop-shadow(0 -3px 10px rgba(245, 158, 11, 0.9))`,
         ],
-        transition: { duration: 1.25, repeat: Infinity, ease: 'easeInOut' as const },
+        transition: { duration: 1.1, repeat: Infinity, ease: 'easeInOut' as const },
       }
     }
 
@@ -222,15 +215,17 @@ export const StreakBadge: React.FC<StreakBadgeProps> = ({
     return {}
   }
 
-  // Inner core heat flicker animation
+  // Inner core heat flicker animation: high-frequency thermal pulsation anchored to base (no jumping)
   const getInnerCoreAnimation = () => {
     if (!canAnimate) return {}
     return {
-      opacity: [0.75, 1, 0.65, 0.95, 0.72, 1],
-      scaleY: [1, 1.08, 0.95, 1.05, 0.98, 1],
-      y: [0, -1.2, 0.3, -0.9, 0.1, 0],
+      transformOrigin: '12px 21px',
+      opacity: [0.82, 1, 0.72, 0.98, 0.76, 1, 0.82],
+      scaleY: [1, 1.14, 0.92, 1.18, 0.94, 1.10, 1],
+      scaleX: [1, 0.93, 1.05, 0.90, 1.04, 0.96, 1],
+      skewX: [0, -2.5, 2.0, -1.8, 2.2, -1.0, 0],
       transition: {
-        duration: Math.max(0.7, 1.4 - tier.intensity * 0.1),
+        duration: Math.max(0.65, 1.25 - tier.intensity * 0.08),
         repeat: Infinity,
         ease: 'easeInOut' as const,
       },
@@ -257,9 +252,9 @@ export const StreakBadge: React.FC<StreakBadgeProps> = ({
     <div
       role="status"
       aria-label={ariaLabel}
-      className={`flex flex-col select-none w-full min-w-0 ${className}`}
+      className={`flex flex-col select-none ${compact ? 'w-auto' : 'w-full'} min-w-0 ${className}`}
     >
-      <div className="flex items-center gap-2 relative w-full min-w-0">
+      <div className={`flex items-center gap-2 relative ${compact ? 'w-auto' : 'w-full'} min-w-0`}>
         {/* Badge Icon Container */}
         <div className="relative flex items-center justify-center shrink-0">
           {/* Level-Up Burst Ripple Ring (only active when unlocked & celebrated) */}
