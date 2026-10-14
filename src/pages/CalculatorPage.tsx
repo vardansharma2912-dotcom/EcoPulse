@@ -26,6 +26,7 @@ import {
 } from 'lucide-react'
 import { PRESETS } from '../components/calculator/presets'
 import { QuickReferenceWattagesCard } from '../components/calculator/QuickReferenceWattagesCard'
+import { MonthlyCostBenchmarkCard } from '../components/calculator/MonthlyCostBenchmarkCard'
 
 export const CalculatorPage: React.FC = () => {
   const { state, addReminder } = useAppState()
@@ -290,7 +291,7 @@ export const CalculatorPage: React.FC = () => {
         </div>
 
         {/* Right Column: Projection Estimates with CountUp (5 cols) */}
-        <div className="lg:col-span-5 space-y-4">
+        <div className="lg:col-span-5 space-y-4 flex flex-col">
           <motion.div variants={cardVariants}>
             <Card variant="glass-strong" className="space-y-4">
               <div className="flex items-center justify-between">
@@ -435,6 +436,18 @@ export const CalculatorPage: React.FC = () => {
                 </Link>
               </div>
             </Card>
+          </motion.div>
+
+          {/* Typical Monthly Run Costs (lg and up only) */}
+          <motion.div variants={cardVariants} className="hidden lg:block flex-1 flex flex-col">
+            <MonthlyCostBenchmarkCard
+              tariff={tariff}
+              currency={currency}
+              selectedPreset={selectedPreset}
+              onSelectPreset={handlePresetChange}
+              activeReminders={state.reminders.filter((r) => r.active)}
+              className="flex-1"
+            />
           </motion.div>
         </div>
       </div>
