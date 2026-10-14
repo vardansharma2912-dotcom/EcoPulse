@@ -2,7 +2,6 @@ import React, { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { motion } from 'motion/react'
 import { PageHeader } from '../components/layout/PageHeader'
-import { Breadcrumbs } from '../components/layout/Breadcrumbs'
 import { Card } from '../components/ui/Card'
 import { Button } from '../components/ui/Button'
 import { Input } from '../components/ui/Input'
@@ -146,7 +145,6 @@ export const CalculatorPage: React.FC = () => {
       className="space-y-6"
     >
       <PageHeader
-        breadcrumbs={<Breadcrumbs items={[{ label: 'Calculator' }]} />}
         title="Appliance Energy Cost & What-If Calculator"
         description={`Estimate electrical energy (kWh) and bill savings (${currency}) by turning off or unplugging specific appliances.`}
       />

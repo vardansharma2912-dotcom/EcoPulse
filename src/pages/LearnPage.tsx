@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react'
 import { Link } from 'react-router-dom'
 import { PageHeader } from '../components/layout/PageHeader'
-import { Breadcrumbs } from '../components/layout/Breadcrumbs'
 import { Badge } from '../components/ui/Badge'
 import { Button } from '../components/ui/Button'
 import { Dialog } from '../components/ui/Dialog'
@@ -282,7 +281,6 @@ export const LearnPage: React.FC = () => {
       className="space-y-2 sm:space-y-3"
     >
       <PageHeader
-        breadcrumbs={<Breadcrumbs items={[{ label: 'Learn' }]} />}
         className="flex flex-col md:flex-row md:items-center justify-between gap-3 pt-0 pb-2.5 mb-1.5 sm:mb-2 border-b border-emerald-900/10"
         title="Practical Energy Conservation Habits & Guides"
         description="Practical habits and conservation principles for college dormitories and campus living."

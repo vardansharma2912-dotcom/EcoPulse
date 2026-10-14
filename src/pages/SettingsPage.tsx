@@ -1,7 +1,6 @@
 import React, { useState, useRef } from 'react'
 import { motion } from 'motion/react'
 import { PageHeader } from '../components/layout/PageHeader'
-import { Breadcrumbs } from '../components/layout/Breadcrumbs'
 import { Card } from '../components/ui/Card'
 import { Button } from '../components/ui/Button'
 import { Input } from '../components/ui/Input'
@@ -305,7 +304,6 @@ export const SettingsPage: React.FC = () => {
       className="space-y-6 w-full"
     >
       <PageHeader
-        breadcrumbs={<Breadcrumbs items={[{ label: 'Settings' }]} />}
         title="EcoPulse Settings & Energy Tariff Preferences"
         description="Configure your domestic electricity tariff, manage browser alerts, and handle application data."
       />

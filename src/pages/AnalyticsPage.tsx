@@ -2,7 +2,6 @@ import React, { useState, useMemo } from 'react'
 import { Link } from 'react-router-dom'
 import { motion } from 'motion/react'
 import { PageHeader } from '../components/layout/PageHeader'
-import { Breadcrumbs } from '../components/layout/Breadcrumbs'
 import { Card } from '../components/ui/Card'
 import { Badge } from '../components/ui/Badge'
 import { Button } from '../components/ui/Button'
@@ -76,7 +75,6 @@ export const AnalyticsPage: React.FC = () => {
       className="space-y-6"
     >
       <PageHeader
-        breadcrumbs={<Breadcrumbs items={[{ label: 'Analytics' }]} />}
         title="Energy Conservation Trends & Habit Analytics"
         description="Historical trends, weekly activity breakdowns, habit streaks, and milestone achievements."
       />
