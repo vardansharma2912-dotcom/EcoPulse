@@ -81,16 +81,16 @@ export const StreakBadge: React.FC<StreakBadgeProps> = ({
   // Only achieved streak levels are animated; locked or dormant tiers are static
   const canAnimate = isVisible && !reducedMotion && animated && !isLocked && tier.intensity > 0
 
-  // Real organic fire animation: base-anchored flame physics with thermal updraft, skew, sway, and lick (zero jumping)
+  // Real organic fire animation: base-anchored flame physics matching fire.mp4 with thermal updraft, wave skew, sway, and lick (zero jumping)
   const getFlameAnimation = () => {
     if (!canAnimate) return {}
 
     if (tier.id === 'spark' || tier.animation === 'subtle') {
       return {
-        transformOrigin: '12px 21px',
-        rotate: [0, -2.5, 2.0, -1.8, 2.8, -1.0, 0],
-        skewX: [0, -3.0, 2.5, -2.0, 2.8, -1.2, 0],
-        scaleY: [1, 1.08, 0.95, 1.10, 0.97, 1.04, 1],
+        transformOrigin: '12.5px 21px',
+        rotate: [0, -3.2, 3.5, -2.5, 3.0, -1.5, 0],
+        skewX: [0, -3.8, 4.0, -2.8, 3.2, -1.6, 0],
+        scaleY: [1, 1.08, 0.96, 1.10, 0.97, 1.04, 1],
         scaleX: [1, 0.95, 1.03, 0.93, 1.02, 0.98, 1],
         filter: [
           `drop-shadow(0 -1px 3px ${tier.colors.primary}55)`,
@@ -99,70 +99,70 @@ export const StreakBadge: React.FC<StreakBadgeProps> = ({
           `drop-shadow(0 -4px 10px ${tier.colors.primary}cc)`,
           `drop-shadow(0 -1px 3px ${tier.colors.primary}55)`,
         ],
-        transition: { duration: 1.8, repeat: Infinity, ease: 'easeInOut' as const },
+        transition: { duration: 1.9, repeat: Infinity, ease: 'easeInOut' as const },
       }
     }
 
     if (tier.id === 'flame' || tier.animation === 'flame') {
       return {
-        transformOrigin: '12px 21px',
-        rotate: [0, -3.8, 3.2, -2.6, 3.6, -1.6, 0],
-        skewX: [0, -4.2, 3.8, -3.0, 3.8, -1.8, 0],
-        scaleY: [1, 1.12, 0.93, 1.15, 0.96, 1.06, 1],
+        transformOrigin: '12.5px 21px',
+        rotate: [0, -4.5, 5.2, -3.8, 4.5, -2.0, 0],
+        skewX: [0, -5.2, 5.8, -4.2, 4.8, -2.2, 0],
+        scaleY: [1, 1.12, 0.94, 1.15, 0.96, 1.06, 1],
         scaleX: [1, 0.93, 1.04, 0.91, 1.03, 0.97, 1],
         filter: [
-          `drop-shadow(0 -2px 4px ${tier.colors.primary}77)`,
-          `drop-shadow(0 -4px 13px ${tier.colors.primary}ee)`,
-          `drop-shadow(0 -3px 6px ${tier.colors.primary}99)`,
-          `drop-shadow(0 -5px 15px ${tier.colors.secondary}ff)`,
-          `drop-shadow(0 -2px 4px ${tier.colors.primary}77)`,
+          `drop-shadow(0 -2px 5px ${tier.colors.primary}88)`,
+          `drop-shadow(0 -4px 14px ${tier.colors.secondary}ee)`,
+          `drop-shadow(0 -3px 7px ${tier.colors.primary}aa)`,
+          `drop-shadow(0 -5px 16px ${tier.colors.secondary}ff)`,
+          `drop-shadow(0 -2px 5px ${tier.colors.primary}88)`,
         ],
-        transition: { duration: 1.45, repeat: Infinity, ease: 'easeInOut' as const },
+        transition: { duration: 1.7, repeat: Infinity, ease: 'easeInOut' as const },
       }
     }
 
     if (tier.id === 'blaze' || tier.animation === 'blaze') {
       return {
-        transformOrigin: '12px 21px',
-        rotate: [0, -4.8, 4.2, -3.5, 4.5, -2.2, 0],
-        skewX: [0, -5.5, 4.8, -4.0, 5.0, -2.4, 0],
-        scaleY: [1, 1.16, 0.91, 1.19, 0.94, 1.08, 1],
+        transformOrigin: '12.5px 21px',
+        rotate: [0, -5.5, 5.8, -4.5, 5.2, -2.5, 0],
+        skewX: [0, -6.2, 6.5, -5.0, 5.5, -2.8, 0],
+        scaleY: [1, 1.16, 0.92, 1.19, 0.94, 1.08, 1],
         scaleX: [1, 0.90, 1.05, 0.88, 1.04, 0.96, 1],
         filter: [
-          `drop-shadow(0 -2px 5px ${tier.colors.primary}88)`,
-          `drop-shadow(0 -5px 17px ${tier.colors.secondary}ff)`,
-          `drop-shadow(0 -3px 7px ${tier.colors.primary}aa)`,
-          `drop-shadow(0 -6px 20px ${tier.colors.secondary}ff)`,
-          `drop-shadow(0 -2px 5px ${tier.colors.primary}88)`,
+          `drop-shadow(0 -2px 6px ${tier.colors.primary}99)`,
+          `drop-shadow(0 -5px 18px ${tier.colors.secondary}ff)`,
+          `drop-shadow(0 -3px 8px ${tier.colors.primary}bb)`,
+          `drop-shadow(0 -6px 22px ${tier.colors.secondary}ff)`,
+          `drop-shadow(0 -2px 6px ${tier.colors.primary}99)`,
         ],
-        transition: { duration: 1.2, repeat: Infinity, ease: 'easeInOut' as const },
+        transition: { duration: 1.4, repeat: Infinity, ease: 'easeInOut' as const },
       }
     }
 
     if (tier.id === 'inferno' || tier.animation === 'inferno') {
       return {
-        transformOrigin: '12px 21px',
-        rotate: [0, -6.0, 5.2, -4.5, 5.8, -2.8, 0],
-        skewX: [0, -6.8, 6.0, -5.0, 6.2, -3.2, 0],
+        transformOrigin: '12.5px 21px',
+        rotate: [0, -6.5, 6.5, -5.2, 6.0, -3.0, 0],
+        skewX: [0, -7.5, 7.2, -6.0, 6.8, -3.5, 0],
         scaleY: [1, 1.20, 0.89, 1.24, 0.92, 1.10, 1],
         scaleX: [1, 0.88, 1.07, 0.86, 1.05, 0.94, 1],
         filter: [
-          `drop-shadow(0 -3px 7px ${tier.colors.primary}aa)`,
-          `drop-shadow(0 -6px 22px ${tier.colors.secondary}ff)`,
-          `drop-shadow(0 -4px 9px ${tier.colors.primary}cc)`,
-          `drop-shadow(0 -7px 26px ${tier.colors.secondary}ff)`,
-          `drop-shadow(0 -3px 7px ${tier.colors.primary}aa)`,
+          `drop-shadow(0 -3px 8px ${tier.colors.primary}bb)`,
+          `drop-shadow(0 -6px 24px ${tier.colors.secondary}ff)`,
+          `drop-shadow(0 -4px 10px ${tier.colors.primary}dd)`,
+          `drop-shadow(0 -7px 28px ${tier.colors.secondary}ff)`,
+          `drop-shadow(0 -3px 8px ${tier.colors.primary}bb)`,
         ],
-        transition: { duration: 0.95, repeat: Infinity, ease: 'easeInOut' as const },
+        transition: { duration: 1.15, repeat: Infinity, ease: 'easeInOut' as const },
       }
     }
 
     if (tier.id === 'aurora' || tier.animation === 'aurora') {
       return {
-        transformOrigin: '12px 21px',
-        rotate: [0, -4.2, 3.8, -3.2, 4.0, -2.0, 0],
-        skewX: [0, -5.0, 4.5, -3.6, 4.4, -2.2, 0],
-        scaleY: [1, 1.12, 0.94, 1.15, 0.96, 1.05, 1],
+        transformOrigin: '12.5px 21px',
+        rotate: [0, -4.8, 4.5, -3.6, 4.5, -2.2, 0],
+        skewX: [0, -5.5, 5.2, -4.2, 5.0, -2.5, 0],
+        scaleY: [1, 1.14, 0.93, 1.16, 0.95, 1.06, 1],
         scaleX: [1, 0.92, 1.04, 0.90, 1.03, 0.96, 1],
         filter: [
           `drop-shadow(0 -2px 8px ${tier.colors.primary}aa)`,
@@ -171,15 +171,15 @@ export const StreakBadge: React.FC<StreakBadgeProps> = ({
           `drop-shadow(0 -6px 24px ${tier.colors.secondary}ff)`,
           `drop-shadow(0 -2px 8px ${tier.colors.primary}aa)`,
         ],
-        transition: { duration: 1.75, repeat: Infinity, ease: 'easeInOut' as const },
+        transition: { duration: 1.8, repeat: Infinity, ease: 'easeInOut' as const },
       }
     }
 
     if (tier.id === 'platinum' || tier.animation === 'shimmer') {
       return {
-        transformOrigin: '12px 21px',
-        rotate: [0, -3.2, 2.8, -2.2, 3.0, -1.4, 0],
-        skewX: [0, -3.8, 3.2, -2.6, 3.4, -1.6, 0],
+        transformOrigin: '12.5px 21px',
+        rotate: [0, -3.8, 3.5, -2.8, 3.6, -1.8, 0],
+        skewX: [0, -4.5, 4.0, -3.2, 4.0, -2.0, 0],
         scaleY: [1, 1.10, 0.95, 1.13, 0.96, 1.04, 1],
         scaleX: [1, 0.94, 1.03, 0.92, 1.02, 0.97, 1],
         filter: [
@@ -189,15 +189,15 @@ export const StreakBadge: React.FC<StreakBadgeProps> = ({
           `drop-shadow(0 -6px 22px rgba(226, 232, 240, 1))`,
           `drop-shadow(0 -2px 6px rgba(56, 189, 248, 0.75))`,
         ],
-        transition: { duration: 1.35, repeat: Infinity, ease: 'easeInOut' as const },
+        transition: { duration: 1.45, repeat: Infinity, ease: 'easeInOut' as const },
       }
     }
 
     if (tier.id === 'legend' || tier.animation === 'legend') {
       return {
-        transformOrigin: '12px 21px',
-        rotate: [0, -5.2, 4.6, -3.8, 4.8, -2.4, 0],
-        skewX: [0, -6.0, 5.2, -4.4, 5.4, -2.8, 0],
+        transformOrigin: '12.5px 21px',
+        rotate: [0, -5.8, 5.4, -4.2, 5.5, -2.6, 0],
+        skewX: [0, -6.8, 6.2, -5.0, 6.0, -3.0, 0],
         scaleY: [1, 1.18, 0.90, 1.22, 0.93, 1.08, 1],
         scaleX: [1, 0.89, 1.06, 0.87, 1.04, 0.95, 1],
         filter: [
@@ -207,7 +207,7 @@ export const StreakBadge: React.FC<StreakBadgeProps> = ({
           `drop-shadow(0 -8px 29px rgba(253, 224, 71, 1))`,
           `drop-shadow(0 -3px 10px rgba(245, 158, 11, 0.9))`,
         ],
-        transition: { duration: 1.1, repeat: Infinity, ease: 'easeInOut' as const },
+        transition: { duration: 1.25, repeat: Infinity, ease: 'easeInOut' as const },
       }
     }
 
@@ -215,17 +215,18 @@ export const StreakBadge: React.FC<StreakBadgeProps> = ({
     return {}
   }
 
-  // Inner core heat flicker animation: high-frequency thermal pulsation anchored to base (no jumping)
+  // Inner core heat flicker animation: counter-phase thermal wave lick anchored to base
   const getInnerCoreAnimation = () => {
     if (!canAnimate) return {}
     return {
-      transformOrigin: '12px 21px',
-      opacity: [0.82, 1, 0.72, 0.98, 0.76, 1, 0.82],
-      scaleY: [1, 1.14, 0.92, 1.18, 0.94, 1.10, 1],
-      scaleX: [1, 0.93, 1.05, 0.90, 1.04, 0.96, 1],
-      skewX: [0, -2.5, 2.0, -1.8, 2.2, -1.0, 0],
+      transformOrigin: '12.5px 20px',
+      rotate: [0, 4.2, -4.8, 3.4, -3.8, 1.8, 0],
+      skewX: [0, 3.5, -4.2, 2.8, -3.2, 1.4, 0],
+      scaleY: [1, 0.94, 1.14, 0.92, 1.10, 0.96, 1],
+      scaleX: [1, 1.06, 0.92, 1.07, 0.94, 1.02, 1],
+      opacity: [0.92, 1, 0.84, 1, 0.88, 1, 0.92],
       transition: {
-        duration: Math.max(0.65, 1.25 - tier.intensity * 0.08),
+        duration: Math.max(0.7, 1.35 - tier.intensity * 0.08),
         repeat: Infinity,
         ease: 'easeInOut' as const,
       },
@@ -349,7 +350,7 @@ export const StreakBadge: React.FC<StreakBadgeProps> = ({
                 aria-hidden="true"
               />
             ) : (
-              /* Themed Energy-Flame SVG with dynamic fire animation */
+              /* Themed Energy-Flame SVG with dynamic fire animation matching fire.mp4 */
               <motion.svg
                 viewBox="0 0 24 24"
                 width={iconDimensions.width}
@@ -358,7 +359,7 @@ export const StreakBadge: React.FC<StreakBadgeProps> = ({
                 xmlns="http://www.w3.org/2000/svg"
                 className="overflow-visible"
                 aria-hidden="true"
-                style={{ transformOrigin: '12px 20px' }}
+                style={{ transformOrigin: '12.5px 21px' }}
                 animate={
                   celebrate && canAnimate
                     ? { scale: [1, 1.35, 1.05, 1] }
@@ -371,30 +372,86 @@ export const StreakBadge: React.FC<StreakBadgeProps> = ({
                 }
               >
                 <defs>
+                  {/* Outer flame gradient */}
                   <linearGradient id={gradientId} x1="0%" y1="0%" x2="100%" y2="100%">
-                    <stop offset="0%" stopColor={tier.colors.secondary} />
+                    <stop offset="0%" stopColor={tier.colors.accent || tier.colors.primary} />
+                    <stop offset="45%" stopColor={tier.colors.primary} />
+                    <stop offset="100%" stopColor={tier.colors.secondary} />
+                  </linearGradient>
+
+                  {/* Inner flame core gradient */}
+                  <linearGradient id={`${gradientId}-inner`} x1="0%" y1="0%" x2="0%" y2="100%">
+                    <stop offset="0%" stopColor="#ffffff" stopOpacity="0.95" />
+                    <stop offset="40%" stopColor={tier.colors.secondary || '#fef08a'} />
                     <stop offset="100%" stopColor={tier.colors.primary} />
                   </linearGradient>
                 </defs>
 
-                {/* Progressive Tier-specific Flame Silhouette */}
+                {/* Progressive Tier-specific Flame Silhouette with bold rounded stroke from fire.mp4 */}
                 <path
                   d={tier.flameShape.outer}
                   fill={`url(#${gradientId})`}
-                  stroke={tier.colors.stroke}
-                  strokeWidth="1.1"
+                  stroke={tier.colors.stroke || '#0c2340'}
+                  strokeWidth="1.3"
                   strokeLinejoin="round"
+                  strokeLinecap="round"
                 />
 
                 {/* Progressive Tier-specific Inner Flame / Energy Core */}
                 {tier.flameShape.inner && (
                   <motion.path
                     d={tier.flameShape.inner}
-                    fill={tier.intensity >= 6 ? '#ffffff' : tier.colors.secondary || '#ffffff'}
-                    fillOpacity={tier.intensity >= 4 ? 0.95 : 0.82}
-                    style={{ transformOrigin: '12px 20px' }}
+                    fill={`url(#${gradientId}-inner)`}
+                    fillOpacity={tier.intensity >= 6 ? 0.98 : 0.92}
+                    style={{ transformOrigin: '12.5px 20px' }}
                     animate={getInnerCoreAnimation()}
                   />
+                )}
+
+                {/* Floating Rising Embers from fire.mp4 */}
+                {canAnimate && tier.intensity >= 1 && (
+                  <>
+                    {/* Left Rising Ember */}
+                    <motion.path
+                      d="M 4.2 4.2 C 3.2 5.5 3.2 6.8 4.2 7.5 C 5.2 6.8 5.2 5.5 4.2 4.2 Z"
+                      fill={tier.colors.secondary || '#fef08a'}
+                      animate={{
+                        opacity: [0, 0.95, 0.9, 0],
+                        y: [6, -1, -9, -15],
+                        x: [0, -1, -2, -3.5],
+                        scale: [0.5, 1.05, 0.8, 0],
+                        rotate: [0, -15, -28, -40],
+                      }}
+                      transition={{
+                        duration: Math.max(1.2, 1.8 - tier.intensity * 0.08),
+                        repeat: Infinity,
+                        ease: 'easeOut' as const,
+                        times: [0, 0.25, 0.7, 1],
+                      }}
+                      style={{ transformOrigin: '4.2px 6px' }}
+                    />
+
+                    {/* Right Rising Ember */}
+                    <motion.path
+                      d="M 19.5 6.0 C 18.5 7.2 18.5 8.5 19.5 9.2 C 20.5 8.5 20.5 7.2 19.5 6.0 Z"
+                      fill={tier.colors.secondary || '#fef08a'}
+                      animate={{
+                        opacity: [0, 0.9, 0.85, 0],
+                        y: [7, 0, -8, -14],
+                        x: [0, 1, 2, 3.5],
+                        scale: [0.5, 0.95, 0.75, 0],
+                        rotate: [0, 12, 24, 35],
+                      }}
+                      transition={{
+                        duration: Math.max(1.1, 1.6 - tier.intensity * 0.08),
+                        repeat: Infinity,
+                        delay: 0.5,
+                        ease: 'easeOut' as const,
+                        times: [0, 0.25, 0.7, 1],
+                      }}
+                      style={{ transformOrigin: '19.5px 7.5px' }}
+                    />
+                  </>
                 )}
               </motion.svg>
             )}

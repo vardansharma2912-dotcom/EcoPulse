@@ -103,20 +103,21 @@ export const STREAK_TIERS: StreakTier[] = [
     animation: 'flame',
     description: 'A steady habit begins to burn bright.',
     colors: {
-      primary: '#d97706',
-      secondary: '#fbbf24',
-      gradient: 'linear-gradient(135deg, #d97706, #f59e0b)',
-      text: '#92400e',
-      bg: 'rgba(245, 158, 11, 0.15)',
-      border: 'rgba(245, 158, 11, 0.4)',
-      fill: '#f59e0b',
-      stroke: '#b45309',
+      primary: '#f97316',
+      secondary: '#fef08a',
+      accent: '#f43f5e',
+      gradient: 'linear-gradient(135deg, #f43f5e, #f97316, #fbbf24)',
+      text: '#9a3412',
+      bg: 'rgba(254, 243, 199, 0.55)',
+      border: 'rgba(245, 158, 11, 0.45)',
+      fill: '#f97316',
+      stroke: '#0c2340',
     },
     glow: '0 0 16px rgba(245, 158, 11, 0.45)',
     flameShape: {
-      // Dual-tongue campfire flame: main tongue + energetic secondary side flick
-      outer: 'M12 2 C11 4.5 8.8 6.8 8 9.5 C7 12.2 7.5 15.2 9.5 17.5 C8.2 16.2 7.8 14.2 8.4 12.8 C9 11.2 10.4 10 11.2 8.5 C11.8 10.5 13.2 11.8 14.5 11 C15.8 10.2 15.2 8.2 16.2 9.6 C17.8 11.8 18.4 14.5 17.6 17 C18.8 15.2 19 12.8 18.2 10.5 C17.5 7.8 14.8 4.6 12 2 Z',
-      inner: 'M12 8.5 C11.2 10.5 10 12 10.2 14 C11 13.5 11.6 12.6 12 11.5 C12.5 12.8 13.5 13.5 14.2 13 C13.8 11.6 13.2 10.2 12 8.5 Z',
+      // Iconic 3-crested whipping campfire flame (exact match to fire.mp4)
+      outer: 'M 13.5 3.0 C 11.5 3.2 9.8 4.6 9.0 6.6 C 8.6 7.6 8.2 6.9 7.7 7.1 C 6.8 7.6 6.2 9.5 6.4 11.4 C 6.8 12.6 5.8 11.8 5.0 10.8 C 4.6 11.0 4.4 12.0 4.5 14.8 C 4.8 17.8 8.0 21.0 12.5 21.0 C 16.5 21.0 19.5 17.8 19.5 14.2 C 19.5 12.0 18.5 9.2 17.2 8.0 C 16.5 7.6 16.2 8.2 16.6 9.5 C 16.8 10.5 16.2 9.5 14.8 6.8 C 14.0 5.2 13.8 3.5 13.5 3.0 Z',
+      inner: 'M 13.2 7.2 C 11.8 9.5 11.0 12.2 10.5 13.8 C 9.8 14.8 8.8 16.2 8.5 17.8 C 8.5 19.2 10.0 20.2 12.5 20.2 C 15.5 20.2 18.5 18.8 18.8 15.5 C 19.0 13.0 18.0 10.5 17.0 11.8 C 16.0 12.8 15.2 12.2 15.2 11.0 C 15.2 9.5 14.2 8.0 13.2 7.2 Z',
     },
   },
   {
