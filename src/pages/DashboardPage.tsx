@@ -42,7 +42,6 @@ import {
   RotateCcw,
   TrendingUp,
   Calendar,
-  ArrowUpRight,
   Sparkles,
 } from 'lucide-react'
 import { getGreeting } from '../lib/greetings'
@@ -231,10 +230,7 @@ export const DashboardPage: React.FC = () => {
             <div>
               <div className="flex items-center justify-between text-emerald-100 mb-1">
                 <span className="text-xs font-bold uppercase tracking-wider text-emerald-300">Energy Saved Today</span>
-                <div className="flex items-center gap-1 text-emerald-300">
-                  <Zap className="w-4 h-4 text-emerald-400" />
-                  <ArrowUpRight className="w-3 h-3 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
-                </div>
+                <Zap className="w-4 h-4 text-emerald-400" />
               </div>
               <p className="text-2xl sm:text-3xl font-extrabold text-white tabular-nums tracking-tight">
                 <CountUp value={kwhSavedToday} decimals={2} /> <span className="text-sm font-bold text-emerald-300">kWh</span>
@@ -253,10 +249,7 @@ export const DashboardPage: React.FC = () => {
             <div>
               <div className="flex items-center justify-between text-[#14301f] mb-1">
                 <span className="text-xs font-bold uppercase tracking-wider">Due Today</span>
-                <div className="flex items-center gap-1 text-emerald-800">
-                  <Calendar className="w-4 h-4" />
-                  <ArrowUpRight className="w-3 h-3 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
-                </div>
+                <Calendar className="w-4 h-4 text-emerald-800" />
               </div>
               <p className="text-2xl sm:text-3xl font-extrabold text-[#0f2819] tabular-nums tracking-tight">
                 <CountUp value={totalDueToday} />
@@ -272,10 +265,7 @@ export const DashboardPage: React.FC = () => {
             <div>
               <div className="flex items-center justify-between text-[#14301f] mb-1">
                 <span className="text-xs font-bold uppercase tracking-wider">Completed Today</span>
-                <div className="flex items-center gap-1 text-emerald-700">
-                  <CheckCircle2 className="w-4 h-4" />
-                  <ArrowUpRight className="w-3 h-3 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
-                </div>
+                <CheckCircle2 className="w-4 h-4 text-emerald-700" />
               </div>
               <p className="text-2xl sm:text-3xl font-extrabold text-[#0f2819] tabular-nums tracking-tight">
                 <CountUp value={completedTodayCount} />
@@ -299,7 +289,6 @@ export const DashboardPage: React.FC = () => {
                   title="View streak tier progression in Analytics"
                 >
                   <span>Tiers</span>
-                  <ArrowUpRight className="w-3 h-3 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
                 </Link>
               </div>
 
