@@ -695,7 +695,7 @@ export const SettingsPage: React.FC = () => {
               <div>
                 <h3 className="text-sm font-bold text-[#0f2819] flex items-center gap-2">
                   EcoPulse
-                  <Badge variant="emerald" size="sm">v1.0</Badge>
+                  <Badge variant="emerald" size="sm">v1.29</Badge>
                 </h3>
                 <p className="text-xs text-[#1e3f2b] font-medium mt-0.5">
                   CHE110 Environmental Studies project

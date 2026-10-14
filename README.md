@@ -8,6 +8,7 @@
     <a href="https://eco-pulse-flame.vercel.app/" target="_blank">
       <img src="https://img.shields.io/badge/Live%20Demo-Vercel%20Production-059669?style=for-the-badge&logo=vercel&logoColor=white" alt="Live Demo on Vercel" />
     </a>
+    <img src="https://img.shields.io/badge/Version-v1.29-059669?style=for-the-badge" alt="Version v1.29" />
     <img src="https://img.shields.io/badge/PWA-Installable%20Offline-10b981?style=for-the-badge&logo=pwa&logoColor=white" alt="PWA Installable" />
     <img src="https://img.shields.io/badge/TypeScript-Strict-3178c6?style=for-the-badge&logo=typescript&logoColor=white" alt="TypeScript" />
   </p>
