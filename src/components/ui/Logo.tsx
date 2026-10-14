@@ -4,6 +4,7 @@ import logoSrc from '../../assets/ecopulse-logo.webp'
 export interface LogoProps {
   size?: number | string
   withWordmark?: boolean
+  showTagline?: boolean
   className?: string
   imageClassName?: string
 }
@@ -11,6 +12,7 @@ export interface LogoProps {
 export const Logo: React.FC<LogoProps> = ({
   size = 40,
   withWordmark = false,
+  showTagline = false,
   className = '',
   imageClassName = '',
 }) => {
@@ -19,36 +21,33 @@ export const Logo: React.FC<LogoProps> = ({
   const imgElement = (
     <img
       src={logoSrc}
-      width={numericSize}
       height={numericSize}
-      alt={withWordmark ? '' : 'EcoPulse logo'}
-      style={{ width: numericSize, height: numericSize }}
-      className={`shrink-0 object-contain ${imageClassName}`}
+      alt="EcoPulse logo"
+      style={{ height: `${numericSize}px`, width: 'auto' }}
+      className={`shrink-0 object-contain translate-y-[1px] ${imageClassName}`}
       loading="eager"
       decoding="async"
     />
   )
 
   if (withWordmark) {
-    const isLarge = numericSize >= 40
+    const isDesktop = numericSize >= 36
     return (
-      <div className={`flex items-center gap-3.5 ${className}`}>
+      <div className={`flex items-center gap-2.5 lg:gap-3 ${className}`}>
         {imgElement}
         <div className="min-w-0">
           <span
-            className={`font-black text-[#112d1b] tracking-tight block leading-tight truncate ${
-              isLarge ? 'text-lg xl:text-xl' : 'text-base'
+            className={`font-semibold tracking-[-0.02em] leading-none text-[#123d29] whitespace-nowrap block font-sans ${
+              isDesktop ? 'text-xl' : 'text-lg'
             }`}
           >
             EcoPulse
           </span>
-          <p
-            className={`text-[#1e3f2b] font-semibold leading-tight truncate ${
-              isLarge ? 'text-xs xl:text-[13px]' : 'text-[11px]'
-            }`}
-          >
-            Smart Energy Reminder
-          </p>
+          {showTagline && (
+            <p className="text-[#1e3f2b] font-medium leading-none text-xs mt-1 truncate">
+              Smart Energy Reminder
+            </p>
+          )}
         </div>
       </div>
     )

@@ -76,18 +76,6 @@ export const AppLayout: React.FC = () => {
     openTour(true)
   }
 
-  // Page title for compact mobile header
-  const pageTitle = useMemo(() => {
-    const path = location.pathname
-    if (path === '/') return 'Dashboard'
-    if (path === '/reminders' || path.startsWith('/reminders/')) return 'Reminders'
-    if (path === '/calculator' || path.startsWith('/calculator/')) return 'Calculator'
-    if (path === '/analytics' || path.startsWith('/analytics/')) return 'Analytics'
-    if (path === '/learn' || path.startsWith('/learn/')) return 'Learn'
-    if (path === '/settings' || path.startsWith('/settings/')) return 'Settings'
-    return 'Page not found'
-  }, [location.pathname])
-
   // Update document title, meta tags, Open Graph, canonical, and JSON-LD
   useSeo(location.pathname)
 
@@ -159,8 +147,14 @@ export const AppLayout: React.FC = () => {
       <aside className="hidden lg:flex w-64 flex-col justify-between m-4 glass-panel rounded-2xl p-4 xl:p-5 pb-5 xl:pb-6 shrink-0 sticky top-4 h-[calc(100vh-2rem)] z-30 overflow-hidden scrollbar-none">
         <div>
           {/* Logo & Project Banner */}
-          <div className="px-2 py-1 mb-4 xl:mb-5">
-            <Logo size={48} withWordmark />
+          <div className="px-3.5 py-2.5 mb-2.5">
+            <Link
+              to="/"
+              aria-label="EcoPulse home"
+              className="inline-flex items-center rounded-xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-600/50 transition-opacity hover:opacity-90"
+            >
+              <Logo size={36} withWordmark />
+            </Link>
           </div>
 
           {/* Navigation Links with Shared Sliding Pill & 3px Indicator */}
@@ -248,18 +242,14 @@ export const AppLayout: React.FC = () => {
       <div className="flex-1 flex flex-col min-w-0 z-10">
         {/* Mobile Compact Glass Header (< 1024px) */}
         <header className="lg:hidden glass-panel border-b border-white/60 px-3.5 py-2.5 flex items-center justify-between sticky top-0 z-30 backdrop-blur-md">
-          {/* Left: Logo & Current Page Title */}
-          <div className="flex items-center gap-2.5 min-w-0">
-            <Logo size={32} className="shrink-0" />
-            <div className="min-w-0">
-              <span className="font-extrabold text-base text-[#14301f] leading-tight truncate block">
-                {pageTitle}
-              </span>
-              <p className="text-[11px] text-emerald-900 font-bold leading-none">
-                EcoPulse
-              </p>
-            </div>
-          </div>
+          {/* Left: Brand Block (Logo + Name) */}
+          <Link
+            to="/"
+            aria-label="EcoPulse home"
+            className="flex items-center rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-600/50 active:opacity-80 transition-opacity min-w-0"
+          >
+            <Logo size={32} withWordmark />
+          </Link>
 
           {/* Right: Search, Bell Popover, and Settings Avatar Chip */}
           <div className="flex items-center gap-1.5 shrink-0">
