@@ -1,7 +1,7 @@
 import React, { useState, useMemo, useEffect } from 'react'
 import { createPortal } from 'react-dom'
 import { useNavigate } from 'react-router-dom'
-import { motion, AnimatePresence } from 'motion/react'
+import { motion, AnimatePresence, useReducedMotion } from 'motion/react'
 import { Search, X, Bell, BookOpen, Calculator, BarChart3, LayoutDashboard, ArrowRight } from 'lucide-react'
 import { useAppState } from '../../state'
 
@@ -22,6 +22,7 @@ export const MobileSearchSheet: React.FC<MobileSearchSheetProps> = ({ isOpen, on
   const [query, setQuery] = useState('')
   const { state } = useAppState()
   const navigate = useNavigate()
+  const shouldReduceMotion = useReducedMotion()
 
   useEffect(() => {
     if (isOpen) {
@@ -63,6 +64,20 @@ export const MobileSearchSheet: React.FC<MobileSearchSheetProps> = ({ isOpen, on
 
   if (typeof document === 'undefined') return null
 
+  const sheetMotionProps = shouldReduceMotion
+    ? {
+        initial: { opacity: 0 },
+        animate: { opacity: 1 },
+        exit: { opacity: 0 },
+        transition: { duration: 0.15 },
+      }
+    : {
+        initial: { y: -16, opacity: 0 },
+        animate: { y: 0, opacity: 1 },
+        exit: { y: -16, opacity: 0 },
+        transition: { type: 'spring' as const, stiffness: 380, damping: 30 },
+      }
+
   return createPortal(
     <AnimatePresence>
       {isOpen && (
@@ -76,10 +91,7 @@ export const MobileSearchSheet: React.FC<MobileSearchSheetProps> = ({ isOpen, on
           className="fixed inset-0 z-50 bg-black/40 backdrop-blur-sm flex flex-col justify-start p-3 sm:p-4"
         >
           <motion.div
-            initial={{ y: -24, opacity: 0 }}
-            animate={{ y: 0, opacity: 1 }}
-            exit={{ y: -24, opacity: 0 }}
-            transition={{ type: 'spring', stiffness: 320, damping: 28 }}
+            {...sheetMotionProps}
             className="w-full max-w-lg mx-auto glass-strong rounded-2xl shadow-2xl p-4 flex flex-col max-h-[85dvh]"
           >
             {/* Search Input Bar */}

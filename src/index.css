@@ -20,6 +20,9 @@
 :root {
   font-family: var(--font-sans);
   color-scheme: light;
+  --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+  --ease-in-out: cubic-bezier(0.77, 0, 0.175, 1);
+  --ease-drawer: cubic-bezier(0.32, 0.72, 0, 1);
 }
 
 body {
@@ -219,7 +222,7 @@ div:focus-visible,
   }
 }
 
-/* Respect user motion preferences */
+/* Respect user motion preferences: non-vestibular, gentler transitions without translation */
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,
@@ -228,5 +231,10 @@ div:focus-visible,
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
+  }
+
+  button:active,
+  [role="button"]:active {
+    transform: none !important;
   }
 }

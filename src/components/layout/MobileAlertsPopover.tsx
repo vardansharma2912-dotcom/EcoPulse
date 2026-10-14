@@ -1,7 +1,7 @@
 import React, { useMemo } from 'react'
 import { createPortal } from 'react-dom'
 import { useNavigate } from 'react-router-dom'
-import { motion, AnimatePresence } from 'motion/react'
+import { motion, AnimatePresence, useReducedMotion } from 'motion/react'
 import { Bell, X, CheckCircle2, Clock, ArrowRight } from 'lucide-react'
 import { useAppState } from '../../state'
 import { todayKey } from '../../lib/dates'
@@ -16,6 +16,7 @@ export const MobileAlertsPopover: React.FC<MobileAlertsPopoverProps> = ({ isOpen
   const { state, completeReminder } = useAppState()
   const navigate = useNavigate()
   const today = todayKey()
+  const shouldReduceMotion = useReducedMotion()
 
   const dueToday = useMemo(() => {
     return state.reminders.filter((r) => isDueOn(r, today))
@@ -38,6 +39,20 @@ export const MobileAlertsPopover: React.FC<MobileAlertsPopoverProps> = ({ isOpen
 
   if (typeof document === 'undefined') return null
 
+  const popoverMotionProps = shouldReduceMotion
+    ? {
+        initial: { opacity: 0 },
+        animate: { opacity: 1 },
+        exit: { opacity: 0 },
+        transition: { duration: 0.15 },
+      }
+    : {
+        initial: { opacity: 0, y: -8, scale: 0.96 },
+        animate: { opacity: 1, y: 0, scale: 1 },
+        exit: { opacity: 0, y: -8, scale: 0.96 },
+        transition: { type: 'spring' as const, stiffness: 400, damping: 30 },
+      }
+
   return createPortal(
     <AnimatePresence>
       {isOpen && (
@@ -50,11 +65,8 @@ export const MobileAlertsPopover: React.FC<MobileAlertsPopoverProps> = ({ isOpen
           <motion.div
             role="dialog"
             aria-label="Alerts and Reminders"
-            initial={{ opacity: 0, y: -12, scale: 0.95 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, y: -12, scale: 0.95 }}
-            transition={{ type: 'spring', stiffness: 350, damping: 28 }}
-            className="fixed top-14 right-3 z-50 w-[90vw] max-w-xs glass-strong rounded-2xl shadow-xl p-4 border border-white/80"
+            {...popoverMotionProps}
+            className="fixed top-14 right-3 z-50 w-[90vw] max-w-xs origin-top-right glass-strong rounded-2xl shadow-xl p-4 border border-white/80"
           >
             <div className="flex items-center justify-between pb-3 border-b border-emerald-900/10">
               <div className="flex items-center gap-2">

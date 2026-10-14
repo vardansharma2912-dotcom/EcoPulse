@@ -128,7 +128,7 @@ export const NotchDock: React.FC = () => {
       } else {
         const controls = animate(beadX, targetX, {
           type: 'spring',
-          stiffness: 420,
+          stiffness: 380,
           damping: 34,
         })
         return () => controls.stop()
@@ -339,7 +339,7 @@ export const NotchDock: React.FC = () => {
               }`}
             >
               {!isActive && (
-                <div className="relative p-1 text-[#2d4a37] group-hover:text-[#0a381e] group-active:scale-90 transition-transform">
+                <div className="relative p-1 text-[#2d4a37] group-hover:text-[#0a381e] group-active:scale-95 transition-transform duration-150 motion-reduce:transform-none">
                   <Icon className="w-5 h-5" trigger={dockClicks[tab.to] || 0} />
                   {tab.to === '/reminders' && pendingCount > 0 && (
                     <span className="absolute -top-1 -right-1 min-w-[16px] h-4 px-1 rounded-full bg-emerald-700 text-white text-[10px] font-bold flex items-center justify-center border border-white">

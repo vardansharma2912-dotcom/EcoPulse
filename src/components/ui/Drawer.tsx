@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react'
 import { createPortal } from 'react-dom'
-import { motion, AnimatePresence } from 'motion/react'
+import { motion, AnimatePresence, useReducedMotion } from 'motion/react'
 import { X } from 'lucide-react'
 
 export interface DrawerProps {
@@ -26,6 +26,7 @@ export const Drawer: React.FC<DrawerProps> = ({
 }) => {
   const previousActiveElement = useRef<HTMLElement | null>(null)
   const drawerRef = useRef<HTMLDivElement>(null)
+  const shouldReduceMotion = useReducedMotion()
   const [isDesktop, setIsDesktop] = useState(() => {
     return typeof window !== 'undefined' ? window.innerWidth >= 1024 : true
   })
@@ -67,6 +68,27 @@ export const Drawer: React.FC<DrawerProps> = ({
     return null
   }
 
+  const panelMotionProps = shouldReduceMotion
+    ? {
+        initial: { opacity: 0 },
+        animate: { opacity: 1 },
+        exit: { opacity: 0 },
+        transition: { duration: 0.15 },
+      }
+    : isDesktop
+    ? {
+        initial: { x: '100%' },
+        animate: { x: 0 },
+        exit: { x: '100%' },
+        transition: { type: 'spring' as const, stiffness: 360, damping: 32 },
+      }
+    : {
+        initial: { y: '100%' },
+        animate: { y: 0 },
+        exit: { y: '100%' },
+        transition: { type: 'spring' as const, stiffness: 360, damping: 30 },
+      }
+
   return createPortal(
     <AnimatePresence>
       {open && (
@@ -80,7 +102,7 @@ export const Drawer: React.FC<DrawerProps> = ({
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            transition={{ duration: 0.2 }}
+            transition={{ duration: 0.18 }}
             onClick={onClose}
             className="fixed inset-0 bg-[#0a381e]/40 backdrop-blur-[2px]"
             aria-hidden="true"
@@ -92,10 +114,15 @@ export const Drawer: React.FC<DrawerProps> = ({
             role="dialog"
             aria-modal="true"
             aria-labelledby="drawer-title"
-            initial={isDesktop ? { x: '100%' } : { y: '100%' }}
-            animate={isDesktop ? { x: 0 } : { y: 0 }}
-            exit={isDesktop ? { x: '100%' } : { y: '100%' }}
-            transition={{ type: 'spring', stiffness: 300, damping: 32 }}
+            drag={!isDesktop && !shouldReduceMotion ? 'y' : false}
+            dragConstraints={{ top: 0 }}
+            dragElastic={{ top: 0, bottom: 0.55 }}
+            onDragEnd={(_e, info) => {
+              if (info.offset.y > 90 || info.velocity.y > 350) {
+                onClose()
+              }
+            }}
+            {...panelMotionProps}
             className={`relative z-10 w-full glass-strong shadow-2xl flex flex-col ${
               isDesktop
                 ? 'sm:w-[480px] md:w-[520px] max-w-full h-full border-l border-white/80 overflow-y-auto'
@@ -104,7 +131,7 @@ export const Drawer: React.FC<DrawerProps> = ({
           >
             {/* Mobile Drag Handle */}
             {!isDesktop && (
-              <div className="pt-3 pb-1 flex justify-center shrink-0">
+              <div className="pt-3 pb-1 flex justify-center shrink-0 cursor-grab active:cursor-grabbing touch-none">
                 <div className="w-12 h-1.5 bg-emerald-950/25 rounded-full" />
               </div>
             )}
@@ -142,7 +169,7 @@ export const Drawer: React.FC<DrawerProps> = ({
                   transition: { staggerChildren: 0.05, delayChildren: 0.1 },
                 },
               }}
-              className="p-5 sm:p-6 flex-1 text-[#14301f] overflow-y-auto"
+              className="p-5 sm:p-6 pb-[calc(1.25rem+env(safe-area-inset-bottom,0px))] flex-1 text-[#14301f] overflow-y-auto"
             >
               {children}
             </motion.div>

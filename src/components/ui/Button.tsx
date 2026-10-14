@@ -1,5 +1,5 @@
 import React from 'react'
-import { motion, type HTMLMotionProps } from 'motion/react'
+import { motion, useReducedMotion, type HTMLMotionProps } from 'motion/react'
 
 export interface ButtonProps extends Omit<HTMLMotionProps<'button'>, 'children'> {
   variant?: 'primary' | 'secondary' | 'outline' | 'ghost' | 'danger'
@@ -10,6 +10,7 @@ export interface ButtonProps extends Omit<HTMLMotionProps<'button'>, 'children'>
 
 export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
   ({ variant = 'primary', size = 'md', icon, children, className = '', disabled, ...props }, ref) => {
+    const shouldReduceMotion = useReducedMotion()
     const base = 'inline-flex items-center justify-center font-medium rounded-lg transition-colors focus-visible:outline-2 focus-visible:outline-emerald-800 focus-visible:outline-offset-2 disabled:opacity-50 disabled:pointer-events-none cursor-pointer select-none'
 
     const sizeClasses = {
@@ -30,8 +31,8 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
       <motion.button
         ref={ref}
         disabled={disabled}
-        whileTap={{ scale: disabled ? 1 : 0.97 }}
-        transition={{ type: 'spring', stiffness: 500, damping: 30 }}
+        whileTap={{ scale: disabled || shouldReduceMotion ? 1 : 0.97 }}
+        transition={{ type: 'spring', stiffness: 500, damping: 32 }}
         className={`${base} ${sizeClasses[size]} ${variantClasses[variant]} ${className}`}
         {...props}
       >
