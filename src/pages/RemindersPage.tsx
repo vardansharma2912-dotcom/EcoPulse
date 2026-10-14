@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react'
+import React, { useState, useMemo, useRef } from 'react'
 import { useSearchParams } from 'react-router-dom'
 import { motion, AnimatePresence } from 'motion/react'
 import { PageHeader } from '../components/layout/PageHeader'
@@ -14,6 +14,8 @@ import { DeleteConfirmDialog } from '../components/reminders/DeleteConfirmDialog
 import { SnoozeDialog } from '../components/reminders/SnoozeDialog'
 import { ReminderCard } from '../components/reminders/ReminderCard'
 import { CATEGORY_LABELS } from '../components/reminders/reminderUtils'
+import { useGapMeasure } from '../components/filler/useGapMeasure'
+import { FillerSlot } from '../components/filler/FillerSlot'
 import type { Reminder } from '../types'
 import {
   Bell,
@@ -207,6 +209,30 @@ export const RemindersPage: React.FC = () => {
 
   const hasActiveFilters = statusFilter !== 'all' || categoryFilter !== 'all' || searchQuery.trim() !== ''
 
+  // Two-column measurement refs for adaptive FillerSlot
+  const leftColRef = useRef<HTMLDivElement>(null)
+  const rightColRef = useRef<HTMLDivElement>(null)
+
+  const leftColReminders = useMemo(
+    () => filteredReminders.filter((_, i) => i % 2 === 0),
+    [filteredReminders]
+  )
+  const rightColReminders = useMemo(
+    () => filteredReminders.filter((_, i) => i % 2 === 1),
+    [filteredReminders]
+  )
+
+  const leftColMeasure = useGapMeasure({
+    hostRef: leftColRef,
+    targetRef: rightColRef,
+    deps: [filteredReminders.length],
+  })
+
+  const rightColMeasure = useGapMeasure({
+    hostRef: rightColRef,
+    targetRef: leftColRef,
+    deps: [filteredReminders.length],
+  })
 
   return (
     <div className="space-y-4 lg:space-y-6 flex-1 flex flex-col">
@@ -350,35 +376,82 @@ export const RemindersPage: React.FC = () => {
           }
         />
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 items-stretch">
-          <AnimatePresence mode="popLayout">
-            {filteredReminders.map(({ reminder, status }) => (
-              <motion.div
-                key={reminder.id}
-                layout
-                initial={{ opacity: 0, scale: 0.96 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: 0.96, transition: { duration: 0.15 } }}
-                whileHover={{ y: -3 }}
-                transition={{ type: 'spring', stiffness: 320, damping: 26 }}
-                className="h-full"
-              >
-                <ReminderCard
-                  reminder={reminder}
-                  status={status}
-                  isMenuOpen={menuOpenId === reminder.id}
-                  onToggleMenu={(id) => setMenuOpenId(menuOpenId === id ? null : id)}
-                  onCloseMenu={() => setMenuOpenId(null)}
-                  onComplete={handleComplete}
-                  onUndo={handleUndo}
-                  onOpenEdit={handleOpenEdit}
-                  onOpenSnooze={(r) => setSnoozeTarget(r)}
-                  onToggleActive={handleToggleActive}
-                  onOpenDelete={(r) => setDeleteTarget(r)}
-                />
-              </motion.div>
-            ))}
-          </AnimatePresence>
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 items-start">
+          {/* Left Column */}
+          <div className="space-y-4 flex flex-col">
+            <div ref={leftColRef} className="space-y-4">
+              <AnimatePresence mode="popLayout">
+                {leftColReminders.map(({ reminder, status }) => (
+                  <motion.div
+                    key={reminder.id}
+                    layout
+                    initial={{ opacity: 0, scale: 0.96 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    exit={{ opacity: 0, scale: 0.96, transition: { duration: 0.15 } }}
+                    whileHover={{ y: -3 }}
+                    transition={{ type: 'spring', stiffness: 320, damping: 26 }}
+                    className="h-full"
+                  >
+                    <ReminderCard
+                      reminder={reminder}
+                      status={status}
+                      isMenuOpen={menuOpenId === reminder.id}
+                      onToggleMenu={(id) => setMenuOpenId(menuOpenId === id ? null : id)}
+                      onCloseMenu={() => setMenuOpenId(null)}
+                      onComplete={handleComplete}
+                      onUndo={handleUndo}
+                      onOpenEdit={handleOpenEdit}
+                      onOpenSnooze={(r) => setSnoozeTarget(r)}
+                      onToggleActive={handleToggleActive}
+                      onOpenDelete={(r) => setDeleteTarget(r)}
+                    />
+                  </motion.div>
+                ))}
+              </AnimatePresence>
+            </div>
+
+            <div className="hidden lg:block pt-1">
+              <FillerSlot page="reminders" gap={leftColMeasure.gap} />
+            </div>
+          </div>
+
+          {/* Right Column */}
+          <div className="space-y-4 flex flex-col">
+            <div ref={rightColRef} className="space-y-4">
+              <AnimatePresence mode="popLayout">
+                {rightColReminders.map(({ reminder, status }) => (
+                  <motion.div
+                    key={reminder.id}
+                    layout
+                    initial={{ opacity: 0, scale: 0.96 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    exit={{ opacity: 0, scale: 0.96, transition: { duration: 0.15 } }}
+                    whileHover={{ y: -3 }}
+                    transition={{ type: 'spring', stiffness: 320, damping: 26 }}
+                    className="h-full"
+                  >
+                    <ReminderCard
+                      reminder={reminder}
+                      status={status}
+                      isMenuOpen={menuOpenId === reminder.id}
+                      onToggleMenu={(id) => setMenuOpenId(menuOpenId === id ? null : id)}
+                      onCloseMenu={() => setMenuOpenId(null)}
+                      onComplete={handleComplete}
+                      onUndo={handleUndo}
+                      onOpenEdit={handleOpenEdit}
+                      onOpenSnooze={(r) => setSnoozeTarget(r)}
+                      onToggleActive={handleToggleActive}
+                      onOpenDelete={(r) => setDeleteTarget(r)}
+                    />
+                  </motion.div>
+                ))}
+              </AnimatePresence>
+            </div>
+
+            <div className="hidden lg:block pt-1">
+              <FillerSlot page="reminders" gap={rightColMeasure.gap} />
+            </div>
+          </div>
         </div>
       )}
 

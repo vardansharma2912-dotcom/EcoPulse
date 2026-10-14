@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useRef } from 'react'
 import { Link } from 'react-router-dom'
 import { motion } from 'motion/react'
 import { PageHeader } from '../components/layout/PageHeader'
@@ -12,6 +12,8 @@ import { useAppState } from '../state'
 import { calculateKwh, calculateCost } from '../lib/energy'
 import { containerVariants, cardVariants } from '../lib/motionVariants'
 import { ReminderFormDialog } from '../components/reminders/ReminderFormDialog'
+import { useGapMeasure } from '../components/filler/useGapMeasure'
+import { FillerSlot } from '../components/filler/FillerSlot'
 import type { Reminder } from '../types'
 import {
   Zap,
@@ -25,7 +27,6 @@ import {
   Bell,
 } from 'lucide-react'
 import { PRESETS } from '../components/calculator/presets'
-import { QuickReferenceWattagesCard } from '../components/calculator/QuickReferenceWattagesCard'
 import { MonthlyCostBenchmarkCard } from '../components/calculator/MonthlyCostBenchmarkCard'
 
 export const CalculatorPage: React.FC = () => {
@@ -119,6 +120,16 @@ export const CalculatorPage: React.FC = () => {
     }
   }
 
+  // Column measurement refs for adaptive FillerSlot
+  const leftColContentRef = useRef<HTMLDivElement>(null)
+  const rightColContentRef = useRef<HTMLDivElement>(null)
+
+  const leftMeasure = useGapMeasure({
+    hostRef: leftColContentRef,
+    targetRef: rightColContentRef,
+    deps: [watts, hours, days, tariff, selectedPreset],
+  })
+
   return (
     <motion.div
       variants={containerVariants}
@@ -134,7 +145,9 @@ export const CalculatorPage: React.FC = () => {
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
         {/* Left Column: Form & Math Formulas (7 cols) */}
         <div className="lg:col-span-7 space-y-5 flex flex-col">
-          <motion.div variants={cardVariants}>
+          {/* Content Wrapper observed by useGapMeasure */}
+          <div ref={leftColContentRef} className="space-y-5 flex flex-col">
+            <motion.div variants={cardVariants}>
             <Card variant="glass-strong" className="space-y-4">
               <h2 className="text-base font-bold text-[#14301f]">
                 Interactive Calculator
@@ -279,20 +292,24 @@ export const CalculatorPage: React.FC = () => {
               </div>
             </Card>
           </motion.div>
+          </div>
 
-          {/* Quick reference: appliance wattages (lg and up only) */}
-          <motion.div variants={cardVariants} className="hidden lg:block flex-1 flex flex-col">
-            <QuickReferenceWattagesCard
+          {/* Adaptive FillerSlot in Left Column (lg+ only, appears if gap >= 160 px) */}
+          <div className="hidden lg:block pt-1">
+            <FillerSlot
+              page="calculator"
+              gap={leftMeasure.gap}
               selectedPreset={selectedPreset}
               onSelectPreset={handlePresetChange}
-              className="flex-1"
             />
-          </motion.div>
+          </div>
         </div>
 
         {/* Right Column: Projection Estimates with CountUp (5 cols) */}
         <div className="lg:col-span-5 space-y-4 flex flex-col">
-          <motion.div variants={cardVariants}>
+          {/* Content Wrapper observed by useGapMeasure */}
+          <div ref={rightColContentRef} className="space-y-4 flex flex-col">
+            <motion.div variants={cardVariants}>
             <Card variant="glass-strong" className="space-y-4">
               <div className="flex items-center justify-between">
                 <h2 className="text-sm font-bold text-[#14301f] uppercase tracking-wider">
@@ -449,6 +466,7 @@ export const CalculatorPage: React.FC = () => {
               className="flex-1"
             />
           </motion.div>
+          </div>
         </div>
       </div>
 

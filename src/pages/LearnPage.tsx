@@ -7,6 +7,8 @@ import { Dialog } from '../components/ui/Dialog'
 import { motion } from 'motion/react'
 import { containerVariants, cardVariants } from '../lib/motionVariants'
 import { useTour } from '../context/useTour'
+import { useGapMeasure } from '../components/filler/useGapMeasure'
+import { FillerSlot } from '../components/filler/FillerSlot'
 import {
   Lightbulb,
   Fan,
@@ -272,6 +274,16 @@ export const LearnPage: React.FC = () => {
   }
 
   const currentCard = CARDS[currentIndex]
+
+  // Two-column measurement refs for adaptive FillerSlot
+  const learnCol1Ref = useRef<HTMLAnchorElement>(null)
+  const learnCol2Ref = useRef<HTMLAnchorElement>(null)
+
+  const learnMeasure = useGapMeasure({
+    hostRef: learnCol1Ref,
+    targetRef: learnCol2Ref,
+    deps: [],
+  })
 
   return (
     <motion.div
@@ -660,6 +672,7 @@ export const LearnPage: React.FC = () => {
         <div className="mt-4 pt-3 border-t border-emerald-900/10">
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
             <Link
+              ref={learnCol1Ref}
               to="/calculator"
               className="group flex items-center justify-between p-3 rounded-xl bg-white/60 hover:bg-white/90 border border-emerald-900/10 transition-all text-slate-800"
             >
@@ -674,6 +687,7 @@ export const LearnPage: React.FC = () => {
             </Link>
 
             <Link
+              ref={learnCol2Ref}
               to="/reminders"
               className="group flex items-center justify-between p-3 rounded-xl bg-white/60 hover:bg-white/90 border border-emerald-900/10 transition-all text-slate-800"
             >
@@ -686,6 +700,10 @@ export const LearnPage: React.FC = () => {
               </div>
               <ArrowRight className="w-3.5 h-3.5 text-emerald-700 transition-transform group-hover:translate-x-1 shrink-0" />
             </Link>
+          </div>
+
+          <div className="hidden lg:block pt-2">
+            <FillerSlot page="learn" gap={learnMeasure.gap} />
           </div>
         </div>
       </section>

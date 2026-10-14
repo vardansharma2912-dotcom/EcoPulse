@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react'
+import React, { useState, useMemo, useRef } from 'react'
 import { Link } from 'react-router-dom'
 import { motion } from 'motion/react'
 import { PageHeader } from '../components/layout/PageHeader'
@@ -10,6 +10,8 @@ import { DemoBanner } from '../components/layout/DemoBanner'
 import { CountUp } from '../components/ui/CountUp'
 import { PillBarChart } from '../components/charts/PillBarChart'
 import { AnalyticsTrendChart } from '../components/charts/AnalyticsTrendChart'
+import { useGapMeasure } from '../components/filler/useGapMeasure'
+import { FillerSlot } from '../components/filler/FillerSlot'
 import { useAppState } from '../state'
 import {
   weeklySeries,
@@ -61,6 +63,22 @@ export const AnalyticsPage: React.FC = () => {
     [state.completions]
   )
   const totalActionsAllTime = state.completions.length
+
+  // Two-column measurement refs for adaptive FillerSlot
+  const leftColRef = useRef<HTMLDivElement>(null)
+  const rightColRef = useRef<HTMLDivElement>(null)
+
+  const leftMeasure = useGapMeasure({
+    hostRef: leftColRef,
+    targetRef: rightColRef,
+    deps: [state.completions.length, chartMetric],
+  })
+
+  const rightMeasure = useGapMeasure({
+    hostRef: rightColRef,
+    targetRef: leftColRef,
+    deps: [state.completions.length, chartMetric],
+  })
 
   const visibleGroups = useMemo(
     () => groupedHistory.slice(0, visibleDateGroups),
@@ -273,22 +291,32 @@ export const AnalyticsPage: React.FC = () => {
       </motion.div>
 
       {/* Side-by-Side Activity & Comparative Trend Charts (2 Columns) */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <motion.div variants={cardVariants} className="h-full">
-          <Card variant="glass-strong" className="p-5 sm:p-6 space-y-4 h-full flex flex-col justify-between">
-            <PillBarChart
-              data={weeklyData}
-              metric={chartMetric}
-              onMetricChange={setChartMetric}
-              height={220}
-            />
-          </Card>
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 items-start">
+        <motion.div variants={cardVariants} className="space-y-4 flex flex-col">
+          <div ref={leftColRef}>
+            <Card variant="glass-strong" className="p-5 sm:p-6 space-y-4 flex flex-col justify-between">
+              <PillBarChart
+                data={weeklyData}
+                metric={chartMetric}
+                onMetricChange={setChartMetric}
+                height={220}
+              />
+            </Card>
+          </div>
+          <div className="hidden lg:block pt-1">
+            <FillerSlot page="analytics" gap={leftMeasure.gap} />
+          </div>
         </motion.div>
 
-        <motion.div variants={cardVariants} className="h-full">
-          <Card variant="glass-strong" className="p-5 sm:p-6 h-full flex flex-col justify-between">
-            <AnalyticsTrendChart completions={state.completions} height={220} />
-          </Card>
+        <motion.div variants={cardVariants} className="space-y-4 flex flex-col">
+          <div ref={rightColRef}>
+            <Card variant="glass-strong" className="p-5 sm:p-6 flex flex-col justify-between">
+              <AnalyticsTrendChart completions={state.completions} height={220} />
+            </Card>
+          </div>
+          <div className="hidden lg:block pt-1">
+            <FillerSlot page="analytics" gap={rightMeasure.gap} />
+          </div>
         </motion.div>
       </div>
 

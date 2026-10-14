@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react'
+import React, { useState, useMemo, useRef } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { motion, AnimatePresence } from 'motion/react'
 import { PageHeader } from '../components/layout/PageHeader'
@@ -19,7 +19,8 @@ import { containerVariants, cardVariants, highlightCardVariants } from '../lib/m
 import { ReminderFormDialog } from '../components/reminders/ReminderFormDialog'
 import { DemoBanner } from '../components/layout/DemoBanner'
 import { GettingStartedCard } from '../components/dashboard/GettingStartedCard'
-import { ThisWeekGlanceCard } from '../components/dashboard/ThisWeekGlanceCard'
+import { useGapMeasure } from '../components/filler/useGapMeasure'
+import { FillerSlot } from '../components/filler/FillerSlot'
 import type { Reminder, ReminderCategory } from '../types'
 
 const CATEGORY_LABELS: Record<ReminderCategory, string> = {
@@ -167,8 +168,21 @@ export const DashboardPage: React.FC = () => {
     showToast('Completion undone')
   }
 
-  // Column height balancer: if left column would end up taller than right column by > 24px, hide stat tiles
-  const shouldHideGlanceStats = dueTodayReminders.length > 0
+  // Two-column layout gap measurement refs (measuring content wrappers only to prevent feedback loops)
+  const leftColContentRef = useRef<HTMLDivElement>(null)
+  const rightColContentRef = useRef<HTMLDivElement>(null)
+
+  const leftColMeasure = useGapMeasure({
+    hostRef: leftColContentRef,
+    targetRef: rightColContentRef,
+    deps: [state.reminders, state.completions, dueTodayReminders.length],
+  })
+
+  const rightColMeasure = useGapMeasure({
+    hostRef: rightColContentRef,
+    targetRef: leftColContentRef,
+    deps: [state.reminders, state.completions, dueTodayReminders.length],
+  })
 
   return (
     <motion.div
@@ -598,218 +612,224 @@ export const DashboardPage: React.FC = () => {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 items-start">
         {/* Today's Scheduled Reminders (2 Cols) */}
         <motion.div variants={cardVariants} className="lg:col-span-2 space-y-3 flex flex-col">
-          <div className="flex items-center justify-between">
-            <h2 className="text-base font-bold text-[#102819] flex items-center gap-2">
-              <Clock className="w-4 h-4 text-emerald-800" /> Today's Scheduled Reminders
-            </h2>
-            <span className="text-xs font-semibold text-emerald-900">
-              <CountUp value={completedTodayCount} /> of <CountUp value={totalDueToday} /> Done
-            </span>
+          {/* Content Wrapper observed by useGapMeasure (excludes filler to avoid feedback loops) */}
+          <div ref={leftColContentRef} className="space-y-3">
+            <div className="flex items-center justify-between">
+              <h2 className="text-base font-bold text-[#102819] flex items-center gap-2">
+                <Clock className="w-4 h-4 text-emerald-800" /> Today's Scheduled Reminders
+              </h2>
+              <span className="text-xs font-semibold text-emerald-900">
+                <CountUp value={completedTodayCount} /> of <CountUp value={totalDueToday} /> Done
+              </span>
+            </div>
+
+            {dueTodayReminders.length === 0 ? (
+              <EmptyState
+                icon={<Calendar className="w-6 h-6 text-emerald-800" />}
+                title="No Reminders Due Today"
+                description="You have no active energy reminders scheduled for today. Create custom schedules or calculate prospective appliance savings."
+                action={
+                  <div className="flex items-center justify-center gap-2 flex-wrap">
+                    <Button
+                      variant="primary"
+                      size="sm"
+                      icon={<Plus className="w-3.5 h-3.5" />}
+                      onClick={() => setAddDialogOpen(true)}
+                    >
+                      Add Reminder
+                    </Button>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      icon={<Calculator className="w-3.5 h-3.5" />}
+                      onClick={() => navigate('/calculator')}
+                    >
+                      Appliance Calculator
+                    </Button>
+                  </div>
+                }
+              />
+            ) : (
+              <div className="space-y-2.5">
+                <AnimatePresence mode="popLayout">
+                  {dueTodayReminders.map((reminder) => {
+                    const isDone = isReminderDoneToday(reminder.id)
+
+                    return (
+                      <motion.div
+                        key={reminder.id}
+                        layout
+                        whileHover={{ y: -3 }}
+                        transition={{ type: 'spring', stiffness: 350, damping: 28 }}
+                      >
+                        <Card
+                          variant="glass"
+                          className={`p-3.5 transition-colors ${
+                            isDone
+                              ? 'border-emerald-600/40 bg-emerald-50/70'
+                              : 'hover:bg-white/70'
+                          }`}
+                        >
+                          <div className="flex items-center justify-between gap-3">
+                            <div className="space-y-0.5 min-w-0">
+                              <div className="flex items-center gap-2">
+                                <p
+                                  className={`font-bold text-sm truncate ${
+                                    isDone ? 'line-through text-slate-500' : 'text-[#102819]'
+                                  }`}
+                                >
+                                  {reminder.title}
+                                </p>
+                                <Badge variant={isDone ? 'emerald' : 'neutral'} size="sm">
+                                  {reminder.time}
+                                </Badge>
+                              </div>
+                              <div className="flex items-center gap-3 text-xs text-[#1e3f2b] font-medium">
+                                {reminder.applianceWatts && (
+                                  <span className="flex items-center gap-1 font-mono">
+                                    <Zap className="w-3 h-3 text-emerald-700" />
+                                    {reminder.applianceWatts}W
+                                  </span>
+                                )}
+                                <span>Est. {reminder.avoidedHours ?? 1}h avoided</span>
+                              </div>
+                            </div>
+
+                            <div className="shrink-0">
+                              {isDone ? (
+                                <Button
+                                  variant="secondary"
+                                  size="sm"
+                                  icon={<RotateCcw className="w-3.5 h-3.5" />}
+                                  onClick={() => handleUndo(reminder.id)}
+                                >
+                                  Undo
+                                </Button>
+                              ) : (
+                                <Button
+                                  variant="primary"
+                                  size="sm"
+                                  icon={
+                                    <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.5} aria-hidden="true">
+                                      <motion.path
+                                        d="M5 13l4 4L19 7"
+                                        initial={{ pathLength: 0 }}
+                                        animate={{ pathLength: 1 }}
+                                        transition={{ duration: 0.25, ease: 'easeOut' }}
+                                      />
+                                    </svg>
+                                  }
+                                  onClick={() => handleComplete(reminder)}
+                                >
+                                  Mark Done
+                                </Button>
+                              )}
+                            </div>
+                          </div>
+                        </Card>
+                      </motion.div>
+                    )
+                  })}
+                </AnimatePresence>
+              </div>
+            )}
           </div>
 
-          {dueTodayReminders.length === 0 ? (
-            <EmptyState
-              icon={<Calendar className="w-6 h-6 text-emerald-800" />}
-              title="No Reminders Due Today"
-              description="You have no active energy reminders scheduled for today. Create custom schedules or calculate prospective appliance savings."
-              action={
-                <div className="flex items-center justify-center gap-2 flex-wrap">
-                  <Button
-                    variant="primary"
-                    size="sm"
-                    icon={<Plus className="w-3.5 h-3.5" />}
-                    onClick={() => setAddDialogOpen(true)}
-                  >
-                    Add Reminder
-                  </Button>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    icon={<Calculator className="w-3.5 h-3.5" />}
-                    onClick={() => navigate('/calculator')}
-                  >
-                    Appliance Calculator
-                  </Button>
-                </div>
-              }
-            />
-          ) : (
-            <div className="space-y-2.5">
-              <AnimatePresence mode="popLayout">
-                {dueTodayReminders.map((reminder) => {
-                  const isDone = isReminderDoneToday(reminder.id)
-
-                  return (
-                    <motion.div
-                      key={reminder.id}
-                      layout
-                      whileHover={{ y: -3 }}
-                      transition={{ type: 'spring', stiffness: 350, damping: 28 }}
-                    >
-                      <Card
-                        variant="glass"
-                        className={`p-3.5 transition-colors ${
-                          isDone
-                            ? 'border-emerald-600/40 bg-emerald-50/70'
-                            : 'hover:bg-white/70'
-                        }`}
-                      >
-                        <div className="flex items-center justify-between gap-3">
-                          <div className="space-y-0.5 min-w-0">
-                            <div className="flex items-center gap-2">
-                              <p
-                                className={`font-bold text-sm truncate ${
-                                  isDone ? 'line-through text-slate-500' : 'text-[#102819]'
-                                }`}
-                              >
-                                {reminder.title}
-                              </p>
-                              <Badge variant={isDone ? 'emerald' : 'neutral'} size="sm">
-                                {reminder.time}
-                              </Badge>
-                            </div>
-                            <div className="flex items-center gap-3 text-xs text-[#1e3f2b] font-medium">
-                              {reminder.applianceWatts && (
-                                <span className="flex items-center gap-1 font-mono">
-                                  <Zap className="w-3 h-3 text-emerald-700" />
-                                  {reminder.applianceWatts}W
-                                </span>
-                              )}
-                              <span>Est. {reminder.avoidedHours ?? 1}h avoided</span>
-                            </div>
-                          </div>
-
-                          <div className="shrink-0">
-                            {isDone ? (
-                              <Button
-                                variant="secondary"
-                                size="sm"
-                                icon={<RotateCcw className="w-3.5 h-3.5" />}
-                                onClick={() => handleUndo(reminder.id)}
-                              >
-                                Undo
-                              </Button>
-                            ) : (
-                              <Button
-                                variant="primary"
-                                size="sm"
-                                icon={
-                                  <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.5} aria-hidden="true">
-                                    <motion.path
-                                      d="M5 13l4 4L19 7"
-                                      initial={{ pathLength: 0 }}
-                                      animate={{ pathLength: 1 }}
-                                      transition={{ duration: 0.25, ease: 'easeOut' }}
-                                    />
-                                  </svg>
-                                }
-                                onClick={() => handleComplete(reminder)}
-                              >
-                                Mark Done
-                              </Button>
-                            )}
-                          </div>
-                        </div>
-                      </Card>
-                    </motion.div>
-                  )
-                })}
-              </AnimatePresence>
-            </div>
-          )}
-
-          {/* This Week at a Glance Card (Desktop only, lg+) */}
-          <div className="hidden lg:block pt-1 flex-1 flex flex-col">
-            <ThisWeekGlanceCard
-              reminders={state.reminders}
-              completions={state.completions}
-              hideStats={shouldHideGlanceStats}
-              className="flex-1"
-            />
+          {/* Adaptive FillerSlot in Left Column (lg+ only, appears ONLY if measured gap >= 160 px) */}
+          <div className="hidden lg:block pt-1">
+            <FillerSlot page="dashboard" gap={leftColMeasure.gap} />
           </div>
         </motion.div>
 
         {/* Recent Activity Log (1 Col) */}
-        <motion.div variants={cardVariants} className="lg:col-span-1 space-y-3">
-          <div className="flex items-center justify-between">
-            <h2 className="text-base font-bold text-[#102819] flex items-center gap-2">
-              <CheckCircle2 className="w-4 h-4 text-emerald-800" /> Recent Completed Actions
-            </h2>
-            <span className="text-xs font-semibold text-[#1e3f2b]">
-              Last {recentCompletions.length}
-            </span>
-          </div>
-
-          {/* All-Time Impact Snapshot */}
-          <Card variant="glass" className="p-3.5 space-y-1.5">
-            <div className="flex items-center justify-between text-xs font-bold text-[#102819]">
-              <span className="flex items-center gap-1.5">
-                <TrendingUp className="w-3.5 h-3.5 text-emerald-800" /> All-Time Impact
-              </span>
-              <span className="text-emerald-900 font-extrabold tabular-nums">
-                <CountUp value={kwhSavedAllTime} decimals={2} /> kWh
+        <motion.div variants={cardVariants} className="lg:col-span-1 space-y-3 flex flex-col">
+          {/* Content Wrapper observed by useGapMeasure */}
+          <div ref={rightColContentRef} className="space-y-3">
+            <div className="flex items-center justify-between">
+              <h2 className="text-base font-bold text-[#102819] flex items-center gap-2">
+                <CheckCircle2 className="w-4 h-4 text-emerald-800" /> Recent Completed Actions
+              </h2>
+              <span className="text-xs font-semibold text-[#1e3f2b]">
+                Last {recentCompletions.length}
               </span>
             </div>
-            <p className="text-[11px] text-[#1e3f2b] font-medium">
-              Total {currency}<CountUp value={costSavedAllTime} decimals={2} /> avoided across all recorded actions.
-            </p>
-          </Card>
 
-          {recentCompletions.length === 0 ? (
-            <EmptyState
-              icon={<AlertCircle className="w-6 h-6 text-emerald-800" />}
-              title="No Actions Completed Yet"
-              description="When you mark reminders as done, your estimated energy savings and timestamps will appear here. In the meantime, explore dorm conservation guides."
-              action={
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => navigate('/learn')}
-                >
-                  Explore Energy Guides
-                </Button>
-              }
-            />
-          ) : (
-            <Card variant="glass" className="p-3 divide-y divide-emerald-900/10">
-              {recentCompletions.map((comp) => {
-                const timeStr = new Date(comp.completedAt).toLocaleTimeString([], {
-                  hour: '2-digit',
-                  minute: '2-digit',
-                })
-
-                return (
-                  <div key={comp.id} className="py-2.5 first:pt-1 last:pb-1 flex items-start justify-between gap-2">
-                    <div className="min-w-0">
-                      <p className="text-xs font-bold text-[#102819] truncate">{comp.title}</p>
-                      <p className="text-[11px] text-[#1e3f2b] font-medium">
-                        {comp.date} at {timeStr}
-                      </p>
-                    </div>
-                    <div className="text-right shrink-0">
-                      <p className="text-xs font-bold text-emerald-900 tabular-nums">
-                        +{comp.kWh.toFixed(2)} kWh
-                      </p>
-                      <p className="text-[11px] text-[#1e3f2b] tabular-nums font-semibold">
-                        +{currency}{comp.costSaved.toFixed(2)}
-                      </p>
-                    </div>
-                  </div>
-                )
-              })}
-
-              {state.completions.length > 4 && (
-                <div className="pt-2 border-t border-emerald-900/10 text-center">
-                  <Link
-                    to="/analytics"
-                    className="text-xs font-bold text-emerald-800 hover:text-emerald-950 hover:underline"
-                  >
-                    View all in Analytics →
-                  </Link>
-                </div>
-              )}
+            {/* All-Time Impact Snapshot */}
+            <Card variant="glass" className="p-3.5 space-y-1.5">
+              <div className="flex items-center justify-between text-xs font-bold text-[#102819]">
+                <span className="flex items-center gap-1.5">
+                  <TrendingUp className="w-3.5 h-3.5 text-emerald-800" /> All-Time Impact
+                </span>
+                <span className="text-emerald-900 font-extrabold tabular-nums">
+                  <CountUp value={kwhSavedAllTime} decimals={2} /> kWh
+                </span>
+              </div>
+              <p className="text-[11px] text-[#1e3f2b] font-medium">
+                Total {currency}<CountUp value={costSavedAllTime} decimals={2} /> avoided across all recorded actions.
+              </p>
             </Card>
-          )}
+
+            {recentCompletions.length === 0 ? (
+              <EmptyState
+                icon={<AlertCircle className="w-6 h-6 text-emerald-800" />}
+                title="No Actions Completed Yet"
+                description="When you mark reminders as done, your estimated energy savings and timestamps will appear here. In the meantime, explore dorm conservation guides."
+                action={
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => navigate('/learn')}
+                  >
+                    Explore Energy Guides
+                  </Button>
+                }
+              />
+            ) : (
+              <Card variant="glass" className="p-3 divide-y divide-emerald-900/10">
+                {recentCompletions.map((comp) => {
+                  const timeStr = new Date(comp.completedAt).toLocaleTimeString([], {
+                    hour: '2-digit',
+                    minute: '2-digit',
+                  })
+
+                  return (
+                    <div key={comp.id} className="py-2.5 first:pt-1 last:pb-1 flex items-start justify-between gap-2">
+                      <div className="min-w-0">
+                        <p className="text-xs font-bold text-[#102819] truncate">{comp.title}</p>
+                        <p className="text-[11px] text-[#1e3f2b] font-medium">
+                          {comp.date} at {timeStr}
+                        </p>
+                      </div>
+                      <div className="text-right shrink-0">
+                        <p className="text-xs font-bold text-emerald-900 tabular-nums">
+                          +{comp.kWh.toFixed(2)} kWh
+                        </p>
+                        <p className="text-[11px] text-[#1e3f2b] tabular-nums font-semibold">
+                          +{currency}{comp.costSaved.toFixed(2)}
+                        </p>
+                      </div>
+                    </div>
+                  )
+                })}
+
+                {state.completions.length > 4 && (
+                  <div className="pt-2 border-t border-emerald-900/10 text-center">
+                    <Link
+                      to="/analytics"
+                      className="text-xs font-bold text-emerald-800 hover:text-emerald-950 hover:underline"
+                    >
+                      View all in Analytics →
+                    </Link>
+                  </div>
+                )}
+              </Card>
+            )}
+          </div>
+
+          {/* Adaptive FillerSlot in Right Column (lg+ only, appears if right column is shorter and gap >= 160 px) */}
+          <div className="hidden lg:block pt-1">
+            <FillerSlot page="dashboard" gap={rightColMeasure.gap} />
+          </div>
         </motion.div>
       </div>
 
