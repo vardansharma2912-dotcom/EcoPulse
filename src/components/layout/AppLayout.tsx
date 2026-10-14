@@ -7,6 +7,7 @@ import {
 } from 'lucide-react'
 import { LeafBackground } from './LeafBackground'
 import { useReminderAlerts } from '../../lib/useReminderAlerts'
+import { useStreakLevelUp } from '../../lib/useStreakLevelUp'
 import { InAppAlertBanner } from './InAppAlertBanner'
 import { SidebarTipCard } from './SidebarTipCard'
 import { MobileSearchSheet } from './MobileSearchSheet'
@@ -61,6 +62,9 @@ export const AppLayout: React.FC = () => {
 
   // Hold all alert evaluation until BOTH the welcome step and the tour are finished
   const alertsEnabled = !showWelcome && (isWelcomeHandled() || welcomeDismissed) && isTourSeen()
+
+  // Monitor streak tier progression and notify once on genuine level up
+  useStreakLevelUp()
 
   const { activeAlerts, dismissAlert, markAlertDone, snoozeAlert } = useReminderAlerts({
     enabled: alertsEnabled,

@@ -9,6 +9,7 @@ export const TOUR_FLAG_KEY = 'ecopulse_tour_seen_v1'
 export const LAST_VISIT_KEY = 'ecopulse_last_visit_v1'
 export const CHECKLIST_DISMISSED_KEY = 'ecopulse_getting_started_dismissed_v1'
 export const CHECKLIST_FIRST_SEEN_KEY = 'ecopulse_getting_started_first_seen_v1'
+export const STREAK_LAST_NOTIFIED_TIER_KEY = 'ecopulse_streak_last_notified_tier_v1'
 export const CURRENT_VERSION = 2
 
 export function sanitizeCurrency(currency: unknown): CurrencySymbol {
@@ -378,6 +379,7 @@ export function clearState(): void {
     localStorage.removeItem(LAST_VISIT_KEY)
     localStorage.removeItem(CHECKLIST_DISMISSED_KEY)
     localStorage.removeItem(CHECKLIST_FIRST_SEEN_KEY)
+    localStorage.removeItem(STREAK_LAST_NOTIFIED_TIER_KEY)
   } catch (err) {
     console.error('[EcoPulse] Failed to clear localStorage:', err)
   }

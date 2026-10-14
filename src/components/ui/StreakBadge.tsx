@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, useContext, useId } from 'react'
+import React, { useState, useEffect, useId } from 'react'
 import { motion, useReducedMotion } from 'motion/react'
 import { Lock } from 'lucide-react'
 import {
@@ -7,7 +7,6 @@ import {
   getDaysToNext,
   STREAK_TIERS,
 } from '../../lib/streakTiers'
-import { ToastContext } from '../../context/toastCore'
 
 export interface StreakBadgeProps {
   days: number
@@ -20,6 +19,7 @@ export interface StreakBadgeProps {
   interactive?: boolean
   isLocked?: boolean
   animated?: boolean
+  celebrate?: boolean
 }
 
 const PARTICLES = [
@@ -41,11 +41,10 @@ export const StreakBadge: React.FC<StreakBadgeProps> = ({
   className = '',
   isLocked = false,
   animated = true,
+  celebrate = false,
 }) => {
   const reducedMotion = useReducedMotion()
   const gradientId = useId()
-  const toastCtx = useContext(ToastContext)
-  const showToast = toastCtx?.showToast
 
   const tier = getStreakTier(days)
   const progress = getProgressToNext(days)
@@ -65,47 +64,6 @@ export const StreakBadge: React.FC<StreakBadgeProps> = ({
     document.addEventListener('visibilitychange', handleVisibility)
     return () => document.removeEventListener('visibilitychange', handleVisibility)
   }, [])
-
-  // Session-based level-up burst detection
-  const [levelUpBurst, setLevelUpBurst] = useState(false)
-  const initialTierRef = useRef<string | null>(null)
-
-  useEffect(() => {
-    if (typeof window === 'undefined' || typeof sessionStorage === 'undefined' || isLocked) return
-
-    const sessionKey = 'ecopulse_last_known_streak_tier'
-    const storedTierId = sessionStorage.getItem(sessionKey)
-
-    if (storedTierId === null) {
-      // First mount in this browser session: remember tier and do NOT fire burst
-      sessionStorage.setItem(sessionKey, tier.id)
-      initialTierRef.current = tier.id
-      return
-    }
-
-    if (storedTierId !== tier.id) {
-      const prevTier = STREAK_TIERS.find((t) => t.id === storedTierId)
-      const prevIntensity = prevTier ? prevTier.intensity : 0
-
-      // Only fire celebratory burst when tier actually upgrades
-      if (tier.intensity > prevIntensity) {
-        sessionStorage.setItem(sessionKey, tier.id)
-        const burstTimer = setTimeout(() => {
-          setLevelUpBurst(true)
-          if (showToast) {
-            showToast(`Streak level up: ${tier.name}! 🔥`)
-          }
-        }, 50)
-        const resetTimer = setTimeout(() => setLevelUpBurst(false), 2450)
-        return () => {
-          clearTimeout(burstTimer)
-          clearTimeout(resetTimer)
-        }
-      }
-
-      sessionStorage.setItem(sessionKey, tier.id)
-    }
-  }, [tier.id, tier.intensity, tier.name, showToast, isLocked])
 
   // Size styling maps: horizontally elongated pill container
   const iconDimensions = {
@@ -304,8 +262,8 @@ export const StreakBadge: React.FC<StreakBadgeProps> = ({
       <div className="flex items-center gap-2 relative w-full min-w-0">
         {/* Badge Icon Container */}
         <div className="relative flex items-center justify-center shrink-0">
-          {/* Level-Up Burst Ripple Ring (only active when unlocked & leveled up) */}
-          {levelUpBurst && canAnimate && !isLocked && (
+          {/* Level-Up Burst Ripple Ring (only active when unlocked & celebrated) */}
+          {celebrate && canAnimate && !isLocked && (
             <motion.div
               initial={{ scale: 0.6, opacity: 1 }}
               animate={{ scale: 2.3, opacity: 0 }}
@@ -407,12 +365,12 @@ export const StreakBadge: React.FC<StreakBadgeProps> = ({
                 aria-hidden="true"
                 style={{ transformOrigin: '12px 20px' }}
                 animate={
-                  levelUpBurst && canAnimate
+                  celebrate && canAnimate
                     ? { scale: [1, 1.35, 1.05, 1] }
                     : getFlameAnimation()
                 }
                 transition={
-                  levelUpBurst
+                  celebrate
                     ? { duration: 0.8, type: 'spring' as const, stiffness: 400, damping: 15 }
                     : undefined
                 }
