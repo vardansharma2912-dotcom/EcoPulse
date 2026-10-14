@@ -158,18 +158,19 @@ export const AnalyticsPage: React.FC = () => {
 
       {/* Streak Levels & Mastery Progression Strip */}
       <motion.div variants={cardVariants}>
-        <Card variant="glass-strong" className="p-4 sm:p-5 space-y-3">
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
-            <div className="flex items-center gap-2">
-              <Flame className="w-4 h-4 text-amber-600" />
-              <h2 className="text-sm font-bold text-[#0f2819] uppercase tracking-wide">
-                Streak Levels &amp; Tier Progression
+        <Card variant="glass-strong" className="p-3 sm:p-4 space-y-2 sm:space-y-2.5">
+          <div className="flex items-center justify-between gap-2">
+            <div className="flex items-center gap-1.5 min-w-0">
+              <Flame className="w-4 h-4 text-amber-600 shrink-0" />
+              <h2 className="text-xs sm:text-sm font-bold text-[#0f2819] uppercase tracking-wide">
+                <span className="sm:hidden">Streak Mastery Tiers</span>
+                <span className="hidden sm:inline">Streak Levels &amp; Tier Progression</span>
               </h2>
             </div>
-            <div className="flex items-center gap-2">
-              <span className="text-xs font-medium text-[#1e3f2b]">Current Level:</span>
+            <div className="flex items-center gap-1.5 shrink-0">
+              <span className="text-[11px] sm:text-xs font-medium text-[#1e3f2b] hidden xs:inline">Current:</span>
               <span
-                className="px-2.5 py-0.5 rounded-full text-[11px] font-black uppercase tracking-wider border shadow-xs"
+                className="px-2 py-0.5 rounded-full text-[10px] sm:text-[11px] font-black uppercase tracking-wider border shadow-xs"
                 style={{
                   backgroundColor: currentTier.colors.bg,
                   color: currentTier.colors.text,
@@ -181,12 +182,12 @@ export const AnalyticsPage: React.FC = () => {
             </div>
           </div>
 
-          <p className="text-xs text-[#1e3f2b]">
-            Build consistent daily conservation habits to advance through 8 animated mastery tiers, unlocking vibrant color palettes, energy aura rings, and radiant sparkle particles.
+          <p className="text-[11px] text-[#1e3f2b] leading-tight">
+            Advance through 8 animated mastery tiers by maintaining daily energy-saving habits.
           </p>
 
-          {/* Horizontal Strip of All 8 Tiers */}
-          <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 gap-2.5 pt-1">
+          {/* Horizontal Strip of All 8 Tiers: 4 cols on mobile (2 rows), 8 cols on desktop (1 row) */}
+          <div className="grid grid-cols-4 lg:grid-cols-8 gap-1.5 sm:gap-2 pt-0.5">
             {STREAK_TIERS.map((t) => {
               const isCurrent = t.id === currentTier.id
               const isUnlocked = streaks.currentStreak >= t.minDays
@@ -195,9 +196,9 @@ export const AnalyticsPage: React.FC = () => {
               return (
                 <div
                   key={t.id}
-                  className={`relative rounded-xl p-2.5 flex flex-col items-center text-center transition-all border ${
+                  className={`relative rounded-lg sm:rounded-xl p-1.5 sm:p-2 flex flex-col items-center text-center transition-all border ${
                     isCurrent
-                      ? 'shadow-md scale-[1.03] z-10'
+                      ? 'shadow-sm scale-[1.02] z-10'
                       : isUnlocked
                       ? 'bg-white/60 border-white/80'
                       : 'bg-white/20 border-black/5 opacity-50 grayscale-[35%]'
@@ -209,14 +210,14 @@ export const AnalyticsPage: React.FC = () => {
                 >
                   {isCurrent && (
                     <span
-                      className="absolute -top-2 px-1.5 py-0.2 rounded-full text-[9px] font-extrabold uppercase tracking-tight text-white shadow-xs"
+                      className="absolute -top-1.5 px-1 py-0.1 rounded-full text-[8px] font-extrabold uppercase tracking-tight text-white shadow-xs"
                       style={{ backgroundColor: t.colors.primary }}
                     >
                       Active
                     </span>
                   )}
 
-                  <div className="my-1">
+                  <div className="my-0.5">
                     <StreakBadge
                       days={Math.max(t.minDays, isCurrent ? streaks.currentStreak : t.minDays)}
                       size="sm"
@@ -226,11 +227,11 @@ export const AnalyticsPage: React.FC = () => {
                     />
                   </div>
 
-                  <p className="text-xs font-bold text-[#0f2819] leading-tight mt-0.5">
+                  <p className="text-[11px] sm:text-xs font-bold text-[#0f2819] leading-tight mt-0.5 truncate w-full">
                     {t.name}
                   </p>
 
-                  <p className="text-[10px] text-[#1e3f2b] font-semibold tabular-nums mt-0.5">
+                  <p className="text-[9.5px] sm:text-[10px] text-[#1e3f2b] font-semibold tabular-nums leading-tight mt-0.5">
                     {t.nextAt === null
                       ? '100+ d'
                       : t.minDays === 0
@@ -238,17 +239,17 @@ export const AnalyticsPage: React.FC = () => {
                       : `${t.minDays}–${t.nextAt - 1} d`}
                   </p>
 
-                  <div className="mt-1">
+                  <div className="mt-0.5 leading-none">
                     {isCurrent ? (
-                      <span className="text-[10px] font-black" style={{ color: t.colors.text }}>
-                        ★ Current
+                      <span className="text-[9px] sm:text-[9.5px] font-black" style={{ color: t.colors.text }}>
+                        ★ Active
                       </span>
                     ) : isSurpassed ? (
-                      <span className="text-[10px] font-semibold text-emerald-800 flex items-center gap-0.5">
-                        <Check className="w-3 h-3" /> Reached
+                      <span className="text-[9px] sm:text-[9.5px] font-semibold text-emerald-800 flex items-center justify-center gap-0.5">
+                        <Check className="w-2.5 h-2.5" /> Reached
                       </span>
                     ) : (
-                      <span className="text-[10px] text-slate-400 font-semibold">
+                      <span className="text-[9px] sm:text-[9.5px] text-slate-400 font-semibold">
                         Locked
                       </span>
                     )}
@@ -258,14 +259,14 @@ export const AnalyticsPage: React.FC = () => {
             })}
           </div>
 
-          <div className="mt-4 pt-3 border-t border-emerald-900/10 flex items-center justify-between text-xs flex-wrap gap-2">
+          <div className="mt-2 pt-2 border-t border-emerald-900/10 flex items-center justify-between text-[11px] flex-wrap gap-1.5">
             <span className="text-[#1e3f2b] font-medium">Keep your habit streak active every day:</span>
             <Link
               to="/reminders"
-              className="inline-flex items-center gap-1.5 font-bold text-emerald-900 hover:text-emerald-950 hover:underline"
+              className="inline-flex items-center gap-1 font-bold text-emerald-900 hover:text-emerald-950 hover:underline"
             >
-              Manage Scheduled Reminders
-              <ArrowRight className="w-3.5 h-3.5 text-emerald-800" />
+              Manage Reminders
+              <ArrowRight className="w-3 h-3 text-emerald-800" />
             </Link>
           </div>
         </Card>

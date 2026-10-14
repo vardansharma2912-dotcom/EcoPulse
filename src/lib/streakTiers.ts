@@ -54,19 +54,20 @@ export const STREAK_TIERS: StreakTier[] = [
     description: 'Start your daily energy-saving habit today.',
     colors: {
       primary: '#64748b',
-      secondary: '#94a3b8',
-      gradient: 'linear-gradient(135deg, #64748b, #94a3b8)',
+      secondary: '#cbd5e1',
+      accent: '#475569',
+      gradient: 'linear-gradient(135deg, #475569, #64748b, #94a3b8)',
       text: '#334155',
       bg: 'rgba(100, 116, 139, 0.12)',
       border: 'rgba(100, 116, 139, 0.28)',
       fill: '#64748b',
-      stroke: '#475569',
+      stroke: '#0c2340',
     },
     glow: 'none',
     flameShape: {
-      // Soft, quiet droplet ember (single calm droplet shape)
-      outer: 'M12 4.5 C10.8 7.5 8.5 10 8.5 13.5 C8.5 16.5 10.1 19 12 19 C13.9 19 15.5 16.5 15.5 13.5 C15.5 10 13.2 7.5 12 4.5 Z',
-      inner: 'M12 9 C11.2 11 10.2 12.8 10.2 14.5 C10.2 16 11 17 12 17 C13 17 13.8 16 13.8 14.5 C13.8 12.8 12.8 11 12 9 Z',
+      // Quiet, resting cartoon flame ember bud
+      outer: 'M 13.2 6.2 C 11.8 6.5 10.0 8.0 9.0 10.8 C 8.0 13.5 8.2 16.8 10.2 19.5 C 11.0 20.2 11.8 20.5 12.5 20.5 C 13.8 20.5 15.5 19.8 16.2 18.0 C 17.2 15.5 17.0 12.2 15.2 9.5 C 14.5 8.2 14.0 7.0 13.2 6.2 Z',
+      inner: 'M 13.0 11.2 C 11.8 12.5 11.0 14.2 11.0 16.0 C 11.0 17.8 11.8 19.0 12.5 19.0 C 13.5 19.0 14.5 17.8 14.5 16.0 C 14.5 14.2 13.8 12.5 13.0 11.2 Z',
     },
   },
   {
@@ -78,20 +79,21 @@ export const STREAK_TIERS: StreakTier[] = [
     animation: 'subtle',
     description: 'First steps in mindful electricity conservation.',
     colors: {
-      primary: '#059669',
-      secondary: '#34d399',
-      gradient: 'linear-gradient(135deg, #059669, #10b981)',
+      primary: '#10b981',
+      secondary: '#fef08a',
+      accent: '#047857',
+      gradient: 'linear-gradient(135deg, #047857, #10b981, #34d399)',
       text: '#065f46',
       bg: 'rgba(16, 185, 129, 0.14)',
       border: 'rgba(16, 185, 129, 0.35)',
       fill: '#10b981',
-      stroke: '#047857',
+      stroke: '#0c2340',
     },
     glow: '0 0 12px rgba(16, 185, 129, 0.35)',
     flameShape: {
-      // Classic starter flame: clean single-tongue flame with gentle curve
-      outer: 'M12 2.5 C11.2 5 9.2 7.2 8.5 9.5 C7.5 12.2 8 15.2 10 17.5 C8.8 16.2 8.5 14.5 9 13 C9.5 11.5 10.8 10.2 11.6 9 C12.4 11.2 14 12.5 14.6 14.2 C15 15.5 14.5 17 13.5 18 C16.8 17.2 18.2 14 17.5 10.8 C16.8 8.2 14.2 5.2 12 2.5 Z',
-      inner: 'M12 9.5 L10.5 13.2 H12.6 L11 16.8 L14.2 12.2 H12.2 L13.2 9.5 H12 Z',
+      // Sprouting baby cartoon flame: lively curved main crest with playful side curl
+      outer: 'M 13.5 4.5 C 11.8 5.0 10.2 6.8 9.5 8.8 C 9.0 9.8 8.2 9.2 7.5 9.6 C 6.5 10.2 6.0 12.2 6.5 14.2 C 6.8 15.2 6.2 14.5 5.5 13.8 C 5.0 14.5 4.8 16.0 5.2 17.8 C 5.8 19.8 8.5 21.0 12.5 21.0 C 16.2 21.0 18.5 18.8 18.5 15.5 C 18.5 13.2 17.5 10.8 16.2 9.5 C 15.5 9.0 15.0 10.0 15.2 11.2 C 15.5 12.0 15.0 11.0 14.2 8.8 C 13.8 7.2 13.6 5.2 13.5 4.5 Z',
+      inner: 'M 13.0 8.8 C 11.8 10.8 11.0 13.0 10.5 14.8 C 9.8 15.8 9.2 17.0 9.2 18.2 C 9.2 19.5 10.5 20.2 12.5 20.2 C 14.8 20.2 16.8 19.2 17.0 17.0 C 17.2 15.0 16.2 13.0 15.2 13.8 C 14.5 14.5 14.0 13.5 14.0 12.2 C 14.0 10.8 13.5 9.5 13.0 8.8 Z',
     },
   },
   {
@@ -130,19 +132,20 @@ export const STREAK_TIERS: StreakTier[] = [
     description: 'One full week of continuous eco-conscious actions.',
     colors: {
       primary: '#ea580c',
-      secondary: '#dc2626',
-      gradient: 'linear-gradient(135deg, #ea580c, #ef4444)',
+      secondary: '#fef08a',
+      accent: '#e11d48',
+      gradient: 'linear-gradient(135deg, #e11d48, #ea580c, #f59e0b)',
       text: '#991b1b',
       bg: 'rgba(239, 68, 68, 0.15)',
       border: 'rgba(239, 68, 68, 0.4)',
       fill: '#ea580c',
-      stroke: '#c2410c',
+      stroke: '#0c2340',
     },
     glow: '0 0 18px rgba(239, 68, 68, 0.5)',
     flameShape: {
-      // Triple-tongued roaring fire: central soaring tongue flanked by two leaping side wings
-      outer: 'M12 1.5 C10.8 4.2 8.2 6.2 6.8 9 C5.5 11.5 5.5 14.2 6.8 16.8 C6.2 15 7 13.2 8 12.2 C9.2 11.2 10 12 10.5 13.5 C11 11.2 11.8 9.2 12 7 C12.6 9 13.6 10.5 14.5 9.5 C15.5 8.5 15.2 6.8 16.2 8.2 C18 10.5 18.8 13.5 18 16.8 C19.2 14.5 19.5 11.8 18.2 9 C17 6.2 14.5 3.8 12 1.5 Z',
-      inner: 'M12 7 C11 9.2 9.5 11 9.8 13.2 C10.5 12.5 11.2 11.8 12 10.5 C12.8 12 13.8 12.5 14.4 11.8 C14 10.2 13.2 8.8 12 7 Z',
+      // Roaring 4-crested cartoon bonfire: central soaring plume flanked by leaping tongues
+      outer: 'M 13.2 1.8 C 11.8 2.5 10.2 4.2 9.6 5.8 C 9.0 6.6 8.2 6.0 7.5 6.4 C 6.5 7.0 5.8 8.8 6.0 10.6 C 6.4 11.8 5.4 11.2 4.6 10.2 C 3.8 10.8 3.5 12.5 3.8 15.2 C 4.2 18.5 7.8 21.2 12.5 21.2 C 17.2 21.2 20.5 18.5 20.8 15.0 C 21.0 12.5 19.8 9.5 18.5 8.2 C 17.8 7.8 17.5 8.8 17.8 10.0 C 18.0 11.0 17.2 10.0 16.0 7.2 C 15.2 5.5 14.8 4.2 14.2 2.2 C 13.8 1.8 13.5 1.8 13.2 1.8 Z',
+      inner: 'M 13.0 5.8 C 11.5 8.0 10.5 10.5 9.8 12.5 C 9.0 13.5 8.0 15.0 7.8 16.8 C 7.8 18.8 9.5 20.2 12.5 20.2 C 15.8 20.2 18.8 18.5 19.0 15.2 C 19.2 12.5 18.0 9.8 17.0 11.2 C 16.0 12.5 15.0 11.8 15.0 10.2 C 15.0 8.5 14.0 6.8 13.0 5.8 Z',
     },
   },
   {
@@ -155,20 +158,20 @@ export const STREAK_TIERS: StreakTier[] = [
     description: 'Two unbroken weeks of conscious campus power-saving.',
     colors: {
       primary: '#c026d3',
-      secondary: '#7c3aed',
-      accent: '#9333ea',
-      gradient: 'linear-gradient(135deg, #c026d3, #9333ea, #7c3aed)',
+      secondary: '#f5d0fe',
+      accent: '#701a75',
+      gradient: 'linear-gradient(135deg, #701a75, #c026d3, #a855f7)',
       text: '#701a75',
       bg: 'rgba(192, 38, 211, 0.15)',
       border: 'rgba(192, 38, 211, 0.42)',
       fill: '#c026d3',
-      stroke: '#86198f',
+      stroke: '#0c2340',
     },
     glow: '0 0 20px rgba(192, 38, 211, 0.55)',
     flameShape: {
-      // Four-crested aggressive crown fire with sharp dancing spurs
-      outer: 'M12 1.2 C11 3.8 8.2 5.5 6.5 8.5 C4.8 11.5 4.8 14.5 6.5 17.2 C5.8 15.2 6.8 13.2 8 12.2 C9.2 11.2 10 12.2 10.5 13.8 C11 11.2 11.8 8.8 12 6 C12.6 8.5 13.5 10.2 14.5 9 C15.5 7.8 15.2 5.8 16.5 7.8 C18 10 18.2 8.8 19.2 10.8 C20.5 13.2 20 16.5 18.5 19 C19.8 16.5 20.2 12.8 18.8 9.8 C17.5 6.5 14.8 3.8 12 1.2 Z',
-      inner: 'M12 6.2 L10 10.8 H12.5 L10.8 15.5 L14.5 10.5 H12.2 L13.5 6.2 Z',
+      // 5-crested crowned royal cartoon inferno with dynamic dragon-tail curling licks
+      outer: 'M 13.0 1.2 C 11.5 2.0 10.2 3.8 9.5 5.2 C 8.8 6.0 8.0 5.2 7.2 5.8 C 6.0 6.8 5.2 8.8 5.5 10.8 C 5.8 11.8 4.8 11.2 4.0 10.2 C 3.2 11.0 2.8 13.0 3.2 15.8 C 3.8 19.2 7.8 21.5 12.5 21.5 C 17.5 21.5 21.2 19.0 21.5 15.2 C 21.8 12.2 20.2 9.0 18.8 7.8 C 18.0 7.2 17.6 8.5 18.0 9.8 C 18.2 10.8 17.2 9.8 16.0 6.8 C 15.2 4.8 14.8 3.5 14.0 1.8 C 13.6 1.2 13.2 1.2 13.0 1.2 Z',
+      inner: 'M 12.8 4.8 C 11.2 7.0 10.2 9.8 9.5 11.8 C 8.6 13.0 7.6 14.5 7.5 16.5 C 7.5 18.8 9.5 20.5 12.5 20.5 C 16.0 20.5 19.2 18.5 19.5 14.8 C 19.8 12.0 18.2 9.0 17.0 10.5 C 15.8 11.8 14.8 11.0 14.8 9.2 C 14.8 7.5 13.8 5.8 12.8 4.8 Z',
     },
   },
   {
@@ -181,20 +184,20 @@ export const STREAK_TIERS: StreakTier[] = [
     description: 'One month milestone: glowing atmospheric sustainability.',
     colors: {
       primary: '#06b6d4',
-      secondary: '#8b5cf6',
-      accent: '#10b981',
-      gradient: 'linear-gradient(135deg, #06b6d4, #14b8a6, #8b5cf6)',
+      secondary: '#a7f3d0',
+      accent: '#6366f1',
+      gradient: 'linear-gradient(135deg, #6366f1, #06b6d4, #10b981)',
       text: '#0e7490',
       bg: 'rgba(6, 182, 212, 0.16)',
       border: 'rgba(6, 182, 212, 0.45)',
       fill: '#06b6d4',
-      stroke: '#0891b2',
+      stroke: '#0c2340',
     },
     glow: '0 0 22px rgba(6, 182, 212, 0.6)',
     flameShape: {
-      // Mystical sweeping celestial flame with flowing wings and cosmic aura
-      outer: 'M12 1 C10.5 3.8 7.2 6 5.5 9.5 C3.8 12.8 4.2 16.5 6.5 19.5 C5.8 17.2 6.8 14.8 8.2 13.5 C9.8 12 10.5 13.5 11.2 15 C11.8 12 12.5 9.5 12 6.5 C12.8 9 14 10.8 15.2 9.5 C16.5 8.2 16 6 17.2 8 C19.2 10.8 20.5 14 19.2 17.5 C20.5 14.8 20.8 11.5 19.2 8.5 C17.8 5.2 14.8 3 12 1 Z',
-      inner: 'M12 7 L10.2 11.5 H12.6 L10.8 16 L14.5 11.2 H12.2 L13.5 7 Z',
+      // Celestial spirit cartoon flame with sweeping, ethereal wing plumes
+      outer: 'M 12.8 1.0 C 11.2 1.8 9.8 3.5 9.0 5.2 C 8.2 6.2 7.2 5.5 6.5 6.2 C 5.2 7.2 4.5 9.5 4.8 11.5 C 5.2 12.8 4.0 12.0 3.2 11.0 C 2.5 12.0 2.2 14.0 2.8 16.5 C 3.5 19.5 7.5 21.5 12.5 21.5 C 17.5 21.5 21.5 19.5 22.0 16.0 C 22.5 12.5 20.8 9.2 19.2 8.0 C 18.2 7.5 17.8 8.8 18.2 10.2 C 18.5 11.2 17.5 10.2 16.2 7.0 C 15.2 4.8 14.5 3.2 13.8 1.5 C 13.4 1.0 13.0 1.0 12.8 1.0 Z',
+      inner: 'M 12.5 4.5 C 11.0 6.8 9.8 9.5 9.2 11.5 C 8.2 12.8 7.2 14.2 7.2 16.2 C 7.2 18.8 9.2 20.5 12.5 20.5 C 16.0 20.5 19.2 18.5 19.5 14.8 C 19.8 11.8 18.2 9.0 16.8 10.5 C 15.5 11.8 14.5 11.0 14.5 9.0 C 14.5 7.2 13.5 5.5 12.5 4.5 Z',
     },
   },
   {
@@ -207,20 +210,20 @@ export const STREAK_TIERS: StreakTier[] = [
     description: 'Sixty consecutive days: radiant ice-blue precision.',
     colors: {
       primary: '#38bdf8',
-      secondary: '#e2e8f0',
-      accent: '#64748b',
-      gradient: 'linear-gradient(135deg, #64748b, #38bdf8, #f8fafc)',
+      secondary: '#f0f9ff',
+      accent: '#0284c7',
+      gradient: 'linear-gradient(135deg, #0284c7, #38bdf8, #e0f2fe)',
       text: '#0369a1',
       bg: 'rgba(56, 189, 248, 0.16)',
       border: 'rgba(56, 189, 248, 0.45)',
       fill: '#38bdf8',
-      stroke: '#0284c7',
+      stroke: '#0c2340',
     },
     glow: '0 0 24px rgba(56, 189, 248, 0.65)',
     flameShape: {
-      // Crystalline 5-point royal flame: faceted diamond-crested tips with sharp royal spikes
-      outer: 'M12 0.8 L10.2 5.2 L7.5 4.5 L8.5 8.8 L5.2 9.5 L7.2 13.8 C6.2 15.5 6.5 17.8 8 19.5 C9.5 18 10 16 10.8 14.2 L12 16.5 L13.2 14.2 C14 16 14.5 18 16 19.5 C17.5 17.8 17.8 15.5 16.8 13.8 L18.8 9.5 L15.5 8.8 L16.5 4.5 L13.8 5.2 Z',
-      inner: 'M12 6.5 L9.8 11.2 H12.5 L10.8 16 L14.5 10.8 H12.2 L13.5 6.5 Z',
+      // Pristine crystalline cartoon flame with sculpted diamond plumes
+      outer: 'M 12.5 0.8 C 11.0 1.6 9.5 3.2 8.8 5.0 C 8.0 6.0 7.0 5.2 6.2 6.0 C 5.0 7.0 4.2 9.2 4.5 11.2 C 4.8 12.5 3.8 11.8 3.0 10.8 C 2.2 11.8 1.8 13.8 2.5 16.5 C 3.2 19.6 7.2 21.6 12.5 21.6 C 17.8 21.6 21.8 19.6 22.5 16.0 C 23.0 12.5 21.2 9.0 19.5 7.8 C 18.5 7.2 18.0 8.5 18.5 10.0 C 18.8 11.0 17.8 10.0 16.5 6.8 C 15.5 4.5 14.8 3.0 13.8 1.2 C 13.2 0.8 12.8 0.8 12.5 0.8 Z',
+      inner: 'M 12.5 4.2 C 10.8 6.5 9.6 9.2 9.0 11.2 C 8.0 12.5 7.0 14.0 7.0 16.0 C 7.0 18.6 9.0 20.5 12.5 20.5 C 16.2 20.5 19.5 18.5 19.8 14.5 C 20.0 11.5 18.5 8.8 17.0 10.2 C 15.6 11.5 14.6 10.8 14.6 8.8 C 14.6 7.0 13.6 5.2 12.5 4.2 Z',
     },
   },
   {
@@ -232,21 +235,21 @@ export const STREAK_TIERS: StreakTier[] = [
     animation: 'legend',
     description: '100+ days: pinnacle champion of green living.',
     colors: {
-      primary: '#eab308',
-      secondary: '#f59e0b',
-      accent: '#fef08a',
-      gradient: 'linear-gradient(135deg, #f59e0b, #eab308, #fde047, #d97706)',
+      primary: '#f59e0b',
+      secondary: '#fef9c3',
+      accent: '#b45309',
+      gradient: 'linear-gradient(135deg, #b45309, #f59e0b, #fef08a)',
       text: '#854d0e',
       bg: 'rgba(234, 179, 8, 0.18)',
       border: 'rgba(234, 179, 8, 0.55)',
       fill: '#eab308',
-      stroke: '#a16207',
+      stroke: '#0c2340',
     },
     glow: '0 0 26px rgba(234, 179, 8, 0.75)',
     flameShape: {
-      // Grand Phoenix Emperor Flame: 5 majestic soaring plumes with royal crown points
-      outer: 'M12 0.5 C10.8 3.2 9.2 5 7 6.2 L8 9.2 C6 9.8 4.6 11.8 4 14.5 C5 13.5 6.2 13 7.5 13.5 C8.5 14 9.2 15.2 10 16.8 C10.6 13.5 11.4 10.2 12 6.5 C12.6 10.2 13.4 13.5 14 16.8 C14.8 15.2 15.5 14 16.5 13.5 C17.8 13 19 13.5 20 14.5 C19.4 11.8 18 9.8 16 9.2 L17 6.2 C14.8 5 13.2 3.2 12 0.5 Z',
-      inner: 'M12 5 L9.5 10.8 H12.8 L10.2 17.2 L15.2 10.2 H12.4 L14 5 Z',
+      // Grand Phoenix Emperor Flame: 5 majestic soaring plumes with royal sun-god crown
+      outer: 'M 12.5 0.5 C 10.8 1.4 9.2 3.0 8.5 4.8 C 7.8 5.8 6.8 5.0 6.0 5.8 C 4.8 6.8 4.0 9.0 4.2 11.0 C 4.6 12.2 3.5 11.5 2.8 10.5 C 1.8 11.5 1.5 13.5 2.2 16.5 C 3.0 19.8 7.0 21.8 12.5 21.8 C 18.0 21.8 22.0 19.8 22.8 16.0 C 23.2 12.2 21.5 8.8 19.8 7.5 C 18.8 7.0 18.2 8.2 18.8 9.8 C 19.0 10.8 18.0 9.8 16.8 6.5 C 15.8 4.2 15.0 2.8 13.8 1.0 C 13.2 0.5 12.8 0.5 12.5 0.5 Z',
+      inner: 'M 12.5 3.8 C 10.6 6.2 9.5 9.0 8.8 11.0 C 7.8 12.2 6.8 13.8 6.8 15.8 C 6.8 18.5 8.8 20.6 12.5 20.6 C 16.5 20.6 19.8 18.5 20.0 14.5 C 20.2 11.2 18.6 8.5 17.2 10.0 C 15.8 11.5 14.8 10.6 14.8 8.6 C 14.8 6.8 13.8 4.8 12.5 3.8 Z',
     },
   },
 ]

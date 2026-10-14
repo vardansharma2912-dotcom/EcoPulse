@@ -78,12 +78,28 @@ export const StreakBadge: React.FC<StreakBadgeProps> = ({
     lg: 'text-base',
   }[size]
 
-  // Only achieved streak levels are animated; locked or dormant tiers are static
-  const canAnimate = isVisible && !reducedMotion && animated && !isLocked && tier.intensity > 0
+  // Achieved streak levels are animated; locked tiers remain static
+  const canAnimate = isVisible && !reducedMotion && animated && !isLocked
 
   // Real organic fire animation: base-anchored flame physics matching fire.mp4 with thermal updraft, wave skew, sway, and lick (zero jumping)
   const getFlameAnimation = () => {
     if (!canAnimate) return {}
+
+    if (tier.id === 'dormant') {
+      return {
+        transformOrigin: '12.5px 20.5px',
+        rotate: [0, -1.5, 1.8, -1.0, 1.2, -0.6, 0],
+        skewX: [0, -1.8, 2.0, -1.2, 1.5, -0.8, 0],
+        scaleY: [1, 1.05, 0.97, 1.06, 0.98, 1.03, 1],
+        scaleX: [1, 0.98, 1.02, 0.97, 1.01, 0.99, 1],
+        filter: [
+          `drop-shadow(0 -1px 3px ${tier.colors.primary}33)`,
+          `drop-shadow(0 -2px 6px ${tier.colors.primary}66)`,
+          `drop-shadow(0 -1px 3px ${tier.colors.primary}33)`,
+        ],
+        transition: { duration: 2.6, repeat: Infinity, ease: 'easeInOut' as const },
+      }
+    }
 
     if (tier.id === 'spark' || tier.animation === 'subtle') {
       return {
@@ -218,6 +234,14 @@ export const StreakBadge: React.FC<StreakBadgeProps> = ({
   // Inner core heat flicker animation: counter-phase thermal wave lick anchored to base
   const getInnerCoreAnimation = () => {
     if (!canAnimate) return {}
+    if (tier.id === 'dormant') {
+      return {
+        transformOrigin: '12.5px 19px',
+        scaleY: [1, 1.08, 0.95, 1.06, 1],
+        opacity: [0.75, 0.95, 0.72, 0.92, 0.75],
+        transition: { duration: 2.6, repeat: Infinity, ease: 'easeInOut' as const },
+      }
+    }
     return {
       transformOrigin: '12.5px 20px',
       rotate: [0, 4.2, -4.8, 3.4, -3.8, 1.8, 0],
