@@ -138,8 +138,8 @@ export const CalculatorPage: React.FC = () => {
       className="space-y-4 lg:space-y-6 flex-1 flex flex-col"
     >
       <PageHeader
-        title="Appliance Energy Cost & What-If Calculator"
-        description={`Estimate electrical energy (kWh) and bill savings (${currency}) by turning off or unplugging specific appliances.`}
+        title="Calculator"
+        description="Calculator: how much a habit saves."
       />
 
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">

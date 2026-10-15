@@ -323,8 +323,8 @@ export const SettingsPage: React.FC = () => {
       className="space-y-4 lg:space-y-6 w-full flex-1 flex flex-col"
     >
       <PageHeader
-        title="EcoPulse Settings & Energy Tariff Preferences"
-        description="Configure your domestic electricity tariff, manage browser alerts, and handle application data."
+        title="Settings"
+        description="Settings: your electricity rate and preferences."
       />
 
       {/* Main Settings Form on glass-strong */}
@@ -356,7 +356,7 @@ export const SettingsPage: React.FC = () => {
                   if (tariffError) setTariffError(null)
                 }}
                 error={tariffError || undefined}
-                hint={`Default is ${currency}8/unit (standard domestic benchmark, set from your electricity bill. Must be > 0).`}
+                hint={`Default is ${currency}8/unit (standard domestic rate from your electricity bill. Must be > 0).`}
               />
             </div>
 
@@ -522,7 +522,7 @@ export const SettingsPage: React.FC = () => {
                 <span className="font-bold text-[var(--text-primary)]">1 Kilowatt-hour (kWh):</span> One commercial unit of electricity (1000 Watt-hours), equal to running a 1000 W appliance for 1 hour.
               </div>
               <div>
-                <span className="font-bold text-[var(--text-primary)]">Tariff Benchmark:</span> Domestic rates vary by utility slab. Default rate is {currency}8/kWh.
+                <span className="font-bold text-[var(--text-primary)]">Electricity Rate:</span> Domestic rates vary by utility slab. Default rate is {currency}8/kWh.
               </div>
             </div>
           </div>
@@ -552,7 +552,7 @@ export const SettingsPage: React.FC = () => {
                 </Badge>
               </div>
               <p className="text-xs text-[var(--text-secondary)] max-w-2xl leading-relaxed">
-                When permitted, native desktop popups alert you when reminders are due while EcoPulse is running in your browser (active or background tab). Reminders fire only while the app or browser is running, since there is no push backend.
+                When permitted, desktop popups alert you when reminders are due while EcoPulse is running. Notice: reminders only fire while this browser tab is open—there are no background alarms when closed.
               </p>
             </div>
 
@@ -675,6 +675,29 @@ export const SettingsPage: React.FC = () => {
               </ul>
             </div>
           </div>
+        </Card>
+      </motion.div>
+
+      {/* First-Run Tour Replay Card */}
+      <motion.div variants={cardVariants}>
+        <Card variant="glass" className="p-4 sm:p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <div className="space-y-1">
+            <h3 className="text-sm font-bold text-[#14301f] flex items-center gap-2">
+              <Sparkles className="w-4 h-4 text-emerald-800" /> First-Run Walkthrough
+            </h3>
+            <p className="text-xs text-[#1e3f2b]">
+              Need a quick refresher? Replay the 3-step walkthrough to see how EcoPulse works.
+            </p>
+          </div>
+          <Button
+            type="button"
+            variant="outline"
+            size="sm"
+            icon={<RotateCcw className="w-3.5 h-3.5 text-emerald-800" />}
+            onClick={() => openTour(false)}
+          >
+            Replay Tour
+          </Button>
         </Card>
       </motion.div>
 

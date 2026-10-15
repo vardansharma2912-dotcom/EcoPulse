@@ -24,8 +24,7 @@ import { isDueOn } from '../../lib/schedule'
 import { CountUp } from '../ui/CountUp'
 import { Logo } from '../ui/Logo'
 import { useSeo } from '../../lib/seo'
-import { isWelcomeHandled, isTourSeen } from '../../lib/storage'
-import { useTour } from '../../context/useTour'
+import { isWelcomeHandled, setWelcomeHandled, isTourSeen, setTourSeen } from '../../lib/storage'
 import {
   DashboardNavIcon,
   RemindersNavIcon,
@@ -36,16 +35,15 @@ import {
 } from '../navigation/NavIcons'
 
 const navItems = [
-  { to: '/', label: 'Dashboard', icon: DashboardNavIcon },
-  { to: '/reminders', label: 'Reminders', icon: RemindersNavIcon },
-  { to: '/calculator', label: 'Calculator', icon: CalculatorNavIcon },
-  { to: '/analytics', label: 'Analytics', icon: AnalyticsNavIcon },
-  { to: '/learn', label: 'Learn', icon: LearnNavIcon },
-  { to: '/settings', label: 'Settings', icon: SettingsNavIcon },
+  { to: '/', label: 'Dashboard', purpose: 'today', icon: DashboardNavIcon },
+  { to: '/reminders', label: 'Reminders', purpose: 'your list', icon: RemindersNavIcon },
+  { to: '/calculator', label: 'Calculator', purpose: 'how much a habit saves', icon: CalculatorNavIcon },
+  { to: '/analytics', label: 'Analytics', purpose: 'your progress', icon: AnalyticsNavIcon },
+  { to: '/learn', label: 'Learn', purpose: 'tips', icon: LearnNavIcon },
+  { to: '/settings', label: 'Settings', purpose: 'preferences', icon: SettingsNavIcon },
 ]
 
 export const AppLayout: React.FC = () => {
-  const { openTour } = useTour()
   const { state } = useAppState()
   const location = useLocation()
   const today = todayKey()
@@ -72,8 +70,9 @@ export const AppLayout: React.FC = () => {
 
   const handleWelcomeComplete = (_enteredName?: string) => {
     setWelcomeDismissed(true)
-    // Go immediately to the tour as first-run tour
-    openTour(true)
+    setWelcomeHandled(true)
+    setTourSeen(true)
+    // De-duplicate prompts: show hero card first without modal interruption
   }
 
   // Update document title, meta tags, Open Graph, canonical, and JSON-LD
@@ -171,6 +170,8 @@ export const AppLayout: React.FC = () => {
                   key={item.to}
                   to={item.to}
                   end={item.to === '/'}
+                  title={`${item.label}: ${item.purpose}`}
+                  aria-label={`${item.label}: ${item.purpose}`}
                   onClick={() =>
                     setNavClicks((prev) => ({
                       ...prev,
@@ -204,7 +205,16 @@ export const AppLayout: React.FC = () => {
                     isActive={isActive}
                     trigger={navClicks[item.to] || 0}
                   />
-                  <span>{item.label}</span>
+                  <div className="flex flex-col min-w-0">
+                    <span className="leading-tight">{item.label}</span>
+                    <span
+                      className={`text-[10px] leading-tight font-normal ${
+                        isActive ? 'text-emerald-100/90' : 'text-slate-500 group-hover:text-emerald-900'
+                      }`}
+                    >
+                      {item.purpose}
+                    </span>
+                  </div>
 
                   {/* Reminders Pending Count Badge */}
                   {item.to === '/reminders' && (

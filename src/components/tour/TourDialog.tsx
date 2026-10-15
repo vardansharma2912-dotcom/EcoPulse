@@ -2,11 +2,8 @@ import React, { useState, useEffect, useRef, useCallback } from 'react'
 import { createPortal } from 'react-dom'
 import { motion, AnimatePresence, useReducedMotion } from 'motion/react'
 import {
-  Bell,
   CheckCircle2,
   Zap,
-  Flame,
-  Globe,
   ArrowRight,
   ArrowLeft,
   X,
@@ -28,43 +25,25 @@ interface TourStep {
 
 const TOUR_STEPS: TourStep[] = [
   {
-    title: 'Small reminders, real habits',
+    title: 'Add a reminder',
     lines: [
-      'EcoPulse reminds you to do small energy-saving actions (lights, fans, chargers, standby devices) at times you choose.',
+      'Choose what to switch off—like lights, fans, chargers, or AC—and set what time you want to be reminded.',
     ],
-    icon: Bell,
+    icon: Plus,
   },
   {
-    title: 'Mark done, or snooze',
+    title: 'Tap Done when finished',
     lines: [
-      'Mark an action done when you do it. These are self-reported.',
-      'Snooze for 15 minutes, 1 hour, or a custom time.',
+      'When you switch it off, tap Done. EcoPulse reminds you while this browser tab is open.',
     ],
     icon: CheckCircle2,
   },
   {
-    title: 'Estimated savings',
+    title: 'See your progress',
     lines: [
-      'kWh = watts × hours / 1000, and cost = kWh × your tariff.',
-      'Figures are estimates, not meter readings. Set your real tariff in Settings.',
+      'Watch your daily energy savings add up and build your green streak.',
     ],
     icon: Zap,
-  },
-  {
-    title: 'Progress and streaks',
-    lines: [
-      'Analytics shows your week, streaks and badges, built only from what you complete.',
-    ],
-    icon: Flame,
-  },
-  {
-    title: 'Alerts need EcoPulse open',
-    lines: [
-      'Reminder alerts appear while EcoPulse is open in a browser tab.',
-      'Turn on browser notifications in Settings.',
-      'Missed reminders show as Overdue when you return.',
-    ],
-    icon: Globe,
   },
 ]
 
@@ -309,19 +288,26 @@ const TourModalContent: React.FC<{ onClose: (action?: 'start' | 'add') => void }
 
         {/* Footer Navigation Buttons */}
         <div className="pt-2 border-t border-emerald-900/10 dark:border-white/10 flex items-center justify-between gap-3">
-          {currentStep > 0 ? (
-            <Button
+          <div className="flex items-center gap-2">
+            {currentStep > 0 && (
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                icon={<ArrowLeft className="w-4 h-4" />}
+                onClick={handleBack}
+              >
+                Back
+              </Button>
+            )}
+            <button
               type="button"
-              variant="outline"
-              size="sm"
-              icon={<ArrowLeft className="w-4 h-4" />}
-              onClick={handleBack}
+              onClick={handleSkip}
+              className="text-xs font-semibold text-slate-500 hover:text-emerald-950 dark:text-stone-400 dark:hover:text-emerald-200 px-2.5 py-1.5 rounded-lg hover:bg-emerald-900/5 dark:hover:bg-white/5 cursor-pointer transition-colors"
             >
-              Back
-            </Button>
-          ) : (
-            <div className="w-16" />
-          )}
+              Skip
+            </button>
+          </div>
 
           {!isLastStep ? (
             <Button

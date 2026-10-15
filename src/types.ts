@@ -19,6 +19,7 @@ export interface Reminder {
   days?: number[] // 0 = Sunday, 1 = Monday, ..., 6 = Saturday (for weekly recurrence)
   applianceWatts?: number // Rated watts of the appliance
   avoidedHours?: number // Estimated hours of usage avoided by acting on the reminder
+  notes?: string // Optional user notes
   active: boolean
   snoozedUntil?: string // ISO timestamp if snoozed
   createdAt: string // ISO timestamp
