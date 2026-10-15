@@ -158,7 +158,7 @@ export const INITIAL_REMINDERS: Reminder[] = createInitialReminders()
 export function getDefaultState(): AppState {
   const nowIso = new Date().toISOString()
   return {
-    reminders: createInitialReminders(nowIso),
+    reminders: [],
     completions: [], // Strictly no fake history
     settings: { ...DEFAULT_SETTINGS },
     lastUpdated: nowIso,

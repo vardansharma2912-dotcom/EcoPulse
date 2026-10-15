@@ -48,8 +48,7 @@ export const ToastProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   return (
     <ToastContext.Provider value={{ showToast }}>
       {children}
-      {/* Bottom-Center Fixed Toast Container - Clears NotchDock on mobile */}
-      {createPortal(
+      {typeof document !== 'undefined' && createPortal(
         <div
           aria-live="polite"
           className="fixed bottom-[calc(var(--mobile-dock-bottom,0px)+76px+env(safe-area-inset-bottom,0px))] lg:bottom-6 inset-x-0 z-50 flex flex-col items-center gap-2 pointer-events-none px-4"

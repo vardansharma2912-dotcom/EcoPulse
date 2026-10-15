@@ -124,8 +124,8 @@ export const GettingStartedCard: React.FC<GettingStartedCardProps> = ({ onOpenAd
     }
   }
 
-  // Hides itself when expired (after 3 days), dismissed, or when all items are done
-  if (isExpired || dismissed || allCompleted) {
+  // Hides itself when zero reminders (hero card shown first), expired (after 3 days), dismissed, or when all items are done
+  if (!state.reminders || state.reminders.length === 0 || isExpired || dismissed || allCompleted) {
     return null
   }
 

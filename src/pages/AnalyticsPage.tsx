@@ -93,8 +93,8 @@ export const AnalyticsPage: React.FC = () => {
       className="space-y-4 lg:space-y-6 flex-1 flex flex-col"
     >
       <PageHeader
-        title="Energy Conservation Trends & Habit Analytics"
-        description="Historical trends, weekly activity breakdowns, habit streaks, and milestone achievements."
+        title="Analytics"
+        description="Analytics: your progress."
       />
 
       {/* Demo sample data banner if active */}
@@ -121,7 +121,7 @@ export const AnalyticsPage: React.FC = () => {
           <Card variant="glass" padding="none" className="p-3 sm:p-3.5 h-full flex flex-col justify-between">
             <div>
               <div className="flex items-center justify-between text-[#14301f] mb-0.5">
-                <span className="text-[11px] sm:text-xs font-bold uppercase tracking-wider text-slate-700">Cost Avoided</span>
+                <span className="text-[11px] sm:text-xs font-bold uppercase tracking-wider text-slate-700">Money Saved</span>
                 <TrendingUp className="w-3.5 h-3.5 text-emerald-800" />
               </div>
               <p className="text-xl sm:text-2xl lg:text-[26px] font-extrabold text-[#0f2819] tabular-nums tracking-tight">
@@ -181,8 +181,8 @@ export const AnalyticsPage: React.FC = () => {
             <div className="flex items-center gap-1.5 min-w-0">
               <Flame className="w-4 h-4 text-amber-600 shrink-0" />
               <h2 className="text-xs sm:text-sm font-bold text-[#0f2819] uppercase tracking-wide">
-                <span className="sm:hidden">Streak Mastery Tiers</span>
-                <span className="hidden sm:inline">Streak Levels &amp; Tier Progression</span>
+                <span className="sm:hidden">Streak Levels</span>
+                <span className="hidden sm:inline">Streak Levels &amp; Habit Milestones</span>
               </h2>
             </div>
             <div className="flex items-center gap-1.5 shrink-0">
@@ -201,7 +201,7 @@ export const AnalyticsPage: React.FC = () => {
           </div>
 
           <p className="text-[11px] text-[#1e3f2b] leading-tight">
-            Advance through 8 animated mastery tiers by maintaining daily energy-saving habits.
+            Advance through 8 habit levels by keeping up your daily energy-saving actions.
           </p>
 
           {/* Horizontal Strip of All 8 Tiers: 4 cols on mobile (2 rows), 8 cols on desktop (1 row) */}
@@ -504,8 +504,15 @@ export const AnalyticsPage: React.FC = () => {
             <div className="py-8">
               <EmptyState
                 icon={<Clock className="w-6 h-6 text-emerald-800" />}
-                title="No Actions Logged Yet"
-                description="When you mark reminders as done on the Dashboard or Reminders page, they will be archived here with exact timestamps and estimated savings."
+                title="No Habits Logged Yet"
+                description="Mark reminders as done on the Dashboard to see your habit history here."
+                action={
+                  <Link to="/">
+                    <Button variant="primary" size="sm">
+                      Go to Dashboard
+                    </Button>
+                  </Link>
+                }
               />
             </div>
           ) : (

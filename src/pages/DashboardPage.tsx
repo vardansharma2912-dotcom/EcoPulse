@@ -19,6 +19,8 @@ import { containerVariants, cardVariants, highlightCardVariants } from '../lib/m
 import { ReminderFormDialog } from '../components/reminders/ReminderFormDialog'
 import { DemoBanner } from '../components/layout/DemoBanner'
 import { GettingStartedCard } from '../components/dashboard/GettingStartedCard'
+import { FirstReminderHeroCard, type QuickAddTemplate } from '../components/dashboard/FirstReminderHeroCard'
+import { useTour } from '../context/useTour'
 import { useGapMeasure } from '../components/filler/useGapMeasure'
 import { FillerSlot } from '../components/filler/FillerSlot'
 import type { Reminder, ReminderCategory } from '../types'
@@ -55,7 +57,9 @@ export const DashboardPage: React.FC = () => {
   const [now] = useState(() => new Date())
   const today = todayKey(now)
 
+  const { openTour } = useTour()
   const [addDialogOpen, setAddDialogOpen] = useState(false)
+  const [selectedTemplate, setSelectedTemplate] = useState<(Omit<Reminder, 'id' | 'createdAt'> & { id?: string; createdAt?: string }) | null>(null)
   const [chartMetric, setChartMetric] = useState<'kwh' | 'actions'>('kwh')
   const currency = state.settings.currency || '₹'
 
@@ -147,8 +151,13 @@ export const DashboardPage: React.FC = () => {
 
   const handleCreateReminder = (data: Omit<Reminder, 'id' | 'createdAt'> | Reminder) => {
     if (!('id' in data)) {
+      const isFirst = state.reminders.length === 0
       addReminder(data)
-      showToast('Reminder created!')
+      if (isFirst) {
+        showToast(`Nice. It will remind you at ${data.time} while this tab is open. Tap Done when you switch it off.`)
+      } else {
+        showToast('Reminder created!')
+      }
     }
   }
 
@@ -184,6 +193,66 @@ export const DashboardPage: React.FC = () => {
     deps: [state.reminders, state.completions, dueTodayReminders.length],
   })
 
+  const isZeroReminders = state.reminders.length === 0
+  const isSimpleView = state.reminders.length >= 1 && state.completions.length === 0
+
+  if (isZeroReminders) {
+    return (
+      <motion.div
+        variants={containerVariants}
+        initial="hidden"
+        animate="visible"
+        className="space-y-4 lg:space-y-6"
+      >
+        <PageHeader
+          title="Dashboard"
+          description="Dashboard: today's reminders and habits."
+          action={
+            <Button
+              variant="primary"
+              size="sm"
+              icon={<Plus className="w-3.5 h-3.5" />}
+              onClick={() => {
+                setSelectedTemplate(null)
+                setAddDialogOpen(true)
+              }}
+            >
+              Add Reminder
+            </Button>
+          }
+        />
+
+        <DemoBanner />
+
+        <FirstReminderHeroCard
+          onOpenCustom={() => {
+            setSelectedTemplate(null)
+            setAddDialogOpen(true)
+          }}
+          onSelectTemplate={(tpl: QuickAddTemplate) => {
+            setSelectedTemplate(tpl.reminder)
+            setAddDialogOpen(true)
+          }}
+          onOpenTour={() => openTour(false)}
+        />
+
+        <ReminderFormDialog
+          open={addDialogOpen}
+          initialReminder={selectedTemplate}
+          onClose={() => {
+            setSelectedTemplate(null)
+            setAddDialogOpen(false)
+          }}
+          onSave={(data) => {
+            handleCreateReminder(data)
+            setSelectedTemplate(null)
+            setAddDialogOpen(false)
+          }}
+        />
+      </motion.div>
+    )
+  }
+
   return (
     <motion.div
       variants={containerVariants}
@@ -192,8 +261,8 @@ export const DashboardPage: React.FC = () => {
       className="space-y-4 lg:space-y-6"
     >
       <PageHeader
-        title="Smart Energy Saving Habit Dashboard"
-        description="Daily overview of your energy-saving actions and estimated savings."
+        title="Dashboard"
+        description="Dashboard: today's reminders and habits."
         action={
           <div className="flex items-center gap-2">
             <Button
@@ -208,7 +277,10 @@ export const DashboardPage: React.FC = () => {
               variant="primary"
               size="sm"
               icon={<Plus className="w-3.5 h-3.5" />}
-              onClick={() => setAddDialogOpen(true)}
+              onClick={() => {
+                setSelectedTemplate(null)
+                setAddDialogOpen(true)
+              }}
             >
               Add Reminder
             </Button>
@@ -238,10 +310,13 @@ export const DashboardPage: React.FC = () => {
       <DemoBanner />
 
       {/* Getting Started Progress Card */}
-      <GettingStartedCard onOpenAddReminder={() => setAddDialogOpen(true)} />
+      <GettingStartedCard onOpenAddReminder={() => {
+        setSelectedTemplate(null)
+        setAddDialogOpen(true)
+      }} />
 
-      {/* Grid of Key Metrics Cards with CountUp - Forest Hero Card in Position 1 */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3.5">
+      {/* Grid of Key Metrics Cards with CountUp */}
+      <div className={`grid ${isSimpleView ? 'grid-cols-1 sm:grid-cols-3' : 'grid-cols-2 lg:grid-cols-4'} gap-3.5`}>
         {/* Card 1: Highlighted Solid Deep Forest Hero Metric Card */}
         <motion.div variants={highlightCardVariants} className="h-full flex flex-col">
           <div className="h-full rounded-2xl p-3 sm:p-3.5 bg-[#0a381e] text-white shadow-xl border border-emerald-500/20 group relative overflow-hidden transition-all duration-300 hover:shadow-2xl hover:shadow-emerald-950/30 flex flex-col justify-between">
@@ -295,34 +370,118 @@ export const DashboardPage: React.FC = () => {
           </Card>
         </motion.div>
 
-        {/* Card 4: Action Streak */}
-        <motion.div variants={cardVariants} className="h-full flex flex-col">
-          <Card variant="glass" className="p-3 sm:p-3.5 group h-full flex flex-col justify-between overflow-hidden">
-            <div>
-              <div className="flex items-center justify-between text-[#14301f] mb-1">
-                <span className="text-xs font-bold uppercase tracking-wider">Action Streak</span>
-                <Link
-                  to="/analytics"
-                  className="flex items-center gap-1 text-emerald-900 hover:text-emerald-700 text-[11px] font-semibold"
-                  title="View streak tier progression in Analytics"
-                >
-                  <span>Tiers</span>
-                </Link>
-              </div>
+        {/* Card 4: Action Streak (hidden in simple view) */}
+        {!isSimpleView && (
+          <motion.div variants={cardVariants} className="h-full flex flex-col">
+            <Card variant="glass" className="p-3 sm:p-3.5 group h-full flex flex-col justify-between overflow-hidden">
+              <div>
+                <div className="flex items-center justify-between text-[#14301f] mb-1">
+                  <span className="text-xs font-bold uppercase tracking-wider">Action Streak</span>
+                  <Link
+                    to="/analytics"
+                    className="flex items-center gap-1 text-emerald-900 hover:text-emerald-700 text-[11px] font-semibold"
+                    title="View streak levels in Analytics"
+                  >
+                    <span>Levels</span>
+                  </Link>
+                </div>
 
-              <div className="pt-0.5 w-full min-w-0">
-                <StreakBadge
-                  days={currentStreak}
-                  size="sm"
-                  showLabel={true}
-                  showProgress={true}
-                  showDaysCount={true}
-                />
+                <div className="pt-0.5 w-full min-w-0">
+                  <StreakBadge
+                    days={currentStreak}
+                    size="sm"
+                    showLabel={true}
+                    showProgress={true}
+                    showDaysCount={true}
+                  />
+                </div>
               </div>
-            </div>
-          </Card>
-        </motion.div>
+            </Card>
+          </motion.div>
+        )}
       </div>
+
+      {isSimpleView ? (
+        /* Simple View for New Users: Today's Reminders with One-Tap Done button */
+        <motion.div variants={cardVariants} className="space-y-3">
+          <div className="flex items-center justify-between">
+            <h2 className="text-base font-bold text-[#102819] flex items-center gap-2">
+              <Clock className="w-4 h-4 text-emerald-800" /> Today's Reminders
+            </h2>
+            <span className="text-xs font-semibold text-emerald-900">
+              <CountUp value={completedTodayCount} /> of <CountUp value={totalDueToday} /> Done
+            </span>
+          </div>
+
+          <div className="space-y-2.5">
+            {dueTodayReminders.map((reminder) => {
+              const isDone = isReminderDoneToday(reminder.id)
+              return (
+                <Card
+                  key={reminder.id}
+                  variant="glass"
+                  className={`p-4 transition-colors ${
+                    isDone ? 'border-emerald-600/40 bg-emerald-50/70' : 'bg-white/80 border border-emerald-900/10 shadow-sm'
+                  }`}
+                >
+                  <div className="flex items-center justify-between gap-3">
+                    <div className="space-y-1 min-w-0">
+                      <div className="flex items-center gap-2">
+                        <p
+                          className={`font-bold text-base truncate ${
+                            isDone ? 'line-through text-slate-500' : 'text-[#102819]'
+                          }`}
+                        >
+                          {reminder.title}
+                        </p>
+                        <Badge variant={isDone ? 'emerald' : 'neutral'} size="sm">
+                          {reminder.time}
+                        </Badge>
+                      </div>
+                      <div className="flex items-center gap-3 text-xs text-[#1e3f2b] font-medium">
+                        {reminder.applianceWatts && (
+                          <span className="flex items-center gap-1 font-mono">
+                            <Zap className="w-3 h-3 text-emerald-700" />
+                            {reminder.applianceWatts}W
+                          </span>
+                        )}
+                        <span>Est. {reminder.avoidedHours ?? 1}h saved</span>
+                      </div>
+                    </div>
+
+                    <div className="shrink-0">
+                      {isDone ? (
+                        <Button
+                          variant="secondary"
+                          size="md"
+                          icon={<RotateCcw className="w-4 h-4" />}
+                          onClick={() => handleUndo(reminder.id)}
+                        >
+                          Undo
+                        </Button>
+                      ) : (
+                        <Button
+                          variant="primary"
+                          size="md"
+                          icon={
+                            <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.5} aria-hidden="true">
+                              <path d="M5 13l4 4L19 7" strokeLinecap="round" strokeLinejoin="round" />
+                            </svg>
+                          }
+                          onClick={() => handleComplete(reminder)}
+                        >
+                          Done
+                        </Button>
+                      )}
+                    </div>
+                  </div>
+                </Card>
+              )
+            })}
+          </div>
+        </motion.div>
+      ) : (
+        <>
 
       {/* Row 2: Project Analytics (PillBarChart) + Featured Reminders Card (Side-by-Side) */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-5">
@@ -354,23 +513,18 @@ export const DashboardPage: React.FC = () => {
             {dueTodayReminders.length === 0 ? (
               <div className="p-5 rounded-2xl bg-white/50 border border-white/70 text-center space-y-2.5">
                 <p className="text-xs font-bold text-[#102819]">No Reminders Due Today</p>
-                <p className="text-[11px] text-[#1e3f2b]">All quiet! You can add custom schedules or estimate appliance power draw.</p>
-                <div className="flex items-center justify-center gap-2 flex-wrap pt-1">
+                <p className="text-[11px] text-[#1e3f2b]">You have no energy reminders scheduled for today.</p>
+                <div className="flex items-center justify-center pt-1">
                   <Button
                     variant="primary"
                     size="sm"
                     icon={<Plus className="w-3.5 h-3.5" />}
-                    onClick={() => setAddDialogOpen(true)}
+                    onClick={() => {
+                      setSelectedTemplate(null)
+                      setAddDialogOpen(true)
+                    }}
                   >
                     Add Reminder
-                  </Button>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    icon={<Calculator className="w-3.5 h-3.5" />}
-                    onClick={() => navigate('/calculator')}
-                  >
-                    Calculator
                   </Button>
                 </div>
               </div>
@@ -407,7 +561,7 @@ export const DashboardPage: React.FC = () => {
                         {pendingItem.applianceWatts}W
                       </span>
                     )}
-                    <span>• Est. {pendingItem.avoidedHours ?? 1}h avoided</span>
+                    <span>• Est. {pendingItem.avoidedHours ?? 1}h saved</span>
                   </div>
 
                   <Button
@@ -421,7 +575,7 @@ export const DashboardPage: React.FC = () => {
                     }
                     onClick={() => handleComplete(pendingItem)}
                   >
-                    Complete Check
+                    Done
                   </Button>
                 </div>
               )
@@ -430,14 +584,14 @@ export const DashboardPage: React.FC = () => {
             {/* Quick Link to all reminders */}
             <div className="pt-2 border-t border-emerald-900/10 flex items-center justify-between text-xs">
               <span className="text-[11px] text-[#1e3f2b] font-medium">
-                {pendingTodayCount} remaining check{pendingTodayCount === 1 ? '' : 's'}
+                {pendingTodayCount} remaining reminder{pendingTodayCount === 1 ? '' : 's'}
               </span>
               <button
                 type="button"
                 onClick={() => navigate('/reminders')}
                 className="font-bold text-emerald-800 hover:text-emerald-950 underline cursor-pointer"
               >
-                View all schedules →
+                View all reminders →
               </button>
             </div>
           </Card>
@@ -616,7 +770,7 @@ export const DashboardPage: React.FC = () => {
           <div ref={leftColContentRef} className="space-y-3">
             <div className="flex items-center justify-between">
               <h2 className="text-base font-bold text-[#102819] flex items-center gap-2">
-                <Clock className="w-4 h-4 text-emerald-800" /> Today's Scheduled Reminders
+                <Clock className="w-4 h-4 text-emerald-800" /> Today's Reminders
               </h2>
               <span className="text-xs font-semibold text-emerald-900">
                 <CountUp value={completedTodayCount} /> of <CountUp value={totalDueToday} /> Done
@@ -627,26 +781,19 @@ export const DashboardPage: React.FC = () => {
               <EmptyState
                 icon={<Calendar className="w-6 h-6 text-emerald-800" />}
                 title="No Reminders Due Today"
-                description="You have no active energy reminders scheduled for today. Create custom schedules or calculate prospective appliance savings."
+                description="You have no energy reminders scheduled for today."
                 action={
-                  <div className="flex items-center justify-center gap-2 flex-wrap">
-                    <Button
-                      variant="primary"
-                      size="sm"
-                      icon={<Plus className="w-3.5 h-3.5" />}
-                      onClick={() => setAddDialogOpen(true)}
-                    >
-                      Add Reminder
-                    </Button>
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      icon={<Calculator className="w-3.5 h-3.5" />}
-                      onClick={() => navigate('/calculator')}
-                    >
-                      Appliance Calculator
-                    </Button>
-                  </div>
+                  <Button
+                    variant="primary"
+                    size="sm"
+                    icon={<Plus className="w-3.5 h-3.5" />}
+                    onClick={() => {
+                      setSelectedTemplate(null)
+                      setAddDialogOpen(true)
+                    }}
+                  >
+                    Add Reminder
+                  </Button>
                 }
               />
             ) : (
@@ -691,7 +838,7 @@ export const DashboardPage: React.FC = () => {
                                     {reminder.applianceWatts}W
                                   </span>
                                 )}
-                                <span>Est. {reminder.avoidedHours ?? 1}h avoided</span>
+                                <span>Est. {reminder.avoidedHours ?? 1}h saved</span>
                               </div>
                             </div>
 
@@ -721,7 +868,7 @@ export const DashboardPage: React.FC = () => {
                                   }
                                   onClick={() => handleComplete(reminder)}
                                 >
-                                  Mark Done
+                                  Done
                                 </Button>
                               )}
                             </div>
@@ -747,33 +894,33 @@ export const DashboardPage: React.FC = () => {
           <div ref={rightColContentRef} className="space-y-3">
             <div className="flex items-center justify-between">
               <h2 className="text-base font-bold text-[#102819] flex items-center gap-2">
-                <CheckCircle2 className="w-4 h-4 text-emerald-800" /> Recent Completed Actions
+                <CheckCircle2 className="w-4 h-4 text-emerald-800" /> Recent Completed Reminders
               </h2>
               <span className="text-xs font-semibold text-[#1e3f2b]">
                 Last {recentCompletions.length}
               </span>
             </div>
 
-            {/* All-Time Impact Snapshot */}
+            {/* All-Time Energy Saved Snapshot */}
             <Card variant="glass" className="p-3.5 space-y-1.5">
               <div className="flex items-center justify-between text-xs font-bold text-[#102819]">
                 <span className="flex items-center gap-1.5">
-                  <TrendingUp className="w-3.5 h-3.5 text-emerald-800" /> All-Time Impact
+                  <TrendingUp className="w-3.5 h-3.5 text-emerald-800" /> All-Time Energy Saved
                 </span>
                 <span className="text-emerald-900 font-extrabold tabular-nums">
                   <CountUp value={kwhSavedAllTime} decimals={2} /> kWh
                 </span>
               </div>
               <p className="text-[11px] text-[#1e3f2b] font-medium">
-                Total {currency}<CountUp value={costSavedAllTime} decimals={2} /> avoided across all recorded actions.
+                Total {currency}<CountUp value={costSavedAllTime} decimals={2} /> saved across all recorded actions.
               </p>
             </Card>
 
             {recentCompletions.length === 0 ? (
               <EmptyState
                 icon={<AlertCircle className="w-6 h-6 text-emerald-800" />}
-                title="No Actions Completed Yet"
-                description="When you mark reminders as done, your estimated energy savings and timestamps will appear here. In the meantime, explore dorm conservation guides."
+                title="No Habits Completed Yet"
+                description="Mark your reminders done to see your completed energy savings here."
                 action={
                   <Button
                     variant="outline"
@@ -832,12 +979,22 @@ export const DashboardPage: React.FC = () => {
           </div>
         </motion.div>
       </div>
+        </>
+      )}
 
       {/* Add Reminder Dialog (Renders as Drawer) */}
       <ReminderFormDialog
         open={addDialogOpen}
-        onClose={() => setAddDialogOpen(false)}
-        onSave={handleCreateReminder}
+        initialReminder={selectedTemplate}
+        onClose={() => {
+          setSelectedTemplate(null)
+          setAddDialogOpen(false)
+        }}
+        onSave={(data) => {
+          handleCreateReminder(data)
+          setSelectedTemplate(null)
+          setAddDialogOpen(false)
+        }}
       />
     </motion.div>
   )

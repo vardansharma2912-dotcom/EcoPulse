@@ -237,8 +237,8 @@ export const RemindersPage: React.FC = () => {
   return (
     <div className="space-y-4 lg:space-y-6 flex-1 flex flex-col">
       <PageHeader
-        title="Energy-Saving Habits & Scheduled Reminders"
-        description="Daily schedules to power down, unplug, and optimize household and campus appliances."
+        title="Reminders"
+        description="Reminders: things to switch off, and when."
         action={
           <Button
             variant="primary"
@@ -356,8 +356,8 @@ export const RemindersPage: React.FC = () => {
       {state.reminders.length === 0 ? (
         <EmptyState
           icon={<Bell className="w-6 h-6 text-emerald-800" />}
-          title="No Reminders Configured"
-          description="You currently have no scheduled energy reminders. Click 'Add Reminder' above or restore the defaults via Settings."
+          title="No Reminders Yet"
+          description="Add reminders to switch off appliances at specific times."
           action={
             <Button variant="primary" size="sm" icon={<Plus className="w-4 h-4" />} onClick={handleOpenAdd}>
               Add Your First Reminder
@@ -368,7 +368,7 @@ export const RemindersPage: React.FC = () => {
         <EmptyState
           icon={<AlertCircle className="w-6 h-6 text-emerald-800" />}
           title="No Reminders Match Your Filters"
-          description="Try broadening your category, status filter, or search keywords."
+          description="No reminders match your current search or filter."
           action={
             <Button variant="outline" size="sm" onClick={handleClearFilters}>
               Reset Filters

@@ -16,15 +16,16 @@ import { isDueOn } from '../../lib/schedule'
 interface DockTab {
   to: string
   label: string
+  purpose: string
   icon: React.ComponentType<{ className?: string; isHovered?: boolean; isActive?: boolean; trigger?: number | boolean }>
 }
 
 const DOCK_TABS: DockTab[] = [
-  { to: '/', label: 'Dashboard', icon: DashboardNavIcon },
-  { to: '/reminders', label: 'Reminders', icon: RemindersNavIcon },
-  { to: '/calculator', label: 'Calculator', icon: CalculatorNavIcon },
-  { to: '/analytics', label: 'Analytics', icon: AnalyticsNavIcon },
-  { to: '/learn', label: 'Learn', icon: LearnNavIcon },
+  { to: '/', label: 'Dashboard', purpose: 'today', icon: DashboardNavIcon },
+  { to: '/reminders', label: 'Reminders', purpose: 'your list', icon: RemindersNavIcon },
+  { to: '/calculator', label: 'Calculator', purpose: 'how much a habit saves', icon: CalculatorNavIcon },
+  { to: '/analytics', label: 'Analytics', purpose: 'your progress', icon: AnalyticsNavIcon },
+  { to: '/learn', label: 'Learn', purpose: 'tips', icon: LearnNavIcon },
 ]
 
 function computeFlatPath(w: number, h: number): string {
@@ -325,7 +326,8 @@ export const NotchDock: React.FC = () => {
               key={tab.to}
               to={tab.to}
               end={tab.to === '/'}
-              aria-label={tab.label}
+              title={`${tab.label}: ${tab.purpose}`}
+              aria-label={`${tab.label}: ${tab.purpose}`}
               aria-current={isActive ? 'page' : undefined}
               onClick={() =>
                 setDockClicks((prev) => ({

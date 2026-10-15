@@ -10,7 +10,7 @@ import {
   CHECKLIST_EXPIRY_DAYS,
   CHECKLIST_EXPIRY_MS,
 } from '../../../lib/checklist'
-import { CHECKLIST_DISMISSED_KEY, CHECKLIST_FIRST_SEEN_KEY } from '../../../lib/storage'
+import { CHECKLIST_DISMISSED_KEY, CHECKLIST_FIRST_SEEN_KEY, STORAGE_KEY } from '../../../lib/storage'
 import { AppStateProvider } from '../../../state/AppContext'
 
 // In-memory localStorage polyfill for Node test environment
@@ -75,9 +75,40 @@ describe('GettingStartedCard Expiry Logic', () => {
     expect(localStorage.getItem(CHECKLIST_FIRST_SEEN_KEY)).toBe(fallbackMs.toString())
   })
 
-  it('renders getting started card for fresh installation within 3 days', () => {
+  it('does not render when user has 0 reminders (hero card priority)', () => {
     const now = Date.now()
     localStorage.setItem(CHECKLIST_FIRST_SEEN_KEY, now.toString())
+
+    const html = renderToString(
+      <MemoryRouter>
+        <AppStateProvider>
+          <GettingStartedCard />
+        </AppStateProvider>
+      </MemoryRouter>
+    )
+
+    expect(html).toBe('')
+  })
+
+  it('renders getting started card when user has at least 1 reminder within 3 days', () => {
+    const now = Date.now()
+    localStorage.setItem(CHECKLIST_FIRST_SEEN_KEY, now.toString())
+    localStorage.setItem(STORAGE_KEY, JSON.stringify({
+      reminders: [{
+        id: 'rem-1',
+        title: 'Lights off',
+        time: '21:00',
+        recurrence: 'daily',
+        active: true,
+        applianceWatts: 60,
+        avoidedHours: 4,
+        category: 'lighting',
+        createdAt: '2026-01-01T00:00:00.000Z',
+      }],
+      completions: [],
+      settings: { displayName: '', tariffPerKwh: 8, currency: '₹', notificationsEnabled: false },
+      lastUpdated: new Date().toISOString(),
+    }))
 
     const html = renderToString(
       <MemoryRouter>
@@ -94,6 +125,22 @@ describe('GettingStartedCard Expiry Logic', () => {
   it('does not render (hides) when checklist was first seen over 3 days ago', () => {
     const fourDaysAgo = Date.now() - 4 * 24 * 60 * 60 * 1000
     localStorage.setItem(CHECKLIST_FIRST_SEEN_KEY, fourDaysAgo.toString())
+    localStorage.setItem(STORAGE_KEY, JSON.stringify({
+      reminders: [{
+        id: 'rem-1',
+        title: 'Lights off',
+        time: '21:00',
+        recurrence: 'daily',
+        active: true,
+        applianceWatts: 60,
+        avoidedHours: 4,
+        category: 'lighting',
+        createdAt: '2026-01-01T00:00:00.000Z',
+      }],
+      completions: [],
+      settings: { displayName: '', tariffPerKwh: 8, currency: '₹', notificationsEnabled: false },
+      lastUpdated: new Date().toISOString(),
+    }))
 
     const html = renderToString(
       <MemoryRouter>
@@ -111,6 +158,22 @@ describe('GettingStartedCard Expiry Logic', () => {
     const now = Date.now()
     localStorage.setItem(CHECKLIST_FIRST_SEEN_KEY, now.toString())
     localStorage.setItem(CHECKLIST_DISMISSED_KEY, 'true')
+    localStorage.setItem(STORAGE_KEY, JSON.stringify({
+      reminders: [{
+        id: 'rem-1',
+        title: 'Lights off',
+        time: '21:00',
+        recurrence: 'daily',
+        active: true,
+        applianceWatts: 60,
+        avoidedHours: 4,
+        category: 'lighting',
+        createdAt: '2026-01-01T00:00:00.000Z',
+      }],
+      completions: [],
+      settings: { displayName: '', tariffPerKwh: 8, currency: '₹', notificationsEnabled: false },
+      lastUpdated: new Date().toISOString(),
+    }))
 
     const html = renderToString(
       <MemoryRouter>
