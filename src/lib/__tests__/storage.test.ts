@@ -577,5 +577,83 @@ describe('Currency Selector Migration, Persistence, and Validation', () => {
     const result = parseAndValidateImport(corruptedExportJson)
     expect(result.success).toBe(false)
   })
+
+  it('Storage Safety: clean profile shows 0 starter reminders for hero card', () => {
+    // When no state exists in localStorage
+    const state = loadState()
+    expect(state.reminders).toEqual([])
+    expect(state.completions).toEqual([])
+    expect(state.reminders.length === 0).toBe(true)
+  })
+
+  it('Storage Safety: legacy profile from before changes keeps all reminders and completions, migrates without errors, and suppresses hero card', () => {
+    // Simulate pre-existing v1 data in PREVIOUS_STORAGE_KEY
+    const legacyV1State = {
+      reminders: [
+        {
+          id: 'legacy-rem-1',
+          title: 'Switch off air conditioner',
+          category: 'cooling',
+          time: '23:00',
+          recurrence: 'daily',
+          applianceWatts: 1500,
+          avoidedHours: 5,
+          active: true,
+          createdAt: '2026-09-01T12:00:00.000Z',
+        },
+        {
+          id: 'legacy-rem-2',
+          title: 'Unplug phone charger',
+          category: 'chargers',
+          time: '08:00',
+          recurrence: 'daily',
+          applianceWatts: 10,
+          avoidedHours: 8,
+          active: true,
+          createdAt: '2026-09-02T12:00:00.000Z',
+        },
+      ],
+      completions: [
+        {
+          id: 'legacy-comp-1',
+          reminderId: 'legacy-rem-1',
+          date: '2026-10-14',
+          completedAt: '2026-10-14T23:01:00.000Z',
+          kWh: 7.5,
+          costSaved: 60,
+          tariffAtTime: 8,
+        },
+      ],
+      settings: {
+        displayName: 'Alex',
+        tariffPerKwh: 8,
+        currency: '₹',
+        notificationsEnabled: true,
+      },
+      lastUpdated: '2026-10-14T23:05:00.000Z',
+    }
+
+    localStorage.setItem(PREVIOUS_STORAGE_KEY, JSON.stringify(legacyV1State))
+
+    // Call loadState() which should perform migration
+    const loaded = loadState()
+
+    // 1. Keeps ALL reminders and completions
+    expect(loaded.reminders).toHaveLength(2)
+    expect(loaded.reminders[0].title).toBe('Switch off air conditioner')
+    expect(loaded.reminders[1].title).toBe('Unplug phone charger')
+    expect(loaded.completions).toHaveLength(1)
+    expect(loaded.completions[0].title).toBe('Switch off air conditioner')
+    expect(loaded.completions[0].costSaved).toBe(60)
+
+    // 2. Saved to v2 storage key
+    const v2Raw = localStorage.getItem(STORAGE_KEY)
+    expect(v2Raw).not.toBeNull()
+    const parsedV2 = JSON.parse(v2Raw!)
+    expect(parsedV2.reminders).toHaveLength(2)
+
+    // 3. Suppresses hero card (reminders.length > 0)
+    expect(loaded.reminders.length === 0).toBe(false)
+  })
 })
 

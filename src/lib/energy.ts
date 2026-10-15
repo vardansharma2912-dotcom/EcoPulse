@@ -23,7 +23,7 @@ export function calculateKwh(watts: number, hours: number): number {
 }
 
 /**
- * Calculates money saved in rupees based on energy saved and tariff rate.
+ * Calculates estimated savings based on energy saved and tariff rate.
  * Formula: cost = kWh * tariffPerKwh
  * Rejects negative, NaN, or non-finite inputs by returning 0.
  */

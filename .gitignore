@@ -34,4 +34,6 @@ audit/
 scripts/snap-*.mjs
 /test_*.png
 /*_preview.png
-
+docs/verify/
+first_run_screenshots/
+.agents/

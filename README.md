@@ -54,15 +54,17 @@ Because individual students rarely see real-time utility bills or metering data,
 
 ## 2. Key Features
 
-- **Customizable Reminder Engine:** Set daily, weekday, weekly, or one-time prompts across 8 appliance categories (lighting, cooling, chargers, computing, appliances, standby power, shared spaces, and other).
-- **Light Glassmorphic Botanical Design:** Nature-inspired translucent light theme styled with tailored CSS glass tokens over layered botanical leaf artwork.
-- **Offline Support & Installable PWA:** Full Progressive Web App powered by `vite-plugin-pwa` and Workbox (`generateSW` with `autoUpdate`, `skipWaiting: true`, and `clientsClaim: true`). Pre-caches all built static application bundles, styling, fonts, and botanical media for complete offline capability. Note: Because EcoPulse operates entirely client-side without a remote push server, due reminder alerts and audio chimes trigger via local browser timers while the application tab remains open or minimized, rather than when the browser application is completely closed.
-- **Configurable Multi-Currency Selector:** Built-in settings currency selector supporting `₹ INR`, `$ USD`, `€ EUR`, and `£ GBP`. Dynamically applied across dashboard badges, energy calculators, trend cards, and history logs.
+- **First-Run Clarity & Guided Onboarding:** Clean, uncluttered first-time user experience. A new profile features a single hero card ("EcoPulse reminds you to switch things off. Add your first reminder in 10 seconds."), one prominent primary action, 6 one-tap quick-add habit templates, and a 3-step interactive tour (with skip and replay anytime from Settings). Secondary dashboard cards unlock progressively once the user records their first reminder and completion.
+- **Dual Light & Dark Themes:** Nature-inspired translucent Light theme (default) and a deep forest Dark theme with high-contrast accessibility tokens, smooth glassmorphism, zero-flash pre-paint hydration, and System preference synchronization.
+- **Customizable Reminder Engine:** Set daily, weekday, weekly, or one-time prompts with a simplified quick form and collapsible Advanced options (category, appliance wattage, avoided hours, notes).
+- **Offline Support & Installable PWA:** Full Progressive Web App powered by `vite-plugin-pwa` and Workbox (`generateSW` with `autoUpdate`, `skipWaiting: true`, and `clientsClaim: true`). Pre-caches all static bundles, styling, fonts, and botanical media. *Honest notice: Reminders and alerts fire via client-side timers while the browser tab remains open or minimized; alerts cannot trigger when the browser application is completely closed.*
+- **Configurable Multi-Currency Selector:** Built-in settings currency selector supporting `₹ INR`, `$ USD`, `€ EUR`, and `£ GBP`. Dynamically applied across dashboard metrics, energy calculators, trend cards, and history logs.
 - **Reliable In-App Due Alerts:** Floating glass toast banner with immediate action buttons (*Mark Done*, *Snooze 15 min*, and *Dismiss*) and accessible `aria-live="polite"` announcements.
 - **Native Browser Notifications:** Optional desktop notifications triggered when due reminders fire, automatically bringing the browser tab to focus on click.
-- **Standalone Energy Calculator:** What-if estimation tool with 10 appliance presets (LED bulb, tube light, ceiling fan, laptop charger, desktop PC, monitor, AC 1.5 ton, TV, phone charger, custom). Displays real-time step-by-step formula substitutions across daily, weekly, monthly, and annual horizons, with a 1-click button to prefill custom reminders.
+- **Standalone Energy Calculator:** "Calculator: estimate how much a habit saves." What-if estimation tool with 10 appliance presets (LED bulb, tube light, ceiling fan, laptop charger, desktop PC, monitor, AC 1.5 ton, TV, phone charger, custom). Displays step-by-step formula substitutions across daily, weekly, monthly, and annual horizons, with a 1-click button to prefill custom reminders.
 - **Conservation Analytics & Trends:**
-  - Weekly Mon–Sun bar chart (Recharts) toggling between estimated kWh saved and completed actions.
+  - Weekly Mon–Sun bar chart (Recharts) toggling between estimated kWh avoided and completed actions.
+  - Estimated savings metrics calculated dynamically against active utility tariffs.
   - Week-over-week comparative cards (this week vs. last week).
   - Habit streak counter (current active streak and all-time record).
   - Dynamic milestone achievement badges (never stored, derived live from activity).
@@ -71,7 +73,7 @@ Because individual students rarely see real-time utility bills or metering data,
 - **Data Portability (Export & Import):** Instant JSON backup export and validated schema import, enabling effortless data preservation and migration across browsers.
 - **Route Code-Splitting:** Dynamic `React.lazy` routing with custom glass loading fallbacks ensuring sub-300 kB initial bundle size for rapid first contentful paint.
 - **Presentation Demo Data:** Settings toggle to load ~14 days of realistic demonstration completions clearly flagged as `isDemo: true`, allowing complete evaluation without compromising authentic user history.
-- **Local Client Storage:** Pure browser `localStorage` persistence with backward-compatible schema migration (v1 to v2) and full data reset controls.
+- **Local Client Storage:** Pure browser `localStorage` persistence with backward-compatible schema migration (v1 to v2), robust migration tests, and full data reset controls.
 
 ---
 
@@ -80,12 +82,12 @@ Because individual students rarely see real-time utility bills or metering data,
 - **Framework:** React 19 + TypeScript (Strict Mode)
 - **Build Tool:** Vite 8
 - **PWA & Offline:** `vite-plugin-pwa` (Workbox Service Worker + Auto-Update)
-- **Styling:** Tailwind CSS v4 + Vanilla CSS glassmorphic tokens
+- **Styling:** Tailwind CSS v4 + Vanilla CSS glassmorphic tokens & dark theme variables
 - **Animations:** Motion 14 (spring physics & 3D carousel transforms)
 - **Data Visualization:** Recharts 3
 - **Icons:** Lucide React
 - **Typography:** Geist Sans (`@fontsource/geist-sans`) for clean UI hierarchy and Geist Mono (`@fontsource/geist-mono`) for tabular numeric data (SIL Open Font License)
-- **Testing:** Vitest 5 (26 test files, 171 tests)
+- **Testing:** Vitest 5 (37 test files, 251 tests)
 - **Linter:** Oxlint
 - **Browser Automation:** Playwright (Mobile/desktop viewport audit & automated screenshot captures)
 

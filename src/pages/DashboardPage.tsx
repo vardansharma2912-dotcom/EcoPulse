@@ -729,7 +729,7 @@ export const DashboardPage: React.FC = () => {
               </span>
             </div>
 
-            {/* Main Metric: Total Money Saved */}
+            {/* Main Metric: Estimated Savings */}
             <div className="relative z-10 py-0.5 my-auto">
               <span className="text-[10px] font-bold uppercase tracking-wider text-emerald-300/90 block mb-0.5">
                 Total Financial Savings

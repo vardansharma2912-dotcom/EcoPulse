@@ -139,7 +139,7 @@ export const CalculatorPage: React.FC = () => {
     >
       <PageHeader
         title="Calculator"
-        description="Calculator: how much a habit saves."
+        description="Calculator: estimate how much a habit saves."
       />
 
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">

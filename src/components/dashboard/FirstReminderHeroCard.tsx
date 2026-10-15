@@ -124,14 +124,14 @@ export const FirstReminderHeroCard: React.FC<FirstReminderHeroCardProps> = ({
       <div className="max-w-xl mx-auto space-y-4 sm:space-y-5">
         {/* Short Plain Headline Sentence */}
         <div className="space-y-1.5 sm:space-y-2">
-          <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-emerald-800/10 text-emerald-900 border border-emerald-800/15">
-            <span className="w-1.5 h-1.5 rounded-full bg-emerald-600 animate-pulse" />
+          <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-emerald-800/10 dark:bg-emerald-500/20 text-emerald-900 dark:text-emerald-300 border border-emerald-800/15 dark:border-emerald-500/30">
+            <span className="w-1.5 h-1.5 rounded-full bg-emerald-600 dark:bg-emerald-400 animate-pulse" />
             Quick Start
           </span>
-          <h2 className="text-lg sm:text-xl md:text-2xl font-extrabold text-[#0d2818] tracking-tight leading-snug">
+          <h2 className="text-lg sm:text-xl md:text-2xl font-extrabold text-[#0d2818] dark:text-[#f0fdf4] tracking-tight leading-snug">
             EcoPulse reminds you to switch things off. Add your first reminder in 10 seconds.
           </h2>
-          <p className="text-xs sm:text-sm text-[#1e3f2b] font-medium max-w-md mx-auto">
+          <p className="text-xs sm:text-sm text-[#1e3f2b] dark:text-emerald-200/80 font-medium max-w-md mx-auto">
             Choose a common campus habit below, or make your own custom reminder.
           </p>
         </div>
@@ -151,8 +151,8 @@ export const FirstReminderHeroCard: React.FC<FirstReminderHeroCardProps> = ({
         </div>
 
         {/* 4-6 One-Tap Quick-Add Templates */}
-        <div className="pt-2 sm:pt-3 border-t border-emerald-900/10">
-          <p className="text-[11px] font-bold uppercase tracking-wider text-[#1e3f2b]/80 mb-2.5">
+        <div className="pt-2 sm:pt-3 border-t border-emerald-900/10 dark:border-white/10">
+          <p className="text-[11px] font-bold uppercase tracking-wider text-[#1e3f2b]/80 dark:text-emerald-300/90 mb-2.5">
             Or tap a 1-tap template to prefill:
           </p>
           <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 sm:gap-2.5 text-left">
@@ -163,21 +163,21 @@ export const FirstReminderHeroCard: React.FC<FirstReminderHeroCardProps> = ({
                   key={tpl.id}
                   type="button"
                   onClick={() => onSelectTemplate(tpl)}
-                  className="group relative flex flex-col justify-between p-2.5 sm:p-3 rounded-xl bg-white/70 hover:bg-white border border-emerald-900/10 hover:border-emerald-700/40 shadow-2xs hover:shadow-xs transition-all cursor-pointer text-left"
+                  className="group relative flex flex-col justify-between p-2.5 sm:p-3 rounded-xl bg-white/70 hover:bg-white dark:bg-white/[0.06] dark:hover:bg-white/[0.12] border border-emerald-900/10 hover:border-emerald-700/40 dark:border-white/10 dark:hover:border-emerald-400/40 shadow-2xs hover:shadow-xs transition-all cursor-pointer text-left"
                 >
                   <div className="flex items-center gap-2 mb-1">
-                    <span className="w-6 h-6 rounded-lg bg-emerald-800/10 group-hover:bg-emerald-700 group-hover:text-white text-emerald-800 flex items-center justify-center shrink-0 transition-colors">
+                    <span className="w-6 h-6 rounded-lg bg-emerald-800/10 dark:bg-emerald-500/20 group-hover:bg-emerald-700 group-hover:text-white text-emerald-800 dark:text-emerald-300 flex items-center justify-center shrink-0 transition-colors">
                       <Icon className="w-3.5 h-3.5" />
                     </span>
-                    <span className="text-[10px] text-slate-500 font-semibold font-mono">
+                    <span className="text-[10px] text-slate-500 dark:text-stone-400 font-semibold font-mono">
                       {tpl.reminder.time}
                     </span>
                   </div>
                   <div>
-                    <h3 className="text-xs font-bold text-[#0d2818] leading-tight line-clamp-2 group-hover:text-emerald-900">
+                    <h3 className="text-xs font-bold text-[#0d2818] dark:text-[#f0fdf4] leading-tight line-clamp-2 group-hover:text-emerald-900 dark:group-hover:text-emerald-200">
                       {tpl.label}
                     </h3>
-                    <p className="text-[10px] text-emerald-700 font-medium mt-0.5">
+                    <p className="text-[10px] text-emerald-700 dark:text-emerald-400 font-medium mt-0.5">
                       {tpl.hint}
                     </p>
                   </div>
@@ -192,7 +192,7 @@ export const FirstReminderHeroCard: React.FC<FirstReminderHeroCardProps> = ({
             <button
               type="button"
               onClick={onOpenTour}
-              className="text-xs font-semibold text-emerald-800 hover:text-emerald-950 underline underline-offset-2 transition-colors cursor-pointer"
+              className="text-xs font-semibold text-emerald-800 hover:text-emerald-950 dark:text-emerald-300 dark:hover:text-emerald-100 underline underline-offset-2 transition-colors cursor-pointer"
             >
               How EcoPulse works (3-step walkthrough)
             </button>

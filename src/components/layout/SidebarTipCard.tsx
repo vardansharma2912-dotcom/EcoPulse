@@ -9,11 +9,11 @@ const ENERGY_TIPS = [
   },
   {
     title: 'Optimal AC Set-Point',
-    text: 'Set cooling to 24°C to save up to 24% on compressor energy.',
+    text: 'Set cooling to 24°C to reduce compressor workload and energy draw.',
   },
   {
     title: 'Unplug Idle Chargers',
-    text: 'Unplug charging bricks once phones and laptops reach 100%.',
+    text: 'Unplug charging bricks once phones and laptops reach full charge.',
   },
   {
     title: 'Laptop Power Saver',
