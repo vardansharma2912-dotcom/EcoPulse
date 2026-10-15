@@ -140,14 +140,14 @@ export const GettingStartedCard: React.FC<GettingStartedCardProps> = ({ onOpenAd
             <span className="w-6 h-6 rounded-lg bg-emerald-700 text-white flex items-center justify-center shrink-0">
               <Sparkles className="w-3.5 h-3.5" />
             </span>
-            <h3 className="text-sm font-bold text-[#14301f] tracking-tight truncate">
+            <h3 className="text-sm font-bold text-[var(--text-primary)] tracking-tight truncate">
               Getting Started Checklist
             </h3>
-            <span className="text-xs font-semibold px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-900 shrink-0">
+            <span className="text-xs font-semibold px-2 py-0.5 rounded-full bg-emerald-100 dark:bg-emerald-900/60 text-emerald-900 dark:text-emerald-200 shrink-0">
               {completedCount} of {items.length}
             </span>
           </div>
-          <p className="text-xs text-slate-600 font-medium">
+          <p className="text-xs text-[var(--text-secondary)] font-medium">
             Complete small milestones to get the most out of EcoPulse.
           </p>
         </div>

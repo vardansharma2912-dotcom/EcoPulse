@@ -39,7 +39,7 @@ export const GlassLoadingFallback: React.FC = () => (
         className="w-5 h-5 rounded-full border-2 border-emerald-600/30 border-t-emerald-700 animate-spin"
         aria-hidden="true"
       />
-      <span className="text-sm font-semibold text-[#14301f] tracking-wide">
+      <span className="text-sm font-semibold text-[var(--text-primary)] tracking-wide">
         Loading EcoPulse...
       </span>
     </div>

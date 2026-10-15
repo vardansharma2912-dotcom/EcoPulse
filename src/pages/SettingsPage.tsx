@@ -682,10 +682,10 @@ export const SettingsPage: React.FC = () => {
       <motion.div variants={cardVariants}>
         <Card variant="glass" className="p-4 sm:p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
           <div className="space-y-1">
-            <h3 className="text-sm font-bold text-[#14301f] flex items-center gap-2">
-              <Sparkles className="w-4 h-4 text-emerald-800" /> First-Run Walkthrough
+            <h3 className="text-sm font-bold text-[var(--text-primary)] flex items-center gap-2">
+              <Sparkles className="w-4 h-4 text-emerald-800 dark:text-emerald-400" /> First-Run Walkthrough
             </h3>
-            <p className="text-xs text-[#1e3f2b]">
+            <p className="text-xs text-[var(--text-secondary)]">
               Need a quick refresher? Replay the 3-step walkthrough to see how EcoPulse works.
             </p>
           </div>
@@ -693,7 +693,7 @@ export const SettingsPage: React.FC = () => {
             type="button"
             variant="outline"
             size="sm"
-            icon={<RotateCcw className="w-3.5 h-3.5 text-emerald-800" />}
+            icon={<RotateCcw className="w-3.5 h-3.5 text-emerald-800 dark:text-emerald-300" />}
             onClick={() => openTour(false)}
           >
             Replay Tour
