@@ -23,7 +23,7 @@ export const Card: React.FC<CardProps> = ({
 
   return (
     <div
-      className={`${variantClass} text-[#14301f] ${paddingClasses[padding]} ${className}`}
+      className={`${variantClass} text-[var(--text-primary)] ${paddingClasses[padding]} ${className}`}
       {...props}
     >
       {children}

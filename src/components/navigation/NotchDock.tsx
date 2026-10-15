@@ -282,8 +282,8 @@ export const NotchDock: React.FC = () => {
       >
         <path
           d={renderedPlatePath}
-          fill="rgba(255, 255, 255, 0.94)"
-          stroke="rgba(25, 111, 69, 0.16)"
+          fill="var(--dock-plate-fill)"
+          stroke="var(--dock-plate-stroke)"
           strokeWidth="1"
         />
       </svg>
@@ -299,7 +299,7 @@ export const NotchDock: React.FC = () => {
             marginLeft: `-${beadDiameter / 2}px`,
             top: '-18px',
           }}
-          className="absolute z-20 flex items-center justify-center rounded-full bg-gradient-to-b from-[#1f7a4d] to-[#0a381e] text-white shadow-[0_6px_18px_rgba(20,48,31,0.32)] border border-emerald-300/40 pointer-events-none"
+          className="absolute z-20 flex items-center justify-center rounded-full bg-gradient-to-b from-[var(--dock-bead-gradient-from)] to-[var(--dock-bead-gradient-to)] text-white shadow-[0_6px_18px_rgba(20,48,31,0.32)] border border-[var(--dock-bead-border)] pointer-events-none"
         >
           <ActiveIcon
             className="w-5 h-5"
@@ -334,12 +334,12 @@ export const NotchDock: React.FC = () => {
                 }))
               }
               onKeyDown={(e) => handleDockKeyDown(e, idx)}
-              className={`flex-1 flex flex-col items-center justify-end pb-2 pt-1 relative transition-colors cursor-pointer group focus-visible:outline-2 focus-visible:outline-emerald-800 focus-visible:outline-offset-[-2px] rounded-xl ${
-                isActive ? 'text-[#0a381e]' : 'text-[#2d4a37] hover:text-[#0a381e]'
+              className={`flex-1 flex flex-col items-center justify-end pb-2 pt-1 relative transition-colors cursor-pointer group focus-visible:outline-2 focus-visible:outline-[var(--focus-ring)] focus-visible:outline-offset-[-2px] rounded-xl ${
+                isActive ? 'text-[var(--dock-text-active)]' : 'text-[var(--dock-text-inactive)] hover:text-[var(--dock-text-active)]'
               }`}
             >
               {!isActive && (
-                <div className="relative p-1 text-[#2d4a37] group-hover:text-[#0a381e] group-active:scale-95 transition-transform duration-150 motion-reduce:transform-none">
+                <div className="relative p-1 text-[var(--dock-text-inactive)] group-hover:text-[var(--dock-text-active)] group-active:scale-95 transition-transform duration-150 motion-reduce:transform-none">
                   <Icon className="w-5 h-5" trigger={dockClicks[tab.to] || 0} />
                   {tab.to === '/reminders' && pendingCount > 0 && (
                     <span className="absolute -top-1 -right-1 min-w-[16px] h-4 px-1 rounded-full bg-emerald-700 text-white text-[10px] font-bold flex items-center justify-center border border-white">
@@ -352,8 +352,8 @@ export const NotchDock: React.FC = () => {
               <span
                 className={`text-[10px] tracking-tight leading-none mt-0.5 transition-all ${
                   isActive
-                    ? 'font-bold text-[#0a381e]'
-                    : 'font-semibold text-[#2d4a37] group-hover:text-[#0a381e]'
+                    ? 'font-bold text-[var(--dock-text-active)]'
+                    : 'font-semibold text-[var(--dock-text-inactive)] group-hover:text-[var(--dock-text-active)]'
                 }`}
               >
                 {tab.label}

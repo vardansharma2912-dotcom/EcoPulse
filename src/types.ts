@@ -37,12 +37,14 @@ export interface Completion {
 }
 
 export type CurrencySymbol = '₹' | '$' | '€' | '£'
+export type ThemeMode = 'system' | 'light' | 'dark'
 
 export interface Settings {
   displayName: string
   tariffPerKwh: number // Default 8
   currency: CurrencySymbol // Default '₹'
   notificationsEnabled: boolean
+  theme?: ThemeMode // Default 'light'
 }
 
 export interface AppState {

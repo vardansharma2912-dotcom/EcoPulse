@@ -19,15 +19,17 @@ export const Logo: React.FC<LogoProps> = ({
   const numericSize = typeof size === 'number' ? size : parseInt(String(size), 10) || 40
 
   const imgElement = (
-    <img
-      src={logoSrc}
-      height={numericSize}
-      alt="EcoPulse logo"
-      style={{ height: `${numericSize}px`, width: 'auto' }}
-      className={`shrink-0 object-contain translate-y-[1px] ${imageClassName}`}
-      loading="eager"
-      decoding="async"
-    />
+    <div className="dark-logo-chip inline-flex items-center justify-center transition-all">
+      <img
+        src={logoSrc}
+        height={numericSize}
+        alt="EcoPulse logo"
+        style={{ height: `${numericSize}px`, width: 'auto' }}
+        className={`shrink-0 object-contain translate-y-[1px] ${imageClassName}`}
+        loading="eager"
+        decoding="async"
+      />
+    </div>
   )
 
   if (withWordmark) {
@@ -43,12 +45,12 @@ export const Logo: React.FC<LogoProps> = ({
         {imgElement}
         <div className="min-w-0">
           <span
-            className={`font-semibold tracking-[-0.02em] leading-none text-[#123d29] whitespace-nowrap block font-sans ${textSizeClass}`}
+            className={`font-semibold tracking-[-0.02em] leading-none text-[var(--text-primary)] whitespace-nowrap block font-sans ${textSizeClass}`}
           >
             EcoPulse
           </span>
           {showTagline && (
-            <p className="text-[#1e3f2b] font-medium leading-none text-xs mt-1 truncate">
+            <p className="text-[var(--text-secondary)] font-medium leading-none text-xs mt-1 truncate">
               Smart Energy Reminder
             </p>
           )}

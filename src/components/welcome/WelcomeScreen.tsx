@@ -95,7 +95,7 @@ export const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ onComplete }) => {
         initial="hidden"
         animate="visible"
         exit="exit"
-        className="glass-strong max-w-[420px] sm:max-w-[440px] w-full p-5 sm:p-6 rounded-3xl shadow-2xl border border-white/70 space-y-4 text-center select-none backdrop-blur-xl bg-white/65"
+        className="glass-strong max-w-[420px] sm:max-w-[440px] w-full p-5 sm:p-6 rounded-3xl shadow-2xl border border-white/70 dark:border-white/10 space-y-4 text-center select-none backdrop-blur-xl bg-white/65 dark:bg-white/[0.07]"
       >
         {/* EcoPulse Brand Logo (about 80px) */}
         <motion.div variants={itemVariants} className="flex justify-center">
@@ -104,17 +104,17 @@ export const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ onComplete }) => {
 
         {/* Header & Tagline */}
         <motion.div variants={itemVariants} className="space-y-1">
-          <h2 className="text-xl sm:text-2xl font-extrabold text-[#14301f] tracking-tight">
+          <h2 className="text-xl sm:text-2xl font-extrabold text-[var(--text-primary)] tracking-tight">
             Welcome to EcoPulse
           </h2>
-          <p className="text-xs sm:text-sm text-slate-600 font-medium">
+          <p className="text-xs sm:text-sm text-[var(--text-secondary)] font-medium">
             Small habits, tracked honestly.
           </p>
         </motion.div>
 
         {/* Live Greeting Preview Badge */}
         <motion.div variants={itemVariants}>
-          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-100/70 border border-emerald-300/40 text-xs sm:text-sm font-bold text-emerald-900 tracking-tight">
+          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-100/70 dark:bg-emerald-950/40 border border-emerald-300/40 dark:border-emerald-600/30 text-xs sm:text-sm font-bold text-emerald-900 dark:text-emerald-200 tracking-tight">
             <span>{previewGreeting}</span>
           </div>
         </motion.div>
@@ -137,10 +137,10 @@ export const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ onComplete }) => {
               }}
               maxLength={40}
               autoFocus
-              className="w-full px-3.5 py-2 sm:py-2.5 text-sm rounded-xl bg-white/80 border border-emerald-950/20 text-[#14301f] placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-700/50 transition-all font-medium"
+              className="w-full px-3.5 py-2 sm:py-2.5 text-sm rounded-xl bg-white/80 dark:bg-white/[0.06] border border-emerald-950/20 dark:border-white/15 text-[var(--text-primary)] placeholder:text-slate-400 dark:placeholder:text-stone-500 focus:outline-none focus:ring-2 focus:ring-emerald-700/50 dark:focus:ring-emerald-400/50 transition-all font-medium"
             />
             {error && (
-              <p className="text-[11px] text-rose-700 font-semibold px-1 pt-0.5">
+              <p className="text-[11px] text-rose-700 dark:text-rose-400 font-semibold px-1 pt-0.5">
                 {error}
               </p>
             )}
@@ -159,7 +159,7 @@ export const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ onComplete }) => {
               <button
                 type="button"
                 onClick={handleSkip}
-                className="text-xs text-slate-500 hover:text-emerald-950 transition-colors font-medium underline underline-offset-2 cursor-pointer"
+                className="text-xs text-slate-500 dark:text-[var(--text-secondary)] hover:text-emerald-950 dark:hover:text-emerald-200 transition-colors font-medium underline underline-offset-2 cursor-pointer"
               >
                 Skip for now
               </button>
@@ -170,9 +170,9 @@ export const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ onComplete }) => {
         {/* Privacy Note */}
         <motion.div
           variants={itemVariants}
-          className="pt-2 border-t border-emerald-900/10 flex items-center justify-center gap-1.5 text-[11px] text-emerald-900/75 font-semibold"
+          className="pt-2 border-t border-emerald-900/10 dark:border-white/10 flex items-center justify-center gap-1.5 text-[11px] text-emerald-900/75 dark:text-[var(--text-secondary)] font-semibold"
         >
-          <ShieldCheck className="w-3.5 h-3.5 text-emerald-700 shrink-0" />
+          <ShieldCheck className="w-3.5 h-3.5 text-emerald-700 dark:text-emerald-400 shrink-0" />
           <span>Saved only in this browser. No account needed.</span>
         </motion.div>
       </motion.div>
@@ -182,18 +182,18 @@ export const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ onComplete }) => {
         initial={{ opacity: 0, y: isReducedMotion ? 0 : 12 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: isReducedMotion ? 0 : 0.25, duration: isReducedMotion ? 0 : 0.35 }}
-        className="flex flex-wrap items-center justify-center gap-x-3.5 sm:gap-x-4 gap-y-1 mt-3 px-2 text-xs font-semibold text-[#14301f]/85 select-none"
+        className="flex flex-wrap items-center justify-center gap-x-3.5 sm:gap-x-4 gap-y-1 mt-3 px-2 text-xs font-semibold text-[var(--text-primary)] select-none"
       >
         <div className="flex items-center gap-1.5">
-          <Bell className="w-3.5 h-3.5 text-emerald-800 shrink-0" />
+          <Bell className="w-3.5 h-3.5 text-emerald-800 dark:text-emerald-400 shrink-0" />
           <span>Reminders</span>
         </div>
         <div className="flex items-center gap-1.5">
-          <Zap className="w-3.5 h-3.5 text-emerald-800 shrink-0" />
+          <Zap className="w-3.5 h-3.5 text-emerald-800 dark:text-emerald-400 shrink-0" />
           <span>Estimated savings</span>
         </div>
         <div className="flex items-center gap-1.5">
-          <Flame className="w-3.5 h-3.5 text-amber-700 shrink-0" />
+          <Flame className="w-3.5 h-3.5 text-amber-700 dark:text-amber-400 shrink-0" />
           <span>Streaks</span>
         </div>
       </motion.div>

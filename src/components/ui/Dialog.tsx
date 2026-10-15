@@ -117,7 +117,7 @@ export const Dialog: React.FC<DialogProps> = ({
             exit={{ opacity: 0 }}
             transition={{ duration: 0.15 }}
             onClick={onClose}
-            className="fixed inset-0 bg-[#0a381e]/40 backdrop-blur-[3px]"
+            className="fixed inset-0 bg-[#0a381e]/40 dark:bg-black/60 backdrop-blur-[3px]"
             aria-hidden="true"
           />
 
@@ -129,16 +129,16 @@ export const Dialog: React.FC<DialogProps> = ({
             aria-labelledby="dialog-title"
             tabIndex={-1}
             {...dialogMotionProps}
-            className="relative z-10 w-full max-w-lg max-h-[90dvh] flex flex-col rounded-2xl glass-strong text-[#14301f] border border-white/80 p-0 shadow-2xl overflow-hidden my-auto focus:outline-none"
+            className="relative z-10 w-full max-w-lg max-h-[90dvh] flex flex-col rounded-2xl glass-strong text-[var(--text-primary)] border border-white/80 dark:border-white/15 p-0 shadow-2xl overflow-hidden my-auto focus:outline-none"
           >
             <div className="p-4 sm:p-6 flex flex-col max-h-[90dvh] overflow-y-auto">
               <div className="flex items-start justify-between gap-3 sm:gap-4 mb-4">
                 <div>
-                  <h2 id="dialog-title" className="text-base sm:text-lg font-bold text-[#14301f] tracking-tight">
+                  <h2 id="dialog-title" className="text-base sm:text-lg font-bold text-[var(--text-primary)] tracking-tight">
                     {title}
                   </h2>
                   {description && (
-                    <p className="text-xs text-[#1e3f2b] mt-1 leading-relaxed font-medium">
+                    <p className="text-xs text-[var(--text-secondary)] mt-1 leading-relaxed font-medium">
                       {description}
                     </p>
                   )}
@@ -147,12 +147,12 @@ export const Dialog: React.FC<DialogProps> = ({
                   type="button"
                   onClick={onClose}
                   aria-label="Close dialog"
-                  className="p-1.5 rounded-lg text-slate-700 hover:text-emerald-950 hover:bg-emerald-900/10 transition-colors cursor-pointer shrink-0"
+                  className="p-1.5 rounded-lg text-slate-700 dark:text-[#9db8a6] hover:text-emerald-950 dark:hover:text-[#e8f5ec] hover:bg-emerald-900/10 dark:hover:bg-white/10 transition-colors cursor-pointer shrink-0"
                 >
                   <X className="w-5 h-5" />
                 </button>
               </div>
-              <div className="mt-2 text-[#14301f]">{children}</div>
+              <div className="mt-2 text-[var(--text-primary)]">{children}</div>
             </div>
           </motion.div>
         </div>

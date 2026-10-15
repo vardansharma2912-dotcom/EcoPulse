@@ -69,8 +69,8 @@ export const WeekGlanceExpandedFiller: React.FC<WeekGlanceExpandedFillerProps> =
       {/* Header */}
       <div className="flex items-center justify-between gap-2">
         <div className="flex items-center gap-2 min-w-0">
-          <CalendarDays className="w-4 h-4 text-emerald-800 shrink-0" />
-          <h3 className="text-sm font-bold text-[#102819] truncate">
+          <CalendarDays className="w-4 h-4 text-emerald-800 dark:text-emerald-400 shrink-0" />
+          <h3 className="text-sm font-bold text-[var(--text-primary)] truncate">
             This Week at a Glance
           </h3>
         </div>
@@ -94,8 +94,8 @@ export const WeekGlanceExpandedFiller: React.FC<WeekGlanceExpandedFillerProps> =
                 <span
                   className={`text-[10px] leading-tight ${
                     day.isToday
-                      ? 'font-extrabold text-emerald-950 underline decoration-emerald-600 decoration-2 underline-offset-2'
-                      : 'font-semibold text-slate-600'
+                      ? 'font-extrabold text-emerald-950 dark:text-emerald-300 underline decoration-emerald-600 decoration-2 underline-offset-2'
+                      : 'font-semibold text-slate-600 dark:text-[var(--text-secondary)]'
                   }`}
                 >
                   {day.dayLabel}
@@ -104,14 +104,14 @@ export const WeekGlanceExpandedFiller: React.FC<WeekGlanceExpandedFillerProps> =
                 <div
                   className={`w-7 h-7 rounded-full flex items-center justify-center transition-all ${
                     day.isToday
-                      ? 'ring-2 ring-emerald-600 ring-offset-2 ring-offset-white/80 shadow-xs'
+                      ? 'ring-2 ring-emerald-600 ring-offset-2 ring-offset-white/80 dark:ring-offset-emerald-950 shadow-xs'
                       : ''
                   } ${
                     isCompleted
                       ? 'bg-emerald-600 text-white shadow-xs border border-emerald-700/60'
                       : isMissed
-                      ? 'border border-slate-300 dark:border-slate-600 bg-slate-100/50'
-                      : 'border-2 border-dashed border-slate-300 dark:border-slate-600 bg-white/40'
+                      ? 'border border-slate-300 dark:border-slate-600 bg-slate-100/50 dark:bg-white/5'
+                      : 'border-2 border-dashed border-slate-300 dark:border-slate-600 bg-white/40 dark:bg-white/[0.04]'
                   }`}
                   style={
                     isMissed
@@ -127,7 +127,7 @@ export const WeekGlanceExpandedFiller: React.FC<WeekGlanceExpandedFillerProps> =
                   ) : (
                     <span
                       className={`text-[10px] font-mono tabular-nums leading-none ${
-                        day.isToday ? 'font-bold text-emerald-950' : 'text-slate-400 font-medium'
+                        day.isToday ? 'font-bold text-emerald-950 dark:text-emerald-300' : 'text-slate-400 dark:text-stone-500 font-medium'
                       }`}
                     >
                       {day.dayNumber}
@@ -165,10 +165,10 @@ export const WeekGlanceExpandedFiller: React.FC<WeekGlanceExpandedFillerProps> =
                     className={`w-full max-w-[18px] rounded-full transition-all ${
                       hasActivity
                         ? 'bg-emerald-600 border border-emerald-700/60 shadow-2xs'
-                        : 'bg-emerald-950/10'
+                        : 'bg-emerald-950/10 dark:bg-white/10'
                     }`}
                   />
-                  <span className="text-[9px] font-mono text-slate-500">{d.day[0]}</span>
+                  <span className="text-[9px] font-mono text-slate-500 dark:text-[var(--text-secondary)]">{d.day[0]}</span>
                 </div>
               )
             })}
@@ -179,46 +179,46 @@ export const WeekGlanceExpandedFiller: React.FC<WeekGlanceExpandedFillerProps> =
       {/* 3 Stat Tiles */}
       {!hideStats && (
         stats.isEmpty ? (
-          <div className="rounded-xl border border-dashed border-emerald-800/20 bg-emerald-50/40 p-2 text-center">
-            <p className="text-xs text-[#1e3f2b] font-medium">
+          <div className="rounded-xl border border-dashed border-emerald-800/20 dark:border-white/10 bg-emerald-50/40 dark:bg-emerald-950/40 p-2 text-center">
+            <p className="text-xs text-[var(--text-secondary)] font-medium">
               Complete your first reminder to see your week here
             </p>
           </div>
         ) : (
           <div className="grid grid-cols-3 gap-2">
-            <div className="rounded-xl border border-white/70 bg-white/60 p-1.5 text-center shadow-2xs">
-              <span className="text-[10px] font-bold uppercase tracking-wider text-slate-600 block truncate">
+            <div className="rounded-xl border border-white/70 dark:border-white/10 bg-white/60 dark:bg-white/[0.06] p-1.5 text-center shadow-2xs">
+              <span className="text-[10px] font-bold uppercase tracking-wider text-slate-600 dark:text-[var(--text-secondary)] block truncate">
                 Actions
               </span>
-              <p className="text-base font-extrabold text-[#0f2819] tabular-nums leading-tight mt-0.5">
+              <p className="text-base font-extrabold text-[var(--text-primary)] tabular-nums leading-tight mt-0.5">
                 <CountUp value={stats.actionsThisWeek} />
               </p>
-              <span className="text-[9px] font-medium text-emerald-800 block truncate">
+              <span className="text-[9px] font-medium text-emerald-800 dark:text-emerald-400 block truncate">
                 this week
               </span>
             </div>
 
-            <div className="rounded-xl border border-white/70 bg-white/60 p-1.5 text-center shadow-2xs">
-              <span className="text-[10px] font-bold uppercase tracking-wider text-slate-600 block truncate">
+            <div className="rounded-xl border border-white/70 dark:border-white/10 bg-white/60 dark:bg-white/[0.06] p-1.5 text-center shadow-2xs">
+              <span className="text-[10px] font-bold uppercase tracking-wider text-slate-600 dark:text-[var(--text-secondary)] block truncate">
                 Avoided
               </span>
-              <p className="text-base font-extrabold text-[#0f2819] tabular-nums leading-tight mt-0.5">
+              <p className="text-base font-extrabold text-[var(--text-primary)] tabular-nums leading-tight mt-0.5">
                 <CountUp value={stats.kwhAvoidedThisWeek} decimals={2} />
-                <span className="text-[10px] font-bold text-emerald-900 ml-0.5">kWh</span>
+                <span className="text-[10px] font-bold text-emerald-900 dark:text-emerald-300 ml-0.5">kWh</span>
               </p>
-              <span className="text-[9px] font-medium text-emerald-800 block truncate">
+              <span className="text-[9px] font-medium text-emerald-800 dark:text-emerald-400 block truncate">
                 this week
               </span>
             </div>
 
-            <div className="rounded-xl border border-white/70 bg-white/60 p-1.5 text-center shadow-2xs">
-              <span className="text-[10px] font-bold uppercase tracking-wider text-slate-600 block truncate">
+            <div className="rounded-xl border border-white/70 dark:border-white/10 bg-white/60 dark:bg-white/[0.06] p-1.5 text-center shadow-2xs">
+              <span className="text-[10px] font-bold uppercase tracking-wider text-slate-600 dark:text-[var(--text-secondary)] block truncate">
                 Best Day
               </span>
-              <p className="text-base font-extrabold text-[#0f2819] leading-tight mt-0.5">
+              <p className="text-base font-extrabold text-[var(--text-primary)] leading-tight mt-0.5">
                 {stats.bestDay}
               </p>
-              <span className="text-[9px] font-medium text-emerald-800 block truncate">
+              <span className="text-[9px] font-medium text-emerald-800 dark:text-emerald-400 block truncate">
                 most active
               </span>
             </div>
@@ -227,19 +227,19 @@ export const WeekGlanceExpandedFiller: React.FC<WeekGlanceExpandedFillerProps> =
       )}
 
       {/* Next Up Line */}
-      <div className="pt-2 border-t border-emerald-900/10 flex items-center justify-between gap-2 text-xs">
-        <div className="flex items-center gap-1.5 min-w-0 text-[#102819]">
-          <Clock className="w-3.5 h-3.5 text-emerald-800 shrink-0" />
+      <div className="pt-2 border-t border-emerald-900/10 dark:border-white/10 flex items-center justify-between gap-2 text-xs">
+        <div className="flex items-center gap-1.5 min-w-0 text-[var(--text-primary)]">
+          <Clock className="w-3.5 h-3.5 text-emerald-800 dark:text-emerald-400 shrink-0" />
           {nextUp ? (
             <p className="truncate font-medium text-[11px]">
-              <span className="font-bold text-emerald-950">Next up:</span>{' '}
+              <span className="font-bold text-emerald-950 dark:text-emerald-300">Next up:</span>{' '}
               {nextUp.title}{' '}
-              <span className="text-slate-500 font-mono">
+              <span className="text-slate-500 dark:text-[var(--text-secondary)] font-mono">
                 ({nextUp.type === 'tomorrow' ? 'Tomorrow ' : ''}{nextUp.time})
               </span>
             </p>
           ) : (
-            <p className="text-[11px] font-semibold text-emerald-900 flex items-center gap-1">
+            <p className="text-[11px] font-semibold text-emerald-900 dark:text-emerald-300 flex items-center gap-1">
               <Sparkles className="w-3 h-3 text-amber-500" /> All caught up for today
             </p>
           )}
@@ -247,10 +247,10 @@ export const WeekGlanceExpandedFiller: React.FC<WeekGlanceExpandedFillerProps> =
 
         <Link
           to="/reminders"
-          className="text-[11px] font-bold text-emerald-800 hover:text-emerald-950 underline shrink-0 inline-flex items-center gap-0.5"
+          className="text-[11px] font-bold text-emerald-800 dark:text-emerald-400 hover:text-emerald-950 dark:hover:text-emerald-300 underline shrink-0 inline-flex items-center gap-0.5"
         >
           Open reminders
-          <ArrowRight className="w-3 h-3 text-emerald-800" />
+          <ArrowRight className="w-3 h-3 text-emerald-800 dark:text-emerald-400" />
         </Link>
       </div>
     </Card>

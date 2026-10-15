@@ -217,18 +217,18 @@ export const DashboardPage: React.FC = () => {
       />
       {/* Personalized Time & Context-Aware Greeting Banner */}
       <motion.div variants={cardVariants}>
-        <div className="relative overflow-hidden rounded-xl glass-card py-2.5 px-3.5 sm:py-3 sm:px-4 border border-white/80 shadow-xs flex items-center gap-2.5 sm:gap-3">
+        <div className="relative overflow-hidden rounded-xl glass-card py-2.5 px-3.5 sm:py-3 sm:px-4 border border-white/80 dark:border-white/10 shadow-xs flex items-center gap-2.5 sm:gap-3">
           <div
-            className="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-emerald-800/15 border border-emerald-800/25 text-emerald-900 flex items-center justify-center shrink-0 shadow-xs"
+            className="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-emerald-800/15 dark:bg-emerald-950/60 border border-emerald-800/25 dark:border-emerald-500/30 text-emerald-900 dark:text-emerald-300 flex items-center justify-center shrink-0 shadow-xs"
             aria-hidden="true"
           >
-            <Sparkles className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-emerald-800" />
+            <Sparkles className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-emerald-800 dark:text-emerald-400" />
           </div>
           <div className="min-w-0 flex-1">
-            <h2 className="text-xs sm:text-sm font-bold text-[#0d2818] tracking-tight">
+            <h2 className="text-xs sm:text-sm font-bold text-[var(--text-primary)] tracking-tight">
               {greeting.headline}
             </h2>
-            <p className="text-[11px] sm:text-xs text-[#1e3f2b] font-medium leading-snug mt-0.5">
+            <p className="text-[11px] sm:text-xs text-[var(--text-secondary)] font-medium leading-snug mt-0.5">
               {greeting.subline}
             </p>
           </div>
@@ -265,15 +265,15 @@ export const DashboardPage: React.FC = () => {
         <motion.div variants={cardVariants} className="h-full flex flex-col">
           <Card variant="glass" className="p-3 sm:p-3.5 group h-full flex flex-col justify-between">
             <div>
-              <div className="flex items-center justify-between text-[#14301f] mb-1">
+              <div className="flex items-center justify-between text-[var(--text-primary)] mb-1">
                 <span className="text-xs font-bold uppercase tracking-wider">Due Today</span>
-                <Calendar className="w-4 h-4 text-emerald-800" />
+                <Calendar className="w-4 h-4 text-emerald-800 dark:text-emerald-400" />
               </div>
-              <p className="text-2xl sm:text-3xl font-extrabold text-[#0f2819] tabular-nums tracking-tight">
+              <p className="text-2xl sm:text-3xl font-extrabold text-[var(--text-primary)] tabular-nums tracking-tight">
                 <CountUp value={totalDueToday} />
               </p>
             </div>
-            <p className="text-[11px] text-[#1e3f2b] font-medium mt-1">Scheduled for today</p>
+            <p className="text-[11px] text-[var(--text-secondary)] font-medium mt-1">Scheduled for today</p>
           </Card>
         </motion.div>
 
@@ -281,15 +281,15 @@ export const DashboardPage: React.FC = () => {
         <motion.div variants={cardVariants} className="h-full flex flex-col">
           <Card variant="glass" className="p-3 sm:p-3.5 group h-full flex flex-col justify-between">
             <div>
-              <div className="flex items-center justify-between text-[#14301f] mb-1">
+              <div className="flex items-center justify-between text-[var(--text-primary)] mb-1">
                 <span className="text-xs font-bold uppercase tracking-wider">Completed Today</span>
-                <CheckCircle2 className="w-4 h-4 text-emerald-700" />
+                <CheckCircle2 className="w-4 h-4 text-emerald-700 dark:text-emerald-400" />
               </div>
-              <p className="text-2xl sm:text-3xl font-extrabold text-[#0f2819] tabular-nums tracking-tight">
+              <p className="text-2xl sm:text-3xl font-extrabold text-[var(--text-primary)] tabular-nums tracking-tight">
                 <CountUp value={completedTodayCount} />
               </p>
             </div>
-            <p className="text-[11px] text-[#1e3f2b] font-medium mt-1">
+            <p className="text-[11px] text-[var(--text-secondary)] font-medium mt-1">
               <CountUp value={pendingTodayCount} /> pending action{pendingTodayCount === 1 ? '' : 's'}
             </p>
           </Card>
@@ -299,7 +299,7 @@ export const DashboardPage: React.FC = () => {
         <motion.div variants={cardVariants} className="h-full flex flex-col">
           <Card variant="glass" className="p-3 sm:p-3.5 group h-full flex flex-col justify-between overflow-hidden">
             <div>
-              <div className="flex items-center justify-between text-[#14301f] mb-1">
+              <div className="flex items-center justify-between text-[var(--text-primary)] mb-1">
                 <span className="text-xs font-bold uppercase tracking-wider">Action Streak</span>
                 <Link
                   to="/analytics"
@@ -343,8 +343,8 @@ export const DashboardPage: React.FC = () => {
           <Card variant="glass-strong" className="p-5 h-full flex flex-col justify-between space-y-4">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
-                <Clock className="w-4 h-4 text-emerald-800" />
-                <h3 className="text-sm font-bold text-[#14301f]">Today's Reminders</h3>
+                <Clock className="w-4 h-4 text-emerald-800 dark:text-emerald-400" />
+                <h3 className="text-sm font-bold text-[var(--text-primary)]">Today's Reminders</h3>
               </div>
               <Badge variant="emerald" size="sm">
                 {completedTodayCount}/{totalDueToday} Done
@@ -352,9 +352,9 @@ export const DashboardPage: React.FC = () => {
             </div>
 
             {dueTodayReminders.length === 0 ? (
-              <div className="p-5 rounded-2xl bg-white/50 border border-white/70 text-center space-y-2.5">
-                <p className="text-xs font-bold text-[#102819]">No Reminders Due Today</p>
-                <p className="text-[11px] text-[#1e3f2b]">All quiet! You can add custom schedules or estimate appliance power draw.</p>
+              <div className="p-5 rounded-2xl bg-white/50 dark:bg-white/[0.06] border border-white/70 dark:border-white/10 text-center space-y-2.5">
+                <p className="text-xs font-bold text-[var(--text-primary)]">No Reminders Due Today</p>
+                <p className="text-[11px] text-[var(--text-secondary)]">All quiet! You can add custom schedules or estimate appliance power draw.</p>
                 <div className="flex items-center justify-center gap-2 flex-wrap pt-1">
                   <Button
                     variant="primary"
@@ -378,32 +378,32 @@ export const DashboardPage: React.FC = () => {
               const pendingItem = dueTodayReminders.find((r) => !isReminderDoneToday(r.id))
               if (!pendingItem) {
                 return (
-                  <div className="p-5 rounded-2xl bg-emerald-50/80 border border-emerald-300 text-center space-y-2">
-                    <CheckCircle2 className="w-6 h-6 text-emerald-700 mx-auto" />
-                    <p className="text-xs font-bold text-emerald-950">All Caught Up for Today!</p>
-                    <p className="text-[11px] text-emerald-900">
+                  <div className="p-5 rounded-2xl bg-emerald-50/80 dark:bg-emerald-950/40 border border-emerald-300 dark:border-emerald-500/30 text-center space-y-2">
+                    <CheckCircle2 className="w-6 h-6 text-emerald-700 dark:text-emerald-400 mx-auto" />
+                    <p className="text-xs font-bold text-emerald-950 dark:text-emerald-300">All Caught Up for Today!</p>
+                    <p className="text-[11px] text-emerald-900 dark:text-emerald-400">
                       Great job completing all {totalDueToday} scheduled energy checks today.
                     </p>
                   </div>
                 )
               }
               return (
-                <div className="p-4 rounded-2xl bg-white/70 border border-emerald-900/10 space-y-3 shadow-xs">
+                <div className="p-4 rounded-2xl bg-white/70 dark:bg-white/[0.06] border border-emerald-900/10 dark:border-white/10 space-y-3 shadow-xs">
                   <div className="flex items-start justify-between gap-2">
                     <div>
-                      <span className="text-[10px] font-bold uppercase tracking-wider text-emerald-800 bg-emerald-100/70 px-2 py-0.5 rounded-full">
+                      <span className="text-[10px] font-bold uppercase tracking-wider text-emerald-800 dark:text-emerald-300 bg-emerald-100/70 dark:bg-emerald-950/60 px-2 py-0.5 rounded-full border border-emerald-800/10 dark:border-white/10">
                         Next Up • {pendingItem.time}
                       </span>
-                      <h4 className="text-sm font-bold text-[#0f2819] mt-1.5 leading-snug">
+                      <h4 className="text-sm font-bold text-[var(--text-primary)] mt-1.5 leading-snug">
                         {pendingItem.title}
                       </h4>
                     </div>
                   </div>
 
-                  <div className="flex items-center gap-2 text-xs text-[#1e3f2b] font-medium">
+                  <div className="flex items-center gap-2 text-xs text-[var(--text-secondary)] font-medium">
                     {pendingItem.applianceWatts && (
                       <span className="flex items-center gap-1 font-mono text-[11px]">
-                        <Zap className="w-3 h-3 text-emerald-700" />
+                        <Zap className="w-3 h-3 text-emerald-700 dark:text-emerald-400" />
                         {pendingItem.applianceWatts}W
                       </span>
                     )}
@@ -428,14 +428,14 @@ export const DashboardPage: React.FC = () => {
             })()}
 
             {/* Quick Link to all reminders */}
-            <div className="pt-2 border-t border-emerald-900/10 flex items-center justify-between text-xs">
-              <span className="text-[11px] text-[#1e3f2b] font-medium">
+            <div className="pt-2 border-t border-emerald-900/10 dark:border-white/10 flex items-center justify-between text-xs">
+              <span className="text-[11px] text-[var(--text-secondary)] font-medium">
                 {pendingTodayCount} remaining check{pendingTodayCount === 1 ? '' : 's'}
               </span>
               <button
                 type="button"
                 onClick={() => navigate('/reminders')}
-                className="font-bold text-emerald-800 hover:text-emerald-950 underline cursor-pointer"
+                className="font-bold text-emerald-800 dark:text-emerald-400 hover:text-emerald-950 dark:hover:text-emerald-300 underline cursor-pointer"
               >
                 View all schedules →
               </button>
@@ -450,7 +450,7 @@ export const DashboardPage: React.FC = () => {
         <motion.div variants={cardVariants}>
           <Card variant="glass-strong" className="p-3.5 sm:p-4 flex flex-col justify-between h-full space-y-2.5">
             <div className="flex items-center justify-between">
-              <h3 className="text-xs sm:text-sm font-bold text-[#14301f]">Today by category</h3>
+              <h3 className="text-xs sm:text-sm font-bold text-[var(--text-primary)]">Today by category</h3>
               <Badge variant="neutral" size="sm">
                 {todayCategoryProgress.length > 0
                   ? `${todayCategoryProgress.length} ${todayCategoryProgress.length === 1 ? 'category' : 'categories'}`
@@ -460,8 +460,8 @@ export const DashboardPage: React.FC = () => {
 
             {todayCategoryProgress.length === 0 ? (
               <div className="my-auto py-4 text-center">
-                <p className="text-xs font-semibold text-[#14301f]">No reminders due today</p>
-                <p className="text-[11px] text-slate-600 mt-1">
+                <p className="text-xs font-semibold text-[var(--text-primary)]">No reminders due today</p>
+                <p className="text-[11px] text-slate-600 dark:text-[var(--text-secondary)] mt-1">
                   All scheduled reminders for today are clear or none are due.
                 </p>
               </div>
@@ -470,14 +470,14 @@ export const DashboardPage: React.FC = () => {
                 {todayCategoryProgress.map((item) => (
                   <div key={item.category} className="space-y-1">
                     <div className="flex items-center justify-between text-xs">
-                      <span className="font-semibold text-[#102819] truncate">{item.label}</span>
-                      <span className="text-[11px] font-mono font-medium text-emerald-950 shrink-0">
+                      <span className="font-semibold text-[var(--text-primary)] truncate">{item.label}</span>
+                      <span className="text-[11px] font-mono font-medium text-emerald-950 dark:text-[var(--text-primary)] shrink-0">
                         {item.done}/{item.total}
                       </span>
                     </div>
-                    <div className="h-1.5 w-full bg-emerald-950/10 rounded-full overflow-hidden">
+                    <div className="h-1.5 w-full bg-emerald-950/10 dark:bg-white/10 rounded-full overflow-hidden">
                       <motion.div
-                        className="h-full bg-emerald-700 rounded-full"
+                        className="h-full bg-emerald-700 dark:bg-emerald-500 rounded-full"
                         initial={{ width: 0 }}
                         animate={{ width: `${item.pct}%` }}
                         transition={{ duration: 0.45, ease: 'easeOut' }}
@@ -488,7 +488,7 @@ export const DashboardPage: React.FC = () => {
               </div>
             )}
 
-            <p className="text-[10px] text-[#1e3f2b] font-medium pt-0.5 border-t border-emerald-900/10">
+            <p className="text-[10px] text-[var(--text-secondary)] font-medium pt-0.5 border-t border-emerald-900/10 dark:border-white/10">
               {todayCategoryProgress.length === 0
                 ? 'No reminders due today'
                 : `${completedTodayCount} of ${totalDueToday} actions completed today`}
@@ -500,7 +500,7 @@ export const DashboardPage: React.FC = () => {
         <motion.div variants={cardVariants}>
           <Card variant="glass-strong" className="p-3.5 sm:p-4 flex flex-col items-center justify-between h-full space-y-1">
             <div className="w-full flex items-center justify-between mb-1">
-              <span className="text-xs font-bold uppercase tracking-wider text-[#14301f]">Today's Progress</span>
+              <span className="text-xs font-bold uppercase tracking-wider text-[var(--text-primary)]">Today's Progress</span>
               <Badge variant="neutral" size="sm">
                 {completedTodayCount}/{totalDueToday}
               </Badge>
@@ -515,7 +515,7 @@ export const DashboardPage: React.FC = () => {
               className="py-0.5"
             />
 
-            <p className="text-[10px] text-[#1e3f2b] font-medium text-center mt-1">
+            <p className="text-[10px] text-[var(--text-secondary)] font-medium text-center mt-1">
               {completedTodayCount} of {totalDueToday} actions completed today
             </p>
           </Card>
@@ -615,17 +615,17 @@ export const DashboardPage: React.FC = () => {
           {/* Content Wrapper observed by useGapMeasure (excludes filler to avoid feedback loops) */}
           <div ref={leftColContentRef} className="space-y-3">
             <div className="flex items-center justify-between">
-              <h2 className="text-base font-bold text-[#102819] flex items-center gap-2">
-                <Clock className="w-4 h-4 text-emerald-800" /> Today's Scheduled Reminders
+              <h2 className="text-base font-bold text-[var(--text-primary)] flex items-center gap-2">
+                <Clock className="w-4 h-4 text-emerald-800 dark:text-emerald-400" /> Today's Scheduled Reminders
               </h2>
-              <span className="text-xs font-semibold text-emerald-900">
+              <span className="text-xs font-semibold text-emerald-900 dark:text-emerald-300">
                 <CountUp value={completedTodayCount} /> of <CountUp value={totalDueToday} /> Done
               </span>
             </div>
 
             {dueTodayReminders.length === 0 ? (
               <EmptyState
-                icon={<Calendar className="w-6 h-6 text-emerald-800" />}
+                icon={<Calendar className="w-6 h-6 text-emerald-800 dark:text-emerald-400" />}
                 title="No Reminders Due Today"
                 description="You have no active energy reminders scheduled for today. Create custom schedules or calculate prospective appliance savings."
                 action={
@@ -666,8 +666,8 @@ export const DashboardPage: React.FC = () => {
                           variant="glass"
                           className={`p-3.5 transition-colors ${
                             isDone
-                              ? 'border-emerald-600/40 bg-emerald-50/70'
-                              : 'hover:bg-white/70'
+                              ? 'border-emerald-600/40 dark:border-emerald-500/30 bg-emerald-50/70 dark:bg-emerald-950/40'
+                              : 'hover:bg-white/70 dark:hover:bg-white/10'
                           }`}
                         >
                           <div className="flex items-center justify-between gap-3">
@@ -675,7 +675,7 @@ export const DashboardPage: React.FC = () => {
                               <div className="flex items-center gap-2">
                                 <p
                                   className={`font-bold text-sm truncate ${
-                                    isDone ? 'line-through text-slate-500' : 'text-[#102819]'
+                                    isDone ? 'line-through text-slate-500 dark:text-stone-500' : 'text-[var(--text-primary)]'
                                   }`}
                                 >
                                   {reminder.title}
@@ -684,10 +684,10 @@ export const DashboardPage: React.FC = () => {
                                   {reminder.time}
                                 </Badge>
                               </div>
-                              <div className="flex items-center gap-3 text-xs text-[#1e3f2b] font-medium">
+                              <div className="flex items-center gap-3 text-xs text-[var(--text-secondary)] font-medium">
                                 {reminder.applianceWatts && (
                                   <span className="flex items-center gap-1 font-mono">
-                                    <Zap className="w-3 h-3 text-emerald-700" />
+                                    <Zap className="w-3 h-3 text-emerald-700 dark:text-emerald-400" />
                                     {reminder.applianceWatts}W
                                   </span>
                                 )}
@@ -746,32 +746,32 @@ export const DashboardPage: React.FC = () => {
           {/* Content Wrapper observed by useGapMeasure */}
           <div ref={rightColContentRef} className="space-y-3">
             <div className="flex items-center justify-between">
-              <h2 className="text-base font-bold text-[#102819] flex items-center gap-2">
-                <CheckCircle2 className="w-4 h-4 text-emerald-800" /> Recent Completed Actions
+              <h2 className="text-base font-bold text-[var(--text-primary)] flex items-center gap-2">
+                <CheckCircle2 className="w-4 h-4 text-emerald-800 dark:text-emerald-400" /> Recent Completed Actions
               </h2>
-              <span className="text-xs font-semibold text-[#1e3f2b]">
+              <span className="text-xs font-semibold text-[var(--text-secondary)]">
                 Last {recentCompletions.length}
               </span>
             </div>
 
             {/* All-Time Impact Snapshot */}
             <Card variant="glass" className="p-3.5 space-y-1.5">
-              <div className="flex items-center justify-between text-xs font-bold text-[#102819]">
+              <div className="flex items-center justify-between text-xs font-bold text-[var(--text-primary)]">
                 <span className="flex items-center gap-1.5">
-                  <TrendingUp className="w-3.5 h-3.5 text-emerald-800" /> All-Time Impact
+                  <TrendingUp className="w-3.5 h-3.5 text-emerald-800 dark:text-emerald-400" /> All-Time Impact
                 </span>
-                <span className="text-emerald-900 font-extrabold tabular-nums">
+                <span className="text-emerald-900 dark:text-emerald-300 font-extrabold tabular-nums">
                   <CountUp value={kwhSavedAllTime} decimals={2} /> kWh
                 </span>
               </div>
-              <p className="text-[11px] text-[#1e3f2b] font-medium">
+              <p className="text-[11px] text-[var(--text-secondary)] font-medium">
                 Total {currency}<CountUp value={costSavedAllTime} decimals={2} /> avoided across all recorded actions.
               </p>
             </Card>
 
             {recentCompletions.length === 0 ? (
               <EmptyState
-                icon={<AlertCircle className="w-6 h-6 text-emerald-800" />}
+                icon={<AlertCircle className="w-6 h-6 text-emerald-800 dark:text-emerald-400" />}
                 title="No Actions Completed Yet"
                 description="When you mark reminders as done, your estimated energy savings and timestamps will appear here. In the meantime, explore dorm conservation guides."
                 action={
@@ -785,7 +785,7 @@ export const DashboardPage: React.FC = () => {
                 }
               />
             ) : (
-              <Card variant="glass" className="p-3 divide-y divide-emerald-900/10">
+              <Card variant="glass" className="p-3 divide-y divide-emerald-900/10 dark:divide-white/10">
                 {recentCompletions.map((comp) => {
                   const timeStr = new Date(comp.completedAt).toLocaleTimeString([], {
                     hour: '2-digit',
@@ -795,16 +795,16 @@ export const DashboardPage: React.FC = () => {
                   return (
                     <div key={comp.id} className="py-2.5 first:pt-1 last:pb-1 flex items-start justify-between gap-2">
                       <div className="min-w-0">
-                        <p className="text-xs font-bold text-[#102819] truncate">{comp.title}</p>
-                        <p className="text-[11px] text-[#1e3f2b] font-medium">
+                        <p className="text-xs font-bold text-[var(--text-primary)] truncate">{comp.title}</p>
+                        <p className="text-[11px] text-[var(--text-secondary)] font-medium">
                           {comp.date} at {timeStr}
                         </p>
                       </div>
                       <div className="text-right shrink-0">
-                        <p className="text-xs font-bold text-emerald-900 tabular-nums">
+                        <p className="text-xs font-bold text-emerald-900 dark:text-emerald-300 tabular-nums">
                           +{comp.kWh.toFixed(2)} kWh
                         </p>
-                        <p className="text-[11px] text-[#1e3f2b] tabular-nums font-semibold">
+                        <p className="text-[11px] text-[var(--text-secondary)] tabular-nums font-semibold">
                           +{currency}{comp.costSaved.toFixed(2)}
                         </p>
                       </div>
@@ -813,10 +813,10 @@ export const DashboardPage: React.FC = () => {
                 })}
 
                 {state.completions.length > 4 && (
-                  <div className="pt-2 border-t border-emerald-900/10 text-center">
+                  <div className="pt-2 border-t border-emerald-900/10 dark:border-white/10 text-center">
                     <Link
                       to="/analytics"
-                      className="text-xs font-bold text-emerald-800 hover:text-emerald-950 hover:underline"
+                      className="text-xs font-bold text-emerald-800 dark:text-emerald-400 hover:text-emerald-950 dark:hover:text-emerald-300 hover:underline"
                     >
                       View all in Analytics →
                     </Link>

@@ -29,14 +29,14 @@ export const PillBarChart: React.FC<PillBarChartProps> = ({
   // Empty state when entire week has 0 data
   if (totalVal === 0 && maxVal === 0) {
     return (
-      <div className={`flex flex-col items-center justify-center p-8 text-center rounded-2xl bg-white/40 border border-white/60 ${className}`}>
-        <div className="w-10 h-10 rounded-full bg-emerald-900/10 flex items-center justify-center text-emerald-900 mb-2">
+      <div className={`flex flex-col items-center justify-center p-8 text-center rounded-2xl bg-white/40 dark:bg-white/5 border border-white/60 dark:border-white/10 ${className}`}>
+        <div className="w-10 h-10 rounded-full bg-emerald-900/10 dark:bg-emerald-400/10 flex items-center justify-center text-emerald-900 dark:text-emerald-400 mb-2">
           <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
           </svg>
         </div>
-        <p className="text-sm font-bold text-[#0f2819]">No Activity Logged This Week</p>
-        <p className="text-xs text-[#1e3f2b] max-w-xs mt-1">
+        <p className="text-sm font-bold text-[var(--text-primary)]">No Activity Logged This Week</p>
+        <p className="text-xs text-[var(--text-secondary)] max-w-xs mt-1">
           Complete energy-saving reminders to see your daily conservation pills grow here.
         </p>
       </div>
@@ -49,20 +49,20 @@ export const PillBarChart: React.FC<PillBarChartProps> = ({
       {showToggle && onMetricChange && (
         <div className="flex items-center justify-between gap-3">
           <div className="flex items-center gap-2">
-            <span className="text-xs font-bold uppercase tracking-wider text-[#14301f]">Weekly Activity</span>
-            <span className="text-[11px] font-semibold text-emerald-800 bg-emerald-100/60 px-2 py-0.5 rounded-full">
+            <span className="text-xs font-bold uppercase tracking-wider text-[var(--text-primary)]">Weekly Activity</span>
+            <span className="text-[11px] font-semibold text-emerald-800 dark:text-emerald-300 bg-emerald-100/60 dark:bg-emerald-950/60 px-2 py-0.5 rounded-full border border-emerald-600/20">
               {metric === 'kwh' ? 'kWh Avoided' : 'Actions Completed'}
             </span>
           </div>
 
-          <div className="inline-flex rounded-xl bg-white/70 p-1 border border-white/80 shadow-xs">
+          <div className="inline-flex rounded-xl bg-white/70 dark:bg-white/10 p-1 border border-white/80 dark:border-white/10 shadow-xs">
             <button
               type="button"
               onClick={() => onMetricChange('kwh')}
               className={`rounded-lg px-2.5 py-1 text-xs font-semibold transition-all cursor-pointer ${
                 metric === 'kwh'
-                  ? 'bg-[#0a381e] text-white shadow-xs'
-                  : 'text-[#1e3f2b] hover:text-[#0f2819]'
+                  ? 'bg-[#0a381e] dark:bg-[#10b981] text-white dark:text-[#062b16] shadow-xs'
+                  : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)]'
               }`}
             >
               kWh
@@ -72,8 +72,8 @@ export const PillBarChart: React.FC<PillBarChartProps> = ({
               onClick={() => onMetricChange('actions')}
               className={`rounded-lg px-2.5 py-1 text-xs font-semibold transition-all cursor-pointer ${
                 metric === 'actions'
-                  ? 'bg-[#0a381e] text-white shadow-xs'
-                  : 'text-[#1e3f2b] hover:text-[#0f2819]'
+                  ? 'bg-[#0a381e] dark:bg-[#10b981] text-white dark:text-[#062b16] shadow-xs'
+                  : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)]'
               }`}
             >
               Actions
@@ -117,12 +117,12 @@ export const PillBarChart: React.FC<PillBarChartProps> = ({
             const isZero = val <= 0
             const ratio = maxVal > 0 ? val / maxVal : 0
 
-            // Tier colors relative to week's max
-            let barColor = '#5aba86' // <40%
+            // Tier colors relative to week's max using tokens
+            let barColor = 'var(--chart-pill-low)'
             if (ratio >= 0.75) {
-              barColor = '#0a381e' // >=75% deep forest
+              barColor = 'var(--chart-pill-high)'
             } else if (ratio >= 0.4) {
-              barColor = '#196f45' // 40-75% emerald
+              barColor = 'var(--chart-pill-mid)'
             }
 
             // Height scaling (min 14% for non-zero to show pill curve)
@@ -150,7 +150,7 @@ export const PillBarChart: React.FC<PillBarChartProps> = ({
                       animate={{ opacity: 1, y: -8, scale: 1 }}
                       exit={{ opacity: 0, y: 2, scale: 0.95 }}
                       transition={{ duration: 0.15 }}
-                      className="absolute bottom-full z-30 pointer-events-none whitespace-nowrap px-2 py-0.5 sm:px-2.5 sm:py-1 rounded-full bg-white text-[#0a381e] text-[10px] sm:text-[11px] font-bold shadow-md border border-stone-200/80"
+                      className="absolute bottom-full z-30 pointer-events-none whitespace-nowrap px-2 py-0.5 sm:px-2.5 sm:py-1 rounded-full bg-[var(--chart-tooltip-bg)] text-[var(--chart-tooltip-text)] text-[10px] sm:text-[11px] font-bold shadow-md border border-[var(--chart-tooltip-border)]"
                     >
                       {d.actions} action{d.actions === 1 ? '' : 's'} · {d.kwh.toFixed(2)} kWh
                     </motion.div>
@@ -178,14 +178,14 @@ export const PillBarChart: React.FC<PillBarChartProps> = ({
                   style={{
                     height: `${heightPct}%`,
                     transformOrigin: 'bottom',
-                    backgroundColor: isZero ? '#f4f8f5' : barColor,
+                    backgroundColor: isZero ? 'var(--chart-pill-zero-bg)' : barColor,
                     backgroundImage: isZero
-                      ? 'repeating-linear-gradient(45deg, #f4f8f5, #f4f8f5 4px, #8fa398 4.2px, #8fa398 5.4px)'
+                      ? 'repeating-linear-gradient(45deg, var(--chart-pill-zero-bg), var(--chart-pill-zero-bg) 4px, var(--chart-pill-zero-line) 4.2px, var(--chart-pill-zero-line) 5.4px)'
                       : undefined,
                   }}
                   className={`w-full max-w-[24px] sm:max-w-[36px] rounded-full transition-shadow ${
                     isZero
-                      ? 'border border-[#8fa398]/30 shadow-none'
+                      ? 'border border-[var(--chart-pill-zero-line)] shadow-none'
                       : isHovered
                       ? 'shadow-lg shadow-emerald-950/20 ring-2 ring-emerald-700/30'
                       : 'shadow-sm shadow-emerald-950/10'
@@ -197,8 +197,8 @@ export const PillBarChart: React.FC<PillBarChartProps> = ({
                   <span
                     className={`block text-[10px] sm:text-xs transition-colors ${
                       isToday
-                        ? 'font-extrabold text-[#0a381e] underline decoration-emerald-600 decoration-2 underline-offset-2'
-                        : 'font-semibold text-[#1e3f2b]/80'
+                        ? 'font-extrabold text-[var(--text-primary)] underline decoration-emerald-600 decoration-2 underline-offset-2'
+                        : 'font-semibold text-[var(--text-secondary)]'
                     }`}
                   >
                     {d.day}

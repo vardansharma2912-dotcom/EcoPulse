@@ -97,7 +97,7 @@ export const AppLayout: React.FC = () => {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0, transition: { duration: isReducedMotion ? 0 : 0.25 } }}
-          className="fixed inset-0 z-50 overflow-y-auto flex flex-col items-center justify-center p-3 sm:p-4 text-[#14301f]"
+          className="fixed inset-0 z-50 overflow-y-auto flex flex-col items-center justify-center p-3 sm:p-4 text-[var(--text-primary)]"
         >
           {/* Fixed Botanical Background Layer */}
           <LeafBackground />
@@ -112,7 +112,7 @@ export const AppLayout: React.FC = () => {
           initial={{ opacity: isReducedMotion ? 1 : 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: isReducedMotion ? 0 : 0.35, ease: [0.22, 1, 0.36, 1] }}
-          className="min-h-[100dvh] text-[#14301f] flex flex-col lg:flex-row relative"
+          className="min-h-[100dvh] text-[var(--text-primary)] flex flex-col lg:flex-row relative"
         >
           {/* Fixed Botanical Background Layer */}
           <LeafBackground />
@@ -178,14 +178,14 @@ export const AppLayout: React.FC = () => {
                     }))
                   }
                   className={`relative flex items-center gap-3 px-3.5 py-2 xl:py-2.5 rounded-xl text-sm font-semibold transition-colors group ${
-                    isActive ? 'text-white' : 'text-slate-700 hover:text-[#14301f] hover:bg-white/60'
+                    isActive ? 'text-white' : 'text-slate-700 dark:text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-white/60 dark:hover:bg-white/[0.06]'
                   }`}
                 >
                   {/* Sliding Pill Background */}
                   {isActive && (
                     <motion.div
                       layoutId="activeNavPill"
-                      className="absolute inset-0 bg-emerald-700 rounded-xl -z-10 shadow-sm shadow-emerald-950/15"
+                      className="absolute inset-0 bg-emerald-700 dark:bg-emerald-600 rounded-xl -z-10 shadow-sm shadow-emerald-950/15"
                       transition={{ type: 'spring', stiffness: 380, damping: 30 }}
                     />
                   )}
@@ -218,7 +218,7 @@ export const AppLayout: React.FC = () => {
                           className={`ml-auto px-2 py-0.5 text-[11px] font-extrabold rounded-full ${
                             isActive
                               ? 'bg-amber-400 text-amber-950 shadow-xs'
-                              : 'bg-emerald-800 text-white'
+                              : 'bg-emerald-800 dark:bg-emerald-700 text-white'
                           }`}
                         >
                           <CountUp value={pendingTodayCount} />
@@ -241,7 +241,7 @@ export const AppLayout: React.FC = () => {
       {/* Main Content Area: Document itself scrolls below 1024px */}
       <div className="flex-1 flex flex-col min-w-0 z-10 focus:outline-none outline-none" style={{ outline: 'none' }}>
         {/* Mobile Compact Glass Header (< 1024px) */}
-        <header className="lg:hidden glass-panel border-b border-white/60 px-3.5 py-2.5 flex items-center justify-between sticky top-0 z-30 backdrop-blur-md">
+        <header className="lg:hidden glass-panel border-b border-white/60 dark:border-white/10 px-3.5 py-2.5 flex items-center justify-between sticky top-0 z-30 backdrop-blur-md">
           {/* Left: Brand Block (Logo + Name) */}
           <Link
             to="/"
@@ -259,7 +259,7 @@ export const AppLayout: React.FC = () => {
               type="button"
               onClick={() => setSearchOpen(true)}
               aria-label="Open search sheet"
-              className="p-2 rounded-xl text-[#14301f] hover:bg-emerald-800/10 active:scale-95 transition-all"
+              className="p-2 rounded-xl text-[var(--text-primary)] hover:bg-emerald-800/10 dark:hover:bg-white/10 active:scale-95 transition-all"
             >
               <Search className="w-4 h-4" />
             </button>
@@ -269,11 +269,11 @@ export const AppLayout: React.FC = () => {
               type="button"
               onClick={() => setAlertsPopoverOpen((prev) => !prev)}
               aria-label="Toggle notifications popover"
-              className="relative p-2 rounded-xl text-[#14301f] hover:bg-emerald-800/10 active:scale-95 transition-all"
+              className="relative p-2 rounded-xl text-[var(--text-primary)] hover:bg-emerald-800/10 dark:hover:bg-white/10 active:scale-95 transition-all"
             >
               <Bell className="w-4 h-4" />
               {pendingTodayCount > 0 && (
-                <span className="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-amber-500 ring-2 ring-white" />
+                <span className="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-amber-500 ring-2 ring-white dark:ring-emerald-950" />
               )}
             </button>
 
@@ -289,10 +289,10 @@ export const AppLayout: React.FC = () => {
                 }))
               }
               className={({ isActive }) =>
-                `w-8 h-8 rounded-full flex items-center justify-center border-2 border-white/90 shadow-xs transition-all active:scale-95 ${
+                `w-8 h-8 rounded-full flex items-center justify-center border-2 border-white/90 dark:border-white/20 shadow-xs transition-all active:scale-95 ${
                   isActive
                     ? 'bg-emerald-900 text-white ring-2 ring-emerald-400/50'
-                    : 'bg-emerald-800 text-white hover:bg-emerald-900'
+                    : 'bg-emerald-800 dark:bg-emerald-700 text-white hover:bg-emerald-900'
                 }`
               }
             >
@@ -359,41 +359,41 @@ export const AppLayout: React.FC = () => {
         </main>
 
         {/* Small Glass Footer: Accessible Internal Links + Credits, Desktop and Mobile Safe */}
-        <footer className="mt-auto border-t border-emerald-900/10 bg-white/40 backdrop-blur-md pt-4 sm:pt-5 pb-24 lg:pt-5 lg:pb-5 px-4 sm:px-8 text-xs text-slate-700">
+        <footer className="mt-auto border-t border-emerald-900/10 dark:border-white/10 bg-white/40 dark:bg-black/25 backdrop-blur-md pt-4 sm:pt-5 pb-24 lg:pt-5 lg:pb-5 px-4 sm:px-8 text-xs text-[var(--text-secondary)]">
           <div className="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
             <div className="flex flex-col items-center md:items-start gap-1 shrink-0">
-              <div className="flex items-center gap-2 text-emerald-950 font-bold">
+              <div className="flex items-center gap-2 text-[var(--text-primary)] font-bold">
                 <Logo size={20} />
                 <span>EcoPulse</span>
               </div>
-              <p className="text-[11px] text-slate-600 font-medium text-center md:text-left whitespace-nowrap">
+              <p className="text-[11px] text-[var(--text-secondary)] font-medium text-center md:text-left whitespace-nowrap">
                 Smart Energy Saving Habit Tracker
               </p>
             </div>
             <nav aria-label="Footer navigation" className="flex flex-wrap items-center justify-center gap-x-4 gap-y-2 font-medium">
-              <Link to="/" className="hover:text-emerald-950 hover:underline transition-colors">
+              <Link to="/" className="hover:text-[var(--text-primary)] hover:underline transition-colors">
                 Dashboard
               </Link>
-              <Link to="/reminders" className="hover:text-emerald-950 hover:underline transition-colors">
+              <Link to="/reminders" className="hover:text-[var(--text-primary)] hover:underline transition-colors">
                 Scheduled Reminders
               </Link>
-              <Link to="/calculator" className="hover:text-emerald-950 hover:underline transition-colors">
+              <Link to="/calculator" className="hover:text-[var(--text-primary)] hover:underline transition-colors">
                 Energy Calculator
               </Link>
-              <Link to="/analytics" className="hover:text-emerald-950 hover:underline transition-colors">
+              <Link to="/analytics" className="hover:text-[var(--text-primary)] hover:underline transition-colors">
                 Habit Analytics
               </Link>
-              <Link to="/learn" className="hover:text-emerald-950 hover:underline transition-colors">
+              <Link to="/learn" className="hover:text-[var(--text-primary)] hover:underline transition-colors">
                 Conservation Guides
               </Link>
-              <Link to="/settings" className="hover:text-emerald-950 hover:underline transition-colors">
+              <Link to="/settings" className="hover:text-[var(--text-primary)] hover:underline transition-colors">
                 Settings & Tariffs
               </Link>
-              <Link to="/settings#credits" className="hover:text-emerald-950 hover:underline transition-colors">
+              <Link to="/settings#credits" className="hover:text-[var(--text-primary)] hover:underline transition-colors">
                 Project Credits
               </Link>
             </nav>
-            <div className="text-[11px] text-slate-600 text-center md:text-right">
+            <div className="text-[11px] text-[var(--text-secondary)] text-center md:text-right">
               Built for CHE110 · All user data stays private in local browser storage
             </div>
           </div>

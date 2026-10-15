@@ -149,13 +149,13 @@ export const CalculatorPage: React.FC = () => {
           <div ref={leftColContentRef} className="space-y-5 flex flex-col">
             <motion.div variants={cardVariants}>
             <Card variant="glass-strong" className="space-y-4">
-              <h2 className="text-base font-bold text-[#14301f]">
+              <h2 className="text-base font-bold text-[var(--text-primary)]">
                 Interactive Calculator
               </h2>
 
               {/* Preset Selector */}
               <div>
-                <label className="block text-xs font-bold text-[#14301f] uppercase tracking-wider mb-1.5">
+                <label className="block text-xs font-bold text-[var(--text-primary)] uppercase tracking-wider mb-1.5">
                   Choose an appliance preset
                 </label>
                 <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
@@ -169,7 +169,7 @@ export const CalculatorPage: React.FC = () => {
                         className={`text-left p-2.5 rounded-xl text-xs font-semibold transition-all border ${
                           isSelected
                             ? 'bg-emerald-800 text-white border-emerald-900 shadow-sm'
-                            : 'bg-white/60 hover:bg-white text-[#183624] border-white/80'
+                            : 'bg-white/60 dark:bg-white/[0.06] hover:bg-white dark:hover:bg-white/10 text-[var(--text-primary)] border-white/80 dark:border-white/10'
                         }`}
                       >
                         <p className="truncate">{preset.name}</p>
@@ -243,13 +243,13 @@ export const CalculatorPage: React.FC = () => {
               </div>
 
               {/* Current Tariff Rate with Link to Settings */}
-              <div className="flex items-center justify-between p-3 rounded-xl bg-white/70 border border-emerald-900/15 text-xs">
-                <span className="text-[#183624] font-medium">
-                  Current Electricity Tariff: <strong className="text-emerald-950 font-bold">{currency}{tariff}/kWh</strong>
+              <div className="flex items-center justify-between p-3 rounded-xl bg-white/70 dark:bg-white/[0.06] border border-emerald-900/15 dark:border-white/10 text-xs">
+                <span className="text-[var(--text-secondary)] font-medium">
+                  Current Electricity Tariff: <strong className="text-emerald-950 dark:text-emerald-300 font-bold">{currency}{tariff}/kWh</strong>
                 </span>
                 <Link
                   to="/settings"
-                  className="text-emerald-800 hover:text-emerald-950 font-bold underline"
+                  className="text-emerald-800 dark:text-emerald-400 hover:text-emerald-950 dark:hover:text-emerald-300 font-bold underline"
                 >
                   Change in Settings →
                 </Link>
@@ -273,20 +273,20 @@ export const CalculatorPage: React.FC = () => {
           {/* Mathematical Formula Breakdown Card */}
           <motion.div variants={cardVariants}>
             <Card variant="glass" className="space-y-3">
-              <h3 className="text-xs font-bold uppercase tracking-wider text-[#14301f] flex items-center gap-1.5">
-                <Sparkles className="w-3.5 h-3.5 text-emerald-800" /> Formula Breakdown with Your Values
+              <h3 className="text-xs font-bold uppercase tracking-wider text-[var(--text-primary)] flex items-center gap-1.5">
+                <Sparkles className="w-3.5 h-3.5 text-emerald-800 dark:text-[#3ecf8e]" /> Formula Breakdown with Your Values
               </h3>
-              <div className="space-y-2 text-xs font-mono text-[#0f2819] bg-white/80 p-3.5 rounded-xl border border-emerald-900/10">
+              <div className="space-y-2 text-xs font-mono text-[var(--text-primary)] bg-white/80 dark:bg-white/5 p-3.5 rounded-xl border border-emerald-900/10 dark:border-white/10">
                 <p>
-                  <span className="text-slate-600">// Energy Formula:</span> kWh = Watts × Hours ÷ 1000
+                  <span className="text-slate-600 dark:text-[#9db8a6]">// Energy Formula:</span> kWh = Watts × Hours ÷ 1000
                 </p>
-                <p className="font-bold text-emerald-950">
+                <p className="font-bold text-emerald-950 dark:text-[#3ecf8e]">
                   kWh = {safeWatts}W × {safeHours}h ÷ 1000 = {dailyKwh.toFixed(3)} kWh/day
                 </p>
-                <p className="pt-1 border-t border-emerald-950/10">
-                  <span className="text-slate-600">// Cost Formula:</span> Cost = kWh × Tariff Rate
+                <p className="pt-1 border-t border-emerald-950/10 dark:border-white/10">
+                  <span className="text-slate-600 dark:text-[#9db8a6]">// Cost Formula:</span> Cost = kWh × Tariff Rate
                 </p>
-                <p className="font-bold text-emerald-950">
+                <p className="font-bold text-emerald-950 dark:text-[#3ecf8e]">
                   Cost = {dailyKwh.toFixed(3)} kWh × {currency}{tariff} = {currency}{dailyCost.toFixed(2)}/day
                 </p>
               </div>
@@ -312,7 +312,7 @@ export const CalculatorPage: React.FC = () => {
             <motion.div variants={cardVariants}>
             <Card variant="glass-strong" className="space-y-4">
               <div className="flex items-center justify-between">
-                <h2 className="text-sm font-bold text-[#14301f] uppercase tracking-wider">
+                <h2 className="text-sm font-bold text-[var(--text-primary)] uppercase tracking-wider">
                   Conservation Estimates
                 </h2>
                 <Badge variant="emerald" size="sm">
@@ -338,64 +338,64 @@ export const CalculatorPage: React.FC = () => {
               {/* Horizon Timeline Projections with CountUp */}
               <div className="space-y-2.5 pt-1">
                 {/* Daily */}
-                <div className="flex items-center justify-between p-3 rounded-xl bg-white/70 border border-emerald-900/10 text-xs">
+                <div className="flex items-center justify-between p-3 rounded-xl bg-white/70 dark:bg-white/[0.06] border border-emerald-900/10 dark:border-white/10 text-xs">
                   <div className="flex items-center gap-2">
-                    <Clock className="w-4 h-4 text-emerald-800" />
-                    <span className="font-semibold text-[#14301f]">Daily (1 day)</span>
+                    <Clock className="w-4 h-4 text-emerald-800 dark:text-emerald-400" />
+                    <span className="font-semibold text-[var(--text-primary)]">Daily (1 day)</span>
                   </div>
                   <div className="text-right">
-                    <span className="font-bold text-[#102819] tabular-nums">
+                    <span className="font-bold text-[var(--text-primary)] tabular-nums">
                       <CountUp value={dailyKwh} decimals={2} suffix=" kWh" />
                     </span>
-                    <span className="text-slate-600 font-medium ml-2">
+                    <span className="text-slate-600 dark:text-[var(--text-secondary)] font-medium ml-2">
                       <CountUp value={dailyCost} decimals={2} prefix={currency} />
                     </span>
                   </div>
                 </div>
 
                 {/* Weekly */}
-                <div className="flex items-center justify-between p-3 rounded-xl bg-white/70 border border-emerald-900/10 text-xs">
+                <div className="flex items-center justify-between p-3 rounded-xl bg-white/70 dark:bg-white/[0.06] border border-emerald-900/10 dark:border-white/10 text-xs">
                   <div className="flex items-center gap-2">
-                    <Calendar className="w-4 h-4 text-emerald-800" />
-                    <span className="font-semibold text-[#14301f]">Weekly (7 days)</span>
+                    <Calendar className="w-4 h-4 text-emerald-800 dark:text-emerald-400" />
+                    <span className="font-semibold text-[var(--text-primary)]">Weekly (7 days)</span>
                   </div>
                   <div className="text-right">
-                    <span className="font-bold text-[#102819] tabular-nums">
+                    <span className="font-bold text-[var(--text-primary)] tabular-nums">
                       <CountUp value={weeklyKwh} decimals={2} suffix=" kWh" />
                     </span>
-                    <span className="text-slate-600 font-medium ml-2">
+                    <span className="text-slate-600 dark:text-[var(--text-secondary)] font-medium ml-2">
                       <CountUp value={weeklyCost} decimals={2} prefix={currency} />
                     </span>
                   </div>
                 </div>
 
                 {/* Monthly */}
-                <div className="flex items-center justify-between p-3 rounded-xl bg-white/70 border border-emerald-900/10 text-xs">
+                <div className="flex items-center justify-between p-3 rounded-xl bg-white/70 dark:bg-white/[0.06] border border-emerald-900/10 dark:border-white/10 text-xs">
                   <div className="flex items-center gap-2">
-                    <Zap className="w-4 h-4 text-emerald-800" />
-                    <span className="font-semibold text-[#14301f]">Monthly (30 days)</span>
+                    <Zap className="w-4 h-4 text-emerald-800 dark:text-emerald-400" />
+                    <span className="font-semibold text-[var(--text-primary)]">Monthly (30 days)</span>
                   </div>
                   <div className="text-right">
-                    <span className="font-bold text-[#102819] tabular-nums">
+                    <span className="font-bold text-[var(--text-primary)] tabular-nums">
                       <CountUp value={monthlyKwh} decimals={2} suffix=" kWh" />
                     </span>
-                    <span className="text-slate-600 font-medium ml-2">
+                    <span className="text-slate-600 dark:text-[var(--text-secondary)] font-medium ml-2">
                       <CountUp value={monthlyCost} decimals={2} prefix={currency} />
                     </span>
                   </div>
                 </div>
 
                 {/* Annual */}
-                <div className="flex items-center justify-between p-3 rounded-xl bg-white/70 border border-emerald-900/10 text-xs">
+                <div className="flex items-center justify-between p-3 rounded-xl bg-white/70 dark:bg-white/[0.06] border border-emerald-900/10 dark:border-white/10 text-xs">
                   <div className="flex items-center gap-2">
-                    <Sparkles className="w-4 h-4 text-emerald-800" />
-                    <span className="font-semibold text-[#14301f]">Annual (365 days)</span>
+                    <Sparkles className="w-4 h-4 text-emerald-800 dark:text-emerald-400" />
+                    <span className="font-semibold text-[var(--text-primary)]">Annual (365 days)</span>
                   </div>
                   <div className="text-right">
-                    <span className="font-bold text-emerald-950 tabular-nums">
+                    <span className="font-bold text-emerald-950 dark:text-emerald-300 tabular-nums">
                       <CountUp value={annualKwh} decimals={2} suffix=" kWh" />
                     </span>
-                    <span className="text-emerald-900 font-bold ml-2">
+                    <span className="text-emerald-900 dark:text-emerald-400 font-bold ml-2">
                       <CountUp value={annualCost} decimals={2} prefix={currency} />
                     </span>
                   </div>
@@ -407,10 +407,10 @@ export const CalculatorPage: React.FC = () => {
           {/* Practical Assumptions & FAQ */}
           <motion.div variants={cardVariants}>
             <Card variant="glass" className="space-y-2 p-4 text-xs">
-              <h3 className="font-bold text-[#14301f] flex items-center gap-1.5">
-                <HelpCircle className="w-3.5 h-3.5 text-emerald-800" /> Calculation Assumptions
+              <h3 className="font-bold text-[var(--text-primary)] flex items-center gap-1.5">
+                <HelpCircle className="w-3.5 h-3.5 text-emerald-800 dark:text-emerald-400" /> <span className="text-[var(--text-primary)]">Calculation Assumptions</span>
               </h3>
-              <p className="text-[#1e3f2b] leading-relaxed">
+              <p className="text-[var(--text-secondary)] leading-relaxed">
                 1 unit of electricity equals 1 kilowatt-hour (1 kWh = 1000 Watt-hours).
                 Calculations represent potential avoided consumption. Real savings depend on continuous appliance operation and seasonal duty cycles.
               </p>
@@ -420,36 +420,36 @@ export const CalculatorPage: React.FC = () => {
           {/* Contextual Navigation Links */}
           <motion.div variants={cardVariants}>
             <Card variant="glass" className="p-4 space-y-3">
-              <h3 className="text-xs font-bold uppercase tracking-wider text-emerald-950">
+              <h3 className="text-xs font-bold uppercase tracking-wider text-[var(--text-primary)]">
                 Connected Energy Actions
               </h3>
               <div className="space-y-2 text-xs">
                 <Link
                   to="/reminders"
-                  className="group flex items-center justify-between p-2.5 rounded-xl bg-white/60 hover:bg-white/90 border border-emerald-900/10 transition-all text-slate-800"
+                  className="group flex items-center justify-between p-2.5 rounded-xl bg-white/60 dark:bg-white/[0.06] hover:bg-white/90 dark:hover:bg-white/10 border border-emerald-900/10 dark:border-white/10 transition-all text-slate-800 dark:text-[var(--text-primary)]"
                 >
                   <div className="flex items-center gap-2">
-                    <Bell className="w-4 h-4 text-emerald-700 shrink-0" />
+                    <Bell className="w-4 h-4 text-emerald-700 dark:text-emerald-400 shrink-0" />
                     <div>
-                      <p className="font-semibold text-emerald-950">Turn Estimates into Habits</p>
-                      <p className="text-[11px] text-slate-600">Schedule recurring power-down alerts in Energy Reminders</p>
+                      <p className="font-semibold text-emerald-950 dark:text-[var(--text-primary)]">Turn Estimates into Habits</p>
+                      <p className="text-[11px] text-slate-600 dark:text-[var(--text-secondary)]">Schedule recurring power-down alerts in Energy Reminders</p>
                     </div>
                   </div>
-                  <ArrowRight className="w-3.5 h-3.5 text-emerald-700 transition-transform group-hover:translate-x-1 shrink-0" />
+                  <ArrowRight className="w-3.5 h-3.5 text-emerald-700 dark:text-emerald-400 transition-transform group-hover:translate-x-1 shrink-0" />
                 </Link>
 
                 <Link
                   to="/learn"
-                  className="group flex items-center justify-between p-2.5 rounded-xl bg-white/60 hover:bg-white/90 border border-emerald-900/10 transition-all text-slate-800"
+                  className="group flex items-center justify-between p-2.5 rounded-xl bg-white/60 dark:bg-white/[0.06] hover:bg-white/90 dark:hover:bg-white/10 border border-emerald-900/10 dark:border-white/10 transition-all text-slate-800 dark:text-[var(--text-primary)]"
                 >
                   <div className="flex items-center gap-2">
-                    <BookOpen className="w-4 h-4 text-emerald-700 shrink-0" />
+                    <BookOpen className="w-4 h-4 text-emerald-700 dark:text-emerald-400 shrink-0" />
                     <div>
-                      <p className="font-semibold text-emerald-950">Campus Conservation Principles</p>
-                      <p className="text-[11px] text-slate-600">Explore dorm appliance habits in Energy Conservation Guides</p>
+                      <p className="font-semibold text-emerald-950 dark:text-[var(--text-primary)]">Campus Conservation Principles</p>
+                      <p className="text-[11px] text-slate-600 dark:text-[var(--text-secondary)]">Explore dorm appliance habits in Energy Conservation Guides</p>
                     </div>
                   </div>
-                  <ArrowRight className="w-3.5 h-3.5 text-emerald-700 transition-transform group-hover:translate-x-1 shrink-0" />
+                  <ArrowRight className="w-3.5 h-3.5 text-emerald-700 dark:text-emerald-400 transition-transform group-hover:translate-x-1 shrink-0" />
                 </Link>
               </div>
             </Card>

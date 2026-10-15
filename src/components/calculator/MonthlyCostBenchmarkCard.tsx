@@ -48,37 +48,37 @@ export const MonthlyCostBenchmarkCard: React.FC<MonthlyCostBenchmarkCardProps> =
     <Card variant="glass" className={`p-3.5 space-y-2.5 ${className}`}>
       {/* Header */}
       <div className="flex items-center justify-between">
-        <h3 className="text-xs font-bold uppercase tracking-wider text-[#14301f] flex items-center gap-1.5">
-          <CalendarDays className="w-3.5 h-3.5 text-emerald-800" /> Typical Monthly Run Costs
+        <h3 className="text-xs font-bold uppercase tracking-wider text-[var(--text-primary)] flex items-center gap-1.5">
+          <CalendarDays className="w-3.5 h-3.5 text-emerald-800 dark:text-emerald-400" /> Typical Monthly Run Costs
         </h3>
-        <span className="text-[10px] font-semibold text-emerald-900 bg-emerald-100/70 px-2 py-0.5 rounded-full border border-emerald-800/10">
+        <span className="text-[10px] font-semibold text-emerald-900 dark:text-emerald-300 bg-emerald-100/70 dark:bg-emerald-950/60 px-2 py-0.5 rounded-full border border-emerald-800/10 dark:border-white/10">
           {currency}{tariff.toFixed(2)}/kWh
         </span>
       </div>
 
       {/* User's active habits impact summary */}
       {activeReminders.length > 0 ? (
-        <div className="px-2.5 py-1.5 rounded-lg bg-white/70 border border-emerald-900/10 flex items-center justify-between text-xs">
+        <div className="px-2.5 py-1.5 rounded-lg bg-white/70 dark:bg-white/[0.06] border border-emerald-900/10 dark:border-white/10 flex items-center justify-between text-xs">
           <div className="flex items-center gap-1.5 min-w-0">
-            <CheckCircle2 className="w-3.5 h-3.5 text-emerald-700 shrink-0" />
-            <span className="text-[11px] text-[#1e3f2b] truncate font-medium">
-              <strong className="text-emerald-950 font-semibold">{activeReminders.length} active habits:</strong> avoiding ~{totalDailyKwh.toFixed(2)} kWh/day ({currency}{totalMonthlyCost.toFixed(0)}/mo)
+            <CheckCircle2 className="w-3.5 h-3.5 text-emerald-700 dark:text-emerald-400 shrink-0" />
+            <span className="text-[11px] text-[var(--text-secondary)] truncate font-medium">
+              <strong className="text-emerald-950 dark:text-emerald-300 font-semibold">{activeReminders.length} active habits:</strong> avoiding ~{totalDailyKwh.toFixed(2)} kWh/day ({currency}{totalMonthlyCost.toFixed(0)}/mo)
             </span>
           </div>
           <Link
             to="/reminders"
-            className="group flex items-center gap-0.5 text-[11px] font-semibold text-emerald-800 hover:text-emerald-950 shrink-0 ml-2"
+            className="group flex items-center gap-0.5 text-[11px] font-semibold text-emerald-800 dark:text-emerald-400 hover:text-emerald-950 dark:hover:text-emerald-300 shrink-0 ml-2"
           >
             <span>View</span>
             <ArrowRight className="w-3 h-3 transition-transform group-hover:translate-x-0.5" />
           </Link>
         </div>
       ) : (
-        <div className="px-2.5 py-1.5 rounded-lg bg-white/50 border border-emerald-900/10 flex items-center justify-between text-[11px] text-slate-600">
+        <div className="px-2.5 py-1.5 rounded-lg bg-white/50 dark:bg-white/[0.04] border border-emerald-900/10 dark:border-white/10 flex items-center justify-between text-[11px] text-slate-600 dark:text-[var(--text-secondary)]">
           <span>No scheduled power-downs yet</span>
           <Link
             to="/reminders"
-            className="font-semibold text-emerald-800 hover:text-emerald-950 underline shrink-0 ml-1"
+            className="font-semibold text-emerald-800 dark:text-emerald-400 hover:text-emerald-950 dark:hover:text-emerald-300 underline shrink-0 ml-1"
           >
             Create reminder
           </Link>
@@ -103,14 +103,14 @@ export const MonthlyCostBenchmarkCard: React.FC<MonthlyCostBenchmarkCardProps> =
               className={`text-left px-2 py-1.5 rounded-lg text-xs transition-all border flex items-center justify-between gap-1.5 cursor-pointer ${
                 isSelected
                   ? 'bg-emerald-800 text-white border-emerald-900 shadow-2xs font-semibold'
-                  : 'bg-white/60 hover:bg-white text-[#183624] border-white/80'
+                  : 'bg-white/60 dark:bg-white/[0.06] hover:bg-white dark:hover:bg-white/10 text-[var(--text-primary)] border-white/80 dark:border-white/10'
               }`}
             >
               <div className="min-w-0">
                 <span className="truncate block font-medium text-[11px] leading-tight">{shortName}</span>
                 <span
                   className={`text-[10px] block leading-tight ${
-                    isSelected ? 'text-emerald-200' : 'text-slate-500'
+                    isSelected ? 'text-emerald-200' : 'text-slate-500 dark:text-[var(--text-secondary)]'
                   }`}
                 >
                   {preset.typicalHours}h/day
@@ -119,14 +119,14 @@ export const MonthlyCostBenchmarkCard: React.FC<MonthlyCostBenchmarkCardProps> =
               <div className="text-right shrink-0">
                 <span
                   className={`font-mono tabular-nums text-[11px] font-bold block leading-tight ${
-                    isSelected ? 'text-white' : 'text-emerald-950'
+                    isSelected ? 'text-white' : 'text-emerald-950 dark:text-[var(--text-primary)]'
                   }`}
                 >
                   {currency}{monthlyCost.toFixed(0)}
                 </span>
                 <span
                   className={`text-[9px] block leading-none ${
-                    isSelected ? 'text-emerald-200' : 'text-slate-500'
+                    isSelected ? 'text-emerald-200' : 'text-slate-500 dark:text-[var(--text-secondary)]'
                   }`}
                 >
                   /mo
@@ -138,7 +138,7 @@ export const MonthlyCostBenchmarkCard: React.FC<MonthlyCostBenchmarkCardProps> =
       </div>
 
       {/* One-Line Caption */}
-      <p className="text-[11px] text-[#1e3f2b] italic">
+      <p className="text-[11px] text-[var(--text-secondary)] italic">
         Typical monthly run cost at your {currency}{tariff}/kWh tariff (30 days). Check appliance labels.
       </p>
     </Card>

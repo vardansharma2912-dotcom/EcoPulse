@@ -434,14 +434,14 @@ export const LearnPage: React.FC = () => {
             {/* Left Peeking Neighbour */}
             <div
               onClick={prevSlide}
-              className="hidden xs:block absolute -left-16 sm:-left-12 w-64 rounded-2xl bg-white/45 backdrop-blur-md border border-white/60 p-3.5 shadow-sm opacity-50 scale-90 cursor-pointer pointer-events-auto shrink-0 select-none transition-transform active:scale-85"
+              className="hidden xs:block absolute -left-16 sm:-left-12 w-64 rounded-2xl bg-white/45 dark:bg-white/[0.04] backdrop-blur-md border border-white/60 dark:border-white/10 p-3.5 shadow-sm opacity-50 scale-90 cursor-pointer pointer-events-auto shrink-0 select-none transition-transform active:scale-85"
               aria-hidden="true"
             >
               <div className="flex items-center gap-2 mb-2">
-                <div className="w-7 h-7 rounded-lg bg-emerald-700/15 text-emerald-800 flex items-center justify-center shrink-0">
+                <div className="w-7 h-7 rounded-lg bg-emerald-700/15 dark:bg-emerald-500/20 text-emerald-800 dark:text-emerald-300 flex items-center justify-center shrink-0">
                   {React.createElement(CARDS[(currentIndex - 1 + totalCards) % totalCards].icon, { className: 'w-3.5 h-3.5' })}
                 </div>
-                <p className="text-xs font-bold text-[#0f2819] truncate">
+                <p className="text-xs font-bold text-[var(--text-primary)] truncate">
                   {CARDS[(currentIndex - 1 + totalCards) % totalCards].title}
                 </p>
               </div>
@@ -452,12 +452,12 @@ export const LearnPage: React.FC = () => {
               role="group"
               aria-roledescription="slide"
               aria-label={`Slide ${currentIndex + 1} of ${totalCards}: ${currentCard.title}`}
-              className="w-full max-w-sm rounded-[20px] bg-white/85 backdrop-blur-xl border border-white/90 p-4 shadow-xl relative z-10 transition-all"
+              className="w-full max-w-sm rounded-[20px] bg-white/85 dark:bg-white/[0.07] backdrop-blur-xl border border-white/90 dark:border-white/10 p-4 shadow-xl relative z-10 transition-all"
             >
               {/* Illustration Area */}
-              <div className="relative mb-3 flex h-28 w-full items-center justify-center overflow-hidden rounded-2xl bg-gradient-to-br from-emerald-100/80 via-emerald-50/50 to-teal-100/70 p-3 border border-white/60">
+              <div className="relative mb-3 flex h-28 w-full items-center justify-center overflow-hidden rounded-2xl bg-gradient-to-br from-emerald-100/80 via-emerald-50/50 to-teal-100/70 dark:from-emerald-950/60 dark:via-emerald-900/30 dark:to-teal-950/40 p-3 border border-white/60 dark:border-white/10">
                 <svg
-                  className="absolute -right-5 -bottom-5 h-28 w-28 text-emerald-800/10 pointer-events-none"
+                  className="absolute -right-5 -bottom-5 h-28 w-28 text-emerald-800/10 dark:text-emerald-400/10 pointer-events-none"
                   viewBox="0 0 24 24"
                   fill="currentColor"
                   aria-hidden="true"
@@ -465,34 +465,34 @@ export const LearnPage: React.FC = () => {
                   <path d="M17 8C8 10 5.9 16.17 3.82 21.34L5.71 22l1-2.3A4.49 4.49 0 0 0 8 20C19 20 22 3 22 3c-1 2-8 2.25-13 3.25S2 11.5 2 13.5s1.75 3.75 1.75 3.75C7 8 17 8 17 8z" />
                 </svg>
 
-                <currentCard.icon className="relative z-10 h-10 w-10 text-emerald-800 drop-shadow-xs" />
+                <currentCard.icon className="relative z-10 h-10 w-10 text-emerald-800 dark:text-emerald-300 drop-shadow-xs" />
               </div>
 
               <div className="space-y-2">
                 <div className="flex items-center justify-between gap-2">
-                  <h2 className="text-sm font-bold text-[#0f2819] truncate">{currentCard.title}</h2>
+                  <h2 className="text-sm font-bold text-[var(--text-primary)] truncate">{currentCard.title}</h2>
                   <Badge variant="neutral" size="sm" className="text-[10px]">
                     {currentCard.category}
                   </Badge>
                 </div>
 
-                <p className="text-xs text-[#1e3f2b] leading-relaxed line-clamp-2">
+                <p className="text-xs text-[var(--text-secondary)] leading-relaxed line-clamp-2">
                   {currentCard.summary}
                 </p>
 
-                <div className="rounded-xl bg-emerald-800/5 p-2 border border-emerald-800/10 space-y-0.5 text-xs">
-                  <p className="text-[#0f2819]">
-                    <span className="font-bold text-emerald-950">Habit: </span>
+                <div className="rounded-xl bg-emerald-800/5 dark:bg-emerald-950/30 p-2 border border-emerald-800/10 dark:border-emerald-500/20 space-y-0.5 text-xs">
+                  <p className="text-[var(--text-primary)]">
+                    <span className="font-bold text-emerald-950 dark:text-emerald-200">Habit: </span>
                     {currentCard.habit}
                   </p>
-                  <p className="text-emerald-900 text-[11px]">
-                    <span className="font-semibold text-emerald-950">Why it helps: </span>
+                  <p className="text-emerald-900 dark:text-emerald-300 text-[11px]">
+                    <span className="font-semibold text-emerald-950 dark:text-emerald-200">Why it helps: </span>
                     {currentCard.whyItHelps}
                   </p>
                 </div>
 
                 <div className="pt-1.5 flex items-center justify-between">
-                  <span className="text-[11px] text-[#1e3f2b]/80 italic">
+                  <span className="text-[11px] text-[var(--text-secondary)] italic">
                     {currentCard.note ? 'Varies by appliance' : ''}
                   </span>
                   <Button
@@ -511,14 +511,14 @@ export const LearnPage: React.FC = () => {
             {/* Right Peeking Neighbour */}
             <div
               onClick={nextSlide}
-              className="hidden xs:block absolute -right-16 sm:-right-12 w-64 rounded-2xl bg-white/45 backdrop-blur-md border border-white/60 p-3.5 shadow-sm opacity-50 scale-90 cursor-pointer pointer-events-auto shrink-0 select-none transition-transform active:scale-85"
+              className="hidden xs:block absolute -right-16 sm:-right-12 w-64 rounded-2xl bg-white/45 dark:bg-white/[0.04] backdrop-blur-md border border-white/60 dark:border-white/10 p-3.5 shadow-sm opacity-50 scale-90 cursor-pointer pointer-events-auto shrink-0 select-none transition-transform active:scale-85"
               aria-hidden="true"
             >
               <div className="flex items-center gap-2 mb-2">
-                <div className="w-7 h-7 rounded-lg bg-emerald-700/15 text-emerald-800 flex items-center justify-center shrink-0">
+                <div className="w-7 h-7 rounded-lg bg-emerald-700/15 dark:bg-emerald-500/20 text-emerald-800 dark:text-emerald-300 flex items-center justify-center shrink-0">
                   {React.createElement(CARDS[(currentIndex + 1) % totalCards].icon, { className: 'w-3.5 h-3.5' })}
                 </div>
-                <p className="text-xs font-bold text-[#0f2819] truncate">
+                <p className="text-xs font-bold text-[var(--text-primary)] truncate">
                   {CARDS[(currentIndex + 1) % totalCards].title}
                 </p>
               </div>
@@ -581,15 +581,15 @@ export const LearnPage: React.FC = () => {
                     transformStyle: 'preserve-3d',
                     cursor: isCenter ? 'default' : 'pointer',
                   }}
-                  className={`rounded-[20px] bg-white/80 backdrop-blur-xl border border-white/90 p-4 shadow-xl transition-shadow ${
+                  className={`rounded-[20px] bg-white/80 dark:bg-white/[0.07] backdrop-blur-xl border border-white/90 dark:border-white/10 p-4 shadow-xl transition-shadow ${
                     isCenter ? 'ring-1 ring-emerald-500/30 shadow-2xl' : 'hover:opacity-90'
                   }`}
                 >
                   {/* Card Illustration Area */}
-                  <div className="relative mb-2.5 flex h-24 w-full items-center justify-center overflow-hidden rounded-2xl bg-gradient-to-br from-emerald-100/90 via-emerald-50/60 to-teal-100/70 p-3 border border-white/70 shadow-inner">
+                  <div className="relative mb-2.5 flex h-24 w-full items-center justify-center overflow-hidden rounded-2xl bg-gradient-to-br from-emerald-100/90 via-emerald-50/60 to-teal-100/70 dark:from-emerald-950/60 dark:via-emerald-900/30 dark:to-teal-950/40 p-3 border border-white/70 dark:border-white/10 shadow-inner">
                     {/* Faint botanical leaf watermark in background */}
                     <svg
-                      className="absolute -right-4 -bottom-4 h-24 w-24 text-emerald-800/15 pointer-events-none"
+                      className="absolute -right-4 -bottom-4 h-24 w-24 text-emerald-800/15 dark:text-emerald-400/10 pointer-events-none"
                       viewBox="0 0 24 24"
                       fill="currentColor"
                       aria-hidden="true"
@@ -597,35 +597,35 @@ export const LearnPage: React.FC = () => {
                       <path d="M17 8C8 10 5.9 16.17 3.82 21.34L5.71 22l1-2.3A4.49 4.49 0 0 0 8 20C19 20 22 3 22 3c-1 2-8 2.25-13 3.25S2 11.5 2 13.5s1.75 3.75 1.75 3.75C7 8 17 8 17 8z" />
                     </svg>
 
-                    <card.icon className="relative z-10 h-10 w-10 text-emerald-800 drop-shadow-xs" />
+                    <card.icon className="relative z-10 h-10 w-10 text-emerald-800 dark:text-emerald-300 drop-shadow-xs" />
                   </div>
 
                   {/* Card Details */}
                   <div className="space-y-1.5">
                     <div className="flex items-center justify-between gap-1.5">
-                      <h2 className="text-sm font-bold text-[#0f2819] truncate">{card.title}</h2>
+                      <h2 className="text-sm font-bold text-[var(--text-primary)] truncate">{card.title}</h2>
                       <Badge variant="neutral" size="sm" className="shrink-0 text-[10px]">
                         {card.category}
                       </Badge>
                     </div>
 
-                    <p className="text-xs text-[#1e3f2b] leading-relaxed line-clamp-2">
+                    <p className="text-xs text-[var(--text-secondary)] leading-relaxed line-clamp-2">
                       {card.summary}
                     </p>
 
-                    <div className="rounded-xl bg-emerald-800/5 p-2 border border-emerald-800/10 space-y-0.5 text-[11px]">
-                      <p className="text-[#0f2819] truncate">
-                        <span className="font-bold text-emerald-950">Habit: </span>
+                    <div className="rounded-xl bg-emerald-800/5 dark:bg-emerald-950/30 p-2 border border-emerald-800/10 dark:border-emerald-500/20 space-y-0.5 text-[11px]">
+                      <p className="text-[var(--text-primary)] truncate">
+                        <span className="font-bold text-emerald-950 dark:text-emerald-200">Habit: </span>
                         {card.habit}
                       </p>
-                      <p className="text-emerald-900 text-[10px] truncate">
-                        <span className="font-semibold text-emerald-950">Why it helps: </span>
+                      <p className="text-emerald-900 dark:text-emerald-300 text-[10px] truncate">
+                        <span className="font-semibold text-emerald-950 dark:text-emerald-200">Why it helps: </span>
                         {card.whyItHelps}
                       </p>
                     </div>
 
                     <div className="pt-1 flex items-center justify-between">
-                      <span className="text-[10px] text-[#1e3f2b]/75 italic">
+                      <span className="text-[10px] text-[var(--text-secondary)] italic">
                         {card.note ? 'Varies by appliance' : ''}
                       </span>
                       <Button
@@ -661,44 +661,44 @@ export const LearnPage: React.FC = () => {
               onClick={() => setCurrentIndex(i)}
               className={`h-1.5 rounded-full transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-700 cursor-pointer ${
                 i === currentIndex
-                  ? 'w-6 bg-emerald-800'
-                  : 'w-2 bg-emerald-800/25 hover:bg-emerald-800/50'
+                  ? 'w-6 bg-emerald-800 dark:bg-emerald-500'
+                  : 'w-2 bg-emerald-800/25 dark:bg-emerald-500/30 hover:bg-emerald-800/50'
               }`}
             />
           ))}
         </div>
 
         {/* Contextual Internal Navigation Links */}
-        <div className="mt-4 pt-3 border-t border-emerald-900/10">
+        <div className="mt-4 pt-3 border-t border-emerald-900/10 dark:border-white/10">
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
             <Link
               ref={learnCol1Ref}
               to="/calculator"
-              className="group flex items-center justify-between p-3 rounded-xl bg-white/60 hover:bg-white/90 border border-emerald-900/10 transition-all text-slate-800"
+              className="group flex items-center justify-between p-3 rounded-xl bg-white/60 dark:bg-white/[0.06] hover:bg-white/90 dark:hover:bg-white/10 border border-emerald-900/10 dark:border-white/10 transition-all text-[var(--text-primary)]"
             >
               <div className="flex items-center gap-2.5">
-                <Calculator className="w-4 h-4 text-emerald-700 shrink-0" />
+                <Calculator className="w-4 h-4 text-emerald-700 dark:text-emerald-400 shrink-0" />
                 <div>
-                  <p className="font-semibold text-emerald-950">Appliance Energy Calculator</p>
-                  <p className="text-[11px] text-slate-600">Simulate daily kWh costs & what-if savings</p>
+                  <p className="font-semibold text-emerald-950 dark:text-emerald-200">Appliance Energy Calculator</p>
+                  <p className="text-[11px] text-[var(--text-secondary)]">Simulate daily kWh costs & what-if savings</p>
                 </div>
               </div>
-              <ArrowRight className="w-3.5 h-3.5 text-emerald-700 transition-transform group-hover:translate-x-1 shrink-0" />
+              <ArrowRight className="w-3.5 h-3.5 text-emerald-700 dark:text-emerald-400 transition-transform group-hover:translate-x-1 shrink-0" />
             </Link>
 
             <Link
               ref={learnCol2Ref}
               to="/reminders"
-              className="group flex items-center justify-between p-3 rounded-xl bg-white/60 hover:bg-white/90 border border-emerald-900/10 transition-all text-slate-800"
+              className="group flex items-center justify-between p-3 rounded-xl bg-white/60 dark:bg-white/[0.06] hover:bg-white/90 dark:hover:bg-white/10 border border-emerald-900/10 dark:border-white/10 transition-all text-[var(--text-primary)]"
             >
               <div className="flex items-center gap-2.5">
-                <Bell className="w-4 h-4 text-emerald-700 shrink-0" />
+                <Bell className="w-4 h-4 text-emerald-700 dark:text-emerald-400 shrink-0" />
                 <div>
-                  <p className="font-semibold text-emerald-950">Scheduled Energy Reminders</p>
-                  <p className="text-[11px] text-slate-600">Convert guide habits into daily recurring alerts</p>
+                  <p className="font-semibold text-emerald-950 dark:text-emerald-200">Scheduled Energy Reminders</p>
+                  <p className="text-[11px] text-[var(--text-secondary)]">Convert guide habits into daily recurring alerts</p>
                 </div>
               </div>
-              <ArrowRight className="w-3.5 h-3.5 text-emerald-700 transition-transform group-hover:translate-x-1 shrink-0" />
+              <ArrowRight className="w-3.5 h-3.5 text-emerald-700 dark:text-emerald-400 transition-transform group-hover:translate-x-1 shrink-0" />
             </Link>
           </div>
 
@@ -717,14 +717,14 @@ export const LearnPage: React.FC = () => {
           title={expandedCard.title}
           description={`Energy Conservation Guide • ${expandedCard.category}`}
         >
-          <div className="space-y-4 text-xs text-[#1e3f2b] leading-relaxed">
+          <div className="space-y-4 text-xs text-[var(--text-secondary)] leading-relaxed">
             {/* Header with illustration banner */}
-            <div className="flex items-center gap-3 rounded-2xl bg-gradient-to-r from-emerald-100/80 via-emerald-50/50 to-teal-100/70 p-3.5 border border-white/70">
-              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-white/80 text-emerald-800 shadow-xs">
+            <div className="flex items-center gap-3 rounded-2xl bg-gradient-to-r from-emerald-100/80 via-emerald-50/50 to-teal-100/70 dark:from-emerald-950/60 dark:via-emerald-900/30 dark:to-teal-950/40 p-3.5 border border-white/70 dark:border-white/10">
+              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-white/80 dark:bg-white/10 text-emerald-800 dark:text-emerald-300 shadow-xs">
                 <expandedCard.icon className="h-5 w-5" />
               </div>
               <div>
-                <p className="text-sm font-bold text-[#0f2819]">{expandedCard.title}</p>
+                <p className="text-sm font-bold text-[var(--text-primary)]">{expandedCard.title}</p>
                 <Badge variant="neutral" size="sm">
                   {expandedCard.category}
                 </Badge>
@@ -733,35 +733,35 @@ export const LearnPage: React.FC = () => {
 
             <div className="space-y-3">
               <div>
-                <h3 className="font-bold text-[#0f2819] text-xs">Summary:</h3>
+                <h3 className="font-bold text-[var(--text-primary)] text-xs">Summary:</h3>
                 <p className="mt-0.5">{expandedCard.summary}</p>
               </div>
 
-              <div className="rounded-xl bg-emerald-800/5 p-3 border border-emerald-800/10 space-y-2">
+              <div className="rounded-xl bg-emerald-800/5 dark:bg-emerald-950/30 p-3 border border-emerald-800/10 dark:border-emerald-500/20 space-y-2">
                 <div>
-                  <span className="font-bold text-emerald-950">Recommended Habit: </span>
-                  <p className="text-emerald-900 mt-0.5">{expandedCard.habit}</p>
+                  <span className="font-bold text-emerald-950 dark:text-emerald-200">Recommended Habit: </span>
+                  <p className="text-emerald-900 dark:text-emerald-300 mt-0.5">{expandedCard.habit}</p>
                 </div>
                 <div>
-                  <span className="font-bold text-emerald-950">Why it helps: </span>
-                  <p className="text-emerald-900 mt-0.5">{expandedCard.whyItHelps}</p>
+                  <span className="font-bold text-emerald-950 dark:text-emerald-200">Why it helps: </span>
+                  <p className="text-emerald-900 dark:text-emerald-300 mt-0.5">{expandedCard.whyItHelps}</p>
                 </div>
               </div>
 
               <div>
-                <h3 className="font-bold text-[#0f2819] text-xs">Detailed Academic Context:</h3>
-                <p className="mt-1 leading-relaxed text-[#1e3f2b]">{expandedCard.fullDetails}</p>
+                <h3 className="font-bold text-[var(--text-primary)] text-xs">Detailed Academic Context:</h3>
+                <p className="mt-1 leading-relaxed text-[var(--text-secondary)]">{expandedCard.fullDetails}</p>
               </div>
 
               {expandedCard.note && (
-                <div className="rounded-xl bg-amber-500/10 p-2.5 border border-amber-300/40 text-[11px] text-amber-950">
+                <div className="rounded-xl bg-amber-500/10 dark:bg-amber-500/15 p-2.5 border border-amber-300/40 dark:border-amber-500/30 text-[11px] text-amber-950 dark:text-amber-200">
                   <span className="font-bold">Appliance Note: </span>
                   {expandedCard.note}
                 </div>
               )}
             </div>
 
-            <div className="pt-3 border-t border-black/5 flex justify-end">
+            <div className="pt-3 border-t border-emerald-950/10 dark:border-white/10 flex justify-end">
               <Button variant="primary" size="sm" onClick={() => setExpandedCard(null)}>
                 Close Guide
               </Button>

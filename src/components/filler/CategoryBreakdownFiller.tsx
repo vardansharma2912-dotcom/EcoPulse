@@ -65,8 +65,8 @@ export const CategoryBreakdownFiller: React.FC<CategoryBreakdownFillerProps> = (
         {/* Header */}
         <div className="flex items-center justify-between mb-2">
           <div className="flex items-center gap-1.5 min-w-0">
-            <Layers className="w-4 h-4 text-emerald-800 shrink-0" />
-            <h3 className="text-sm font-bold text-[#102819] truncate">
+            <Layers className="w-4 h-4 text-emerald-800 dark:text-emerald-400 shrink-0" />
+            <h3 className="text-sm font-bold text-[var(--text-primary)] truncate">
               Top Action Categories
             </h3>
           </div>
@@ -75,7 +75,7 @@ export const CategoryBreakdownFiller: React.FC<CategoryBreakdownFillerProps> = (
           </Badge>
         </div>
 
-        <p className="text-[11px] text-[#1e3f2b] mb-3">
+        <p className="text-[11px] text-[var(--text-secondary)] mb-3">
           Breakdown of your {totalActions} logged conservation checks.
         </p>
 
@@ -87,17 +87,17 @@ export const CategoryBreakdownFiller: React.FC<CategoryBreakdownFillerProps> = (
             return (
               <div key={item.category} className="space-y-1">
                 <div className="flex items-center justify-between text-xs">
-                  <span className="font-semibold text-[#102819] truncate">{item.label}</span>
-                  <div className="flex items-center gap-2 font-mono text-[11px] text-emerald-950 shrink-0">
+                  <span className="font-semibold text-[var(--text-primary)] truncate">{item.label}</span>
+                  <div className="flex items-center gap-2 font-mono text-[11px] text-emerald-950 dark:text-[var(--text-primary)] shrink-0">
                     <span>{item.actions} act</span>
-                    <span className="text-slate-400">•</span>
+                    <span className="text-slate-400 dark:text-stone-500">•</span>
                     <span>{item.kwh} kWh</span>
                   </div>
                 </div>
 
-                <div className="h-1.5 w-full bg-emerald-950/10 rounded-full overflow-hidden">
+                <div className="h-1.5 w-full bg-emerald-950/10 dark:bg-white/10 rounded-full overflow-hidden">
                   <div
-                    className="h-full bg-emerald-700 rounded-full transition-all duration-500"
+                    className="h-full bg-emerald-700 dark:bg-emerald-500 rounded-full transition-all duration-500"
                     style={{ width: `${pct}%` }}
                   />
                 </div>
@@ -108,11 +108,11 @@ export const CategoryBreakdownFiller: React.FC<CategoryBreakdownFillerProps> = (
       </div>
 
       {/* Footer Link to Analytics */}
-      <div className="pt-2 border-t border-emerald-900/10 flex items-center justify-between text-xs">
-        <span className="text-[11px] text-[#1e3f2b]">Based on logged data</span>
+      <div className="pt-2 border-t border-emerald-900/10 dark:border-white/10 flex items-center justify-between text-xs">
+        <span className="text-[11px] text-[var(--text-secondary)]">Based on logged data</span>
         <Link
           to="/analytics"
-          className="font-bold text-emerald-800 hover:text-emerald-950 inline-flex items-center gap-1 group"
+          className="font-bold text-emerald-800 dark:text-emerald-400 hover:text-emerald-950 dark:hover:text-emerald-300 inline-flex items-center gap-1 group"
         >
           <span>View analytics</span>
           <ArrowRight className="w-3 h-3 transition-transform group-hover:translate-x-0.5" />

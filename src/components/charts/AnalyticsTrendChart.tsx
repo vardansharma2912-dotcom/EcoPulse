@@ -71,12 +71,12 @@ export const AnalyticsTrendChart: React.FC<AnalyticsTrendChartProps> = ({
 
   if (distinctDays < 3) {
     return (
-      <div className={`h-full flex flex-col items-center justify-center rounded-2xl bg-white/40 border border-white/60 p-6 sm:p-8 text-center space-y-2 ${className}`}>
-        <div className="w-10 h-10 rounded-full bg-emerald-900/10 flex items-center justify-center text-emerald-800 mx-auto">
+      <div className={`h-full flex flex-col items-center justify-center rounded-2xl bg-white/40 dark:bg-white/5 border border-white/60 dark:border-white/10 p-6 sm:p-8 text-center space-y-2 ${className}`}>
+        <div className="w-10 h-10 rounded-full bg-emerald-900/10 dark:bg-emerald-400/10 flex items-center justify-center text-emerald-800 dark:text-emerald-400 mx-auto">
           <AlertCircle className="w-5 h-5" />
         </div>
-        <p className="text-sm font-bold text-[#0f2819]">Trend History Pending</p>
-        <p className="text-xs text-[#1e3f2b] max-w-sm mx-auto leading-relaxed">
+        <p className="text-sm font-bold text-[var(--text-primary)]">Trend History Pending</p>
+        <p className="text-xs text-[var(--text-secondary)] max-w-sm mx-auto leading-relaxed">
           Historical trend comparison requires at least 3 distinct days of activity ({distinctDays}/3 recorded). Continue checking off reminders to unlock this multi-period comparative curve.
         </p>
       </div>
@@ -88,18 +88,18 @@ export const AnalyticsTrendChart: React.FC<AnalyticsTrendChartProps> = ({
       {/* Header with Legend Top Right */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
         <div className="flex items-center gap-2">
-          <TrendingUp className="w-4 h-4 text-emerald-800" />
-          <h3 className="text-sm font-bold text-[#0f2819]">7-Day Comparative Trajectory</h3>
+          <TrendingUp className="w-4 h-4 text-emerald-800 dark:text-[#3ecf8e]" />
+          <h3 className="text-sm font-bold text-[var(--text-primary)]">7-Day Comparative Trajectory</h3>
         </div>
 
         {/* Legend "This period / Previous" Top Right */}
         <div className="flex items-center gap-4 text-xs font-semibold">
-          <div className="flex items-center gap-1.5 text-[#0a381e]">
-            <span className="w-3.5 h-1.5 rounded-full bg-[#196f45]" />
+          <div className="flex items-center gap-1.5 text-[var(--text-primary)]">
+            <span className="w-3.5 h-1.5 rounded-full bg-[var(--accent-emerald)]" />
             <span>This period</span>
           </div>
-          <div className="flex items-center gap-1.5 text-stone-600">
-            <span className="w-3.5 h-0 border-t-2 border-dashed border-[#8fa398]" />
+          <div className="flex items-center gap-1.5 text-[var(--text-secondary)]">
+            <span className="w-3.5 h-0 border-t-2 border-dashed border-[var(--chart-gauge-pending-line)]" />
             <span>Previous</span>
           </div>
         </div>
@@ -115,23 +115,23 @@ export const AnalyticsTrendChart: React.FC<AnalyticsTrendChartProps> = ({
           <AreaChart data={chartData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
             <defs>
               <linearGradient id="emeraldTrendGradient" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="5%" stopColor="#196f45" stopOpacity={0.35} />
-                <stop offset="95%" stopColor="#196f45" stopOpacity={0.0} />
+                <stop offset="5%" stopColor="var(--accent-emerald)" stopOpacity={0.35} />
+                <stop offset="95%" stopColor="var(--accent-emerald)" stopOpacity={0.0} />
               </linearGradient>
             </defs>
-            <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="rgba(20, 48, 31, 0.08)" />
+            <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="var(--chart-grid-stroke)" />
             <XAxis
               dataKey="dayLabel"
-              stroke="#1e3f2b"
+              stroke="var(--chart-axis-text)"
               fontSize={11}
               tickLine={false}
-              axisLine={{ stroke: 'rgba(20, 48, 31, 0.2)' }}
+              axisLine={{ stroke: 'var(--chart-grid-stroke)' }}
             />
             <YAxis
-              stroke="#1e3f2b"
+              stroke="var(--chart-axis-text)"
               fontSize={11}
               tickLine={false}
-              axisLine={{ stroke: 'rgba(20, 48, 31, 0.2)' }}
+              axisLine={{ stroke: 'var(--chart-grid-stroke)' }}
               allowDecimals={true}
             />
             <Tooltip
@@ -139,13 +139,13 @@ export const AnalyticsTrendChart: React.FC<AnalyticsTrendChartProps> = ({
                 if (active && payload && payload.length) {
                   const data = payload[0].payload as TrendPoint
                   return (
-                    <div className="rounded-xl border border-white/80 bg-white/95 px-3 py-2 shadow-lg backdrop-blur-md text-xs">
-                      <p className="font-bold text-[#0f2819]">{data.dayLabel} ({data.currentDate})</p>
-                      <p className="font-semibold text-emerald-800 mt-1 flex items-baseline justify-between gap-3">
+                    <div className="rounded-xl border border-[var(--chart-tooltip-border)] bg-[var(--chart-tooltip-bg)] px-3 py-2 shadow-lg backdrop-blur-md text-xs text-[var(--chart-tooltip-text)]">
+                      <p className="font-bold text-[var(--text-primary)]">{data.dayLabel} ({data.currentDate})</p>
+                      <p className="font-semibold text-emerald-700 dark:text-[#3ecf8e] mt-1 flex items-baseline justify-between gap-3">
                         <span>This period:</span>
                         <span className="font-mono tabular-nums font-bold">{data.thisPeriodKwh.toFixed(2)} kWh</span>
                       </p>
-                      <p className="text-stone-600 flex items-baseline justify-between gap-3">
+                      <p className="text-[var(--text-secondary)] flex items-baseline justify-between gap-3">
                         <span>Previous 7d:</span>
                         <span className="font-mono tabular-nums font-semibold">{data.previousPeriodKwh.toFixed(2)} kWh</span>
                       </p>
@@ -159,7 +159,7 @@ export const AnalyticsTrendChart: React.FC<AnalyticsTrendChartProps> = ({
             <Area
               type="monotone"
               dataKey="previousPeriodKwh"
-              stroke="#8fa398"
+              stroke="var(--chart-gauge-pending-line)"
               strokeWidth={2}
               strokeDasharray="4 4"
               fill="none"
@@ -169,7 +169,7 @@ export const AnalyticsTrendChart: React.FC<AnalyticsTrendChartProps> = ({
             <Area
               type="monotone"
               dataKey="thisPeriodKwh"
-              stroke="#196f45"
+              stroke="var(--accent-emerald)"
               strokeWidth={2.5}
               fill="url(#emeraldTrendGradient)"
               isAnimationActive={true}

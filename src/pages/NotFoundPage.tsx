@@ -39,16 +39,16 @@ export const NotFoundPage: React.FC = () => {
       >
         {/* Large 404 with Forest / Leaf Greens & Unlit Bulb Centerpiece */}
         <div className="flex items-center justify-center gap-2 sm:gap-3 mb-5 select-none" aria-hidden="true">
-          <span className="text-6xl sm:text-7xl font-black text-[#14301f] tracking-tighter font-mono">
+          <span className="text-6xl sm:text-7xl font-black text-[var(--text-primary)] tracking-tighter font-mono">
             4
           </span>
 
           {/* Soft Green Gradient Circle with Faint SVG Leaf and Unlit Bulb */}
-          <div className="relative w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-gradient-to-br from-emerald-100 via-emerald-50 to-emerald-200/80 border border-emerald-600/25 shadow-inner flex items-center justify-center overflow-hidden">
+          <div className="relative w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-gradient-to-br from-emerald-100 via-emerald-50 to-emerald-200/80 dark:from-emerald-950/60 dark:via-emerald-900/30 dark:to-emerald-950/50 border border-emerald-600/25 dark:border-emerald-500/25 shadow-inner flex items-center justify-center overflow-hidden">
             {/* Faint Botanical Watermark Leaf */}
             <svg
               aria-hidden="true"
-              className="absolute inset-0 w-full h-full text-emerald-800/15 p-2 pointer-events-none"
+              className="absolute inset-0 w-full h-full text-emerald-800/15 dark:text-emerald-400/15 p-2 pointer-events-none"
               viewBox="0 0 24 24"
               fill="none"
               stroke="currentColor"
@@ -77,13 +77,13 @@ export const NotFoundPage: React.FC = () => {
                       ease: 'easeInOut',
                     }
               }
-              className="relative z-10 flex items-center justify-center text-[#14301f]"
+              className="relative z-10 flex items-center justify-center text-[var(--text-primary)]"
             >
-              <LightbulbOff className="w-8 h-8 sm:w-10 sm:h-10 text-[#14301f] drop-shadow-xs" />
+              <LightbulbOff className="w-8 h-8 sm:w-10 sm:h-10 text-[var(--text-primary)] drop-shadow-xs" />
             </motion.div>
           </div>
 
-          <span className="text-6xl sm:text-7xl font-black text-[#14301f] tracking-tighter font-mono">
+          <span className="text-6xl sm:text-7xl font-black text-[var(--text-primary)] tracking-tighter font-mono">
             4
           </span>
         </div>
@@ -92,13 +92,13 @@ export const NotFoundPage: React.FC = () => {
         <h1
           ref={headingRef}
           tabIndex={-1}
-          className="text-xl sm:text-2xl font-extrabold text-[#14301f] tracking-tight outline-none focus-visible:ring-2 focus-visible:ring-emerald-800 focus-visible:ring-offset-2 rounded-lg px-2 py-0.5"
+          className="text-xl sm:text-2xl font-extrabold text-[var(--text-primary)] tracking-tight outline-none focus-visible:ring-2 focus-visible:ring-emerald-800 focus-visible:ring-offset-2 rounded-lg px-2 py-0.5"
         >
           This page is switched off
         </h1>
 
         {/* Informative Body Copy */}
-        <p className="mt-2 text-sm sm:text-base text-slate-700 leading-relaxed max-w-sm sm:max-w-md">
+        <p className="mt-2 text-sm sm:text-base text-[var(--text-secondary)] leading-relaxed max-w-sm sm:max-w-md">
           We couldn't find that page. It may have been moved, or the link may be wrong.
         </p>
 
@@ -107,7 +107,7 @@ export const NotFoundPage: React.FC = () => {
           <span className="sr-only">Requested path: </span>
           <code
             title={requestedPath}
-            className="inline-block max-w-full truncate px-3 py-1.5 rounded-lg bg-emerald-950/5 border border-emerald-900/15 font-mono text-xs sm:text-sm text-emerald-950 select-all"
+            className="inline-block max-w-full truncate px-3 py-1.5 rounded-lg bg-emerald-950/5 dark:bg-white/[0.06] border border-emerald-900/15 dark:border-white/10 font-mono text-xs sm:text-sm text-emerald-950 dark:text-emerald-200 select-all"
           >
             {requestedPath}
           </code>
@@ -137,21 +137,21 @@ export const NotFoundPage: React.FC = () => {
         </div>
 
         {/* Quiet Quick Links */}
-        <div className="mt-6 pt-5 border-t border-emerald-900/10 w-full flex items-center justify-center gap-2 text-xs sm:text-sm text-slate-600 flex-wrap">
+        <div className="mt-6 pt-5 border-t border-emerald-900/10 dark:border-white/10 w-full flex items-center justify-center gap-2 text-xs sm:text-sm text-[var(--text-secondary)] flex-wrap">
           <span>Explore:</span>
           <Link
             to="/reminders"
-            className="min-h-[44px] inline-flex items-center px-2 font-medium text-emerald-800 hover:text-emerald-950 underline underline-offset-4 rounded-md focus-visible:outline-2 focus-visible:outline-emerald-800"
+            className="min-h-[44px] inline-flex items-center px-2 font-medium text-emerald-800 dark:text-emerald-300 hover:text-emerald-950 dark:hover:text-emerald-100 underline underline-offset-4 rounded-md focus-visible:outline-2 focus-visible:outline-emerald-800"
           >
             <Bell className="w-3.5 h-3.5 mr-1" />
             Reminders
           </Link>
-          <span className="text-slate-400 select-none" aria-hidden="true">
+          <span className="text-slate-400 dark:text-stone-500 select-none" aria-hidden="true">
             •
           </span>
           <Link
             to="/calculator"
-            className="min-h-[44px] inline-flex items-center px-2 font-medium text-emerald-800 hover:text-emerald-950 underline underline-offset-4 rounded-md focus-visible:outline-2 focus-visible:outline-emerald-800"
+            className="min-h-[44px] inline-flex items-center px-2 font-medium text-emerald-800 dark:text-emerald-300 hover:text-emerald-950 dark:hover:text-emerald-100 underline underline-offset-4 rounded-md focus-visible:outline-2 focus-visible:outline-emerald-800"
           >
             <Calculator className="w-3.5 h-3.5 mr-1" />
             Calculator

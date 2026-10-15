@@ -3,6 +3,7 @@ import type { AppState, Reminder, Settings } from '../types'
 import { appReducer } from './reducer'
 import { loadState, saveState, getDefaultState, setWelcomeHandled } from '../lib/storage'
 import { AppContext, type AppContextValue } from './context'
+import { applyTheme, subscribeToSystemScheme } from '../lib/theme'
 
 export const AppStateProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [state, dispatch] = useReducer(appReducer, undefined, () => {
@@ -13,6 +14,20 @@ export const AppStateProvider: React.FC<{ children: React.ReactNode }> = ({ chil
   useEffect(() => {
     saveState(state)
   }, [state])
+
+  // Synchronize theme to document element and listen to system preference changes if 'system'
+  useEffect(() => {
+    const currentTheme = state.settings.theme || 'light'
+    applyTheme(currentTheme)
+
+    const cleanup = subscribeToSystemScheme(
+      () => state.settings.theme || 'light',
+      () => {
+        // live OS color scheme change handled
+      }
+    )
+    return cleanup
+  }, [state.settings.theme])
 
   const addReminder = (reminder: Omit<Reminder, 'id' | 'createdAt'>) => {
     dispatch({ type: 'ADD_REMINDER', payload: reminder })

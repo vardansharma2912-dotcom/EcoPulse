@@ -486,7 +486,7 @@ export const StreakBadge: React.FC<StreakBadgeProps> = ({
         {!compact && (
           <div className="flex items-center gap-1.5 flex-wrap min-w-0 flex-1">
             {showDaysCount && (
-              <span className={`font-black tracking-tight text-[#0f2819] tabular-nums ${textStyles}`}>
+              <span className={`font-black tracking-tight text-[var(--text-primary)] tabular-nums ${textStyles}`}>
                 {`${days} day${days === 1 ? '' : 's'}`}
               </span>
             )}
@@ -510,13 +510,13 @@ export const StreakBadge: React.FC<StreakBadgeProps> = ({
       {/* Full-width Sub-caption and Progress Track */}
       {!compact && showProgress && (
         <div className="mt-2 space-y-1.5 w-full min-w-0">
-          <div className="flex items-center justify-between text-[10px] font-bold text-[#1e3f2b] gap-1">
+          <div className="flex items-center justify-between text-[10px] font-bold text-[var(--text-secondary)] gap-1">
             {nextTier ? (
               <span className="truncate">
                 {`${daysToNext} more day${daysToNext === 1 ? '' : 's'} to ${nextTier.name}`}
               </span>
             ) : (
-              <span className="text-amber-800 font-extrabold flex items-center gap-1 truncate">
+              <span className="text-amber-800 dark:text-amber-400 font-extrabold flex items-center gap-1 truncate">
                 Max level achieved! 🏆
               </span>
             )}
@@ -526,7 +526,7 @@ export const StreakBadge: React.FC<StreakBadgeProps> = ({
           </div>
 
           {/* Progress Bar Track */}
-          <div className="h-1.5 w-full rounded-full bg-black/10 overflow-hidden relative">
+          <div className="h-1.5 w-full rounded-full bg-black/10 dark:bg-white/10 overflow-hidden relative">
             <motion.div
               initial={{ width: 0 }}
               animate={{ width: progress !== null ? `${progress * 100}%` : '100%' }}

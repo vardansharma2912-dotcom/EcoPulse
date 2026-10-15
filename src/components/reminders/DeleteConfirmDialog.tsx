@@ -24,13 +24,13 @@ export const DeleteConfirmDialog: React.FC<DeleteConfirmDialogProps> = ({
       description="Are you sure you want to delete this reminder?"
     >
       <div className="space-y-4 pt-1">
-        <p className="text-sm text-[#14301f] leading-relaxed">
-          You are about to delete <strong className="text-emerald-950 font-bold">"{reminderTitle}"</strong>.
+        <p className="text-sm text-[var(--text-primary)] leading-relaxed">
+          You are about to delete <strong className="text-emerald-950 dark:text-emerald-200 font-bold">"{reminderTitle}"</strong>.
         </p>
-        <p className="text-xs text-[#1e3f2b] bg-white/70 p-3 rounded-xl border border-emerald-900/10 leading-relaxed font-medium">
+        <p className="text-xs text-[var(--text-secondary)] bg-white/70 dark:bg-white/[0.06] p-3 rounded-xl border border-emerald-900/10 dark:border-white/10 leading-relaxed font-medium">
           <strong>Note:</strong> Past completed logs and kWh statistics for this reminder will be preserved in your history records with a snapshot title.
         </p>
-        <div className="flex items-center justify-end gap-3 pt-3 border-t border-emerald-950/10">
+        <div className="flex items-center justify-end gap-3 pt-3 border-t border-emerald-950/10 dark:border-white/10">
           <Button type="button" variant="outline" size="sm" onClick={onClose}>
             Cancel
           </Button>

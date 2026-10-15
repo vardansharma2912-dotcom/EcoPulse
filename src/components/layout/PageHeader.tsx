@@ -22,7 +22,7 @@ export const PageHeader: React.FC<PageHeaderProps> = ({
     <div
       className={
         className ??
-        'flex flex-col sm:flex-row sm:items-center justify-between gap-4 pt-1 sm:pt-2 pb-5 mb-6 border-b border-emerald-900/10'
+        'flex flex-col sm:flex-row sm:items-center justify-between gap-4 pt-1 sm:pt-2 pb-5 mb-6 border-b border-emerald-900/10 dark:border-white/10'
       }
     >
       <div>
@@ -33,7 +33,7 @@ export const PageHeader: React.FC<PageHeaderProps> = ({
             initial={{ clipPath: 'inset(-8px 100% -8px 0)' }}
             animate={{ clipPath: 'inset(-8px 0% -8px 0)' }}
             transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
-            className="text-xl sm:text-2xl font-bold tracking-tight text-[#14301f] leading-normal sm:leading-snug"
+            className="text-xl sm:text-2xl font-bold tracking-tight text-[var(--text-primary)] leading-normal sm:leading-snug"
           >
             {title}
           </motion.h1>
@@ -55,7 +55,7 @@ export const PageHeader: React.FC<PageHeaderProps> = ({
             initial={{ opacity: 0, y: 4 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.35, delay: 0.15, ease: 'easeOut' }}
-            className="text-sm text-slate-700 mt-1 font-normal leading-relaxed"
+            className="text-sm text-slate-700 dark:text-[var(--text-secondary)] mt-1 font-normal leading-relaxed"
           >
             {description}
           </motion.p>

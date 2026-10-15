@@ -20,8 +20,11 @@ export const LeafBackground: React.FC = () => {
         height={1080}
         className="w-full h-full object-cover object-center"
       />
-      {/* Soft ambient tint to blend beautifully with the light glass surfaces */}
-      <div className="absolute inset-0 bg-emerald-900/[0.03] pointer-events-none" />
+      {/* Ambient tint overlay: soft mint in light mode, deep green subdued leaves in dark mode */}
+      <div
+        className="absolute inset-0 pointer-events-none transition-colors duration-300"
+        style={{ backgroundColor: 'var(--leaf-overlay-bg)' }}
+      />
     </div>
   )
 }

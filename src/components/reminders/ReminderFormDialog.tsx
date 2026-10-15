@@ -190,17 +190,17 @@ const ReminderFormContent: React.FC<FormContentProps> = ({
       {/* Category & Recurrence Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
         <div className="space-y-1.5">
-          <label htmlFor="reminder-category" className="block text-xs font-semibold text-[#14301f]">
+          <label htmlFor="reminder-category" className="block text-xs font-semibold text-[var(--text-primary)]">
             Category
           </label>
           <select
             id="reminder-category"
             value={category}
             onChange={(e) => setCategory(e.target.value as ReminderCategory)}
-            className="w-full rounded-lg bg-white/95 border border-emerald-950/20 px-3 py-2 text-sm text-[#14301f] focus-visible:outline-2 focus-visible:outline-emerald-800"
+            className="w-full rounded-lg bg-white/95 dark:bg-emerald-950/80 border border-emerald-950/20 dark:border-white/15 px-3 py-2 text-sm text-[var(--text-primary)] focus-visible:outline-2 focus-visible:outline-emerald-800 dark:focus-visible:outline-emerald-400 cursor-pointer"
           >
             {CATEGORY_OPTIONS.map((cat) => (
-              <option key={cat.value} value={cat.value}>
+              <option key={cat.value} value={cat.value} className="bg-white dark:bg-[#08140d] text-[#14301f] dark:text-[#e8f5ec]">
                 {cat.label}
               </option>
             ))}
@@ -208,7 +208,7 @@ const ReminderFormContent: React.FC<FormContentProps> = ({
         </div>
 
         <div className="space-y-1.5">
-          <label htmlFor="reminder-time" className="block text-xs font-semibold text-[#14301f]">
+          <label htmlFor="reminder-time" className="block text-xs font-semibold text-[var(--text-primary)]">
             Reminder Time (24h) *
           </label>
           <input
@@ -219,34 +219,34 @@ const ReminderFormContent: React.FC<FormContentProps> = ({
               setTime(e.target.value)
               if (errors.time) setErrors((prev) => ({ ...prev, time: undefined }))
             }}
-            className="w-full rounded-lg bg-white/95 border border-emerald-950/20 px-3 py-2 text-sm text-[#14301f] focus-visible:outline-2 focus-visible:outline-emerald-800 font-mono"
+            className="w-full rounded-lg bg-white/95 dark:bg-emerald-950/80 border border-emerald-950/20 dark:border-white/15 px-3 py-2 text-sm text-[var(--text-primary)] focus-visible:outline-2 focus-visible:outline-emerald-800 dark:focus-visible:outline-emerald-400 font-mono cursor-pointer"
           />
-          {errors.time && <p className="text-xs text-rose-700 font-medium">{errors.time}</p>}
+          {errors.time && <p className="text-xs text-rose-700 dark:text-rose-400 font-medium">{errors.time}</p>}
         </div>
       </div>
 
       {/* Recurrence selection */}
       <div className="space-y-1.5">
-        <label htmlFor="reminder-recurrence" className="block text-xs font-semibold text-[#14301f]">
+        <label htmlFor="reminder-recurrence" className="block text-xs font-semibold text-[var(--text-primary)]">
           Schedule Recurrence
         </label>
         <select
           id="reminder-recurrence"
           value={recurrence}
           onChange={(e) => setRecurrence(e.target.value as RecurrenceType)}
-          className="w-full rounded-lg bg-white/95 border border-emerald-950/20 px-3 py-2 text-sm text-[#14301f] focus-visible:outline-2 focus-visible:outline-emerald-800"
+          className="w-full rounded-lg bg-white/95 dark:bg-emerald-950/80 border border-emerald-950/20 dark:border-white/15 px-3 py-2 text-sm text-[var(--text-primary)] focus-visible:outline-2 focus-visible:outline-emerald-800 dark:focus-visible:outline-emerald-400 cursor-pointer"
         >
-          <option value="daily">Daily (Every day)</option>
-          <option value="weekdays">Weekdays (Mon – Fri)</option>
-          <option value="weekly">Weekly (Selected days)</option>
-          <option value="once">Once (Created day only)</option>
+          <option value="daily" className="bg-white dark:bg-[#08140d] text-[#14301f] dark:text-[#e8f5ec]">Daily (Every day)</option>
+          <option value="weekdays" className="bg-white dark:bg-[#08140d] text-[#14301f] dark:text-[#e8f5ec]">Weekdays (Mon – Fri)</option>
+          <option value="weekly" className="bg-white dark:bg-[#08140d] text-[#14301f] dark:text-[#e8f5ec]">Weekly (Selected days)</option>
+          <option value="once" className="bg-white dark:bg-[#08140d] text-[#14301f] dark:text-[#e8f5ec]">Once (Created day only)</option>
         </select>
       </div>
 
       {/* Weekly Day Selector */}
       {recurrence === 'weekly' && (
-        <div className="space-y-1.5 p-3 rounded-xl bg-white/60 border border-emerald-900/15">
-          <span className="block text-xs font-semibold text-[#14301f]">Active Days of Week *</span>
+        <div className="space-y-1.5 p-3 rounded-xl bg-white/60 dark:bg-white/[0.06] border border-emerald-900/15 dark:border-white/10">
+          <span className="block text-xs font-semibold text-[var(--text-primary)]">Active Days of Week *</span>
           <div className="flex flex-wrap gap-1.5 pt-1">
             {DAYS_OF_WEEK.map(({ day, label }) => {
               const isSelected = days.includes(day)
@@ -257,8 +257,8 @@ const ReminderFormContent: React.FC<FormContentProps> = ({
                   onClick={() => toggleDay(day)}
                   className={`px-2.5 py-1 text-xs font-semibold rounded-lg transition-all cursor-pointer ${
                     isSelected
-                      ? 'bg-emerald-700 text-white shadow-xs'
-                      : 'bg-white/80 text-slate-700 border border-slate-300 hover:bg-white'
+                      ? 'bg-emerald-700 dark:bg-emerald-600 text-white shadow-xs'
+                      : 'bg-white/80 dark:bg-white/10 text-slate-700 dark:text-stone-300 border border-slate-300 dark:border-white/15 hover:bg-white dark:hover:bg-white/20'
                   }`}
                 >
                   {label}
@@ -266,13 +266,13 @@ const ReminderFormContent: React.FC<FormContentProps> = ({
               )
             })}
           </div>
-          {errors.days && <p className="text-xs text-rose-700 font-medium">{errors.days}</p>}
+          {errors.days && <p className="text-xs text-rose-700 dark:text-rose-400 font-medium">{errors.days}</p>}
         </div>
       )}
 
       {/* Energy Estimates (Watts & Hours) */}
-      <div className="p-3.5 rounded-xl bg-white/70 border border-emerald-900/15 space-y-3">
-        <p className="text-xs font-bold text-[#14301f] uppercase tracking-wide">
+      <div className="p-3.5 rounded-xl bg-white/70 dark:bg-white/[0.06] border border-emerald-900/15 dark:border-white/10 space-y-3">
+        <p className="text-xs font-bold text-[var(--text-primary)] uppercase tracking-wide">
           Energy Estimation (Optional)
         </p>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -317,15 +317,15 @@ const ReminderFormContent: React.FC<FormContentProps> = ({
           type="checkbox"
           checked={active}
           onChange={(e) => setActive(e.target.checked)}
-          className="w-4 h-4 rounded text-emerald-700 focus:ring-emerald-600 border-slate-300 cursor-pointer"
+          className="w-4 h-4 rounded text-emerald-700 focus:ring-emerald-600 border-slate-300 dark:border-stone-600 cursor-pointer"
         />
-        <label htmlFor="reminder-active" className="text-xs font-semibold text-[#14301f] cursor-pointer">
+        <label htmlFor="reminder-active" className="text-xs font-semibold text-[var(--text-primary)] cursor-pointer">
           Reminder is active and scheduled
         </label>
       </div>
 
       {/* Action Buttons */}
-      <div className="flex items-center justify-end gap-3 pt-3 border-t border-emerald-950/10">
+      <div className="flex items-center justify-end gap-3 pt-3 border-t border-emerald-950/10 dark:border-white/10">
         <Button type="button" variant="outline" size="sm" onClick={onClose}>
           Cancel
         </Button>

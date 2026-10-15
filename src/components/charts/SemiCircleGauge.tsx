@@ -51,7 +51,7 @@ export const SemiCircleGauge: React.FC<SemiCircleGaugeProps> = ({
               patternTransform="rotate(45 0 0)"
               patternUnits="userSpaceOnUse"
             >
-              <line x1="0" y1="0" x2="0" y2="6" stroke="#8fa398" strokeWidth="1.8" />
+              <line x1="0" y1="0" x2="0" y2="6" stroke="var(--chart-gauge-pending-line)" strokeWidth="1.8" />
             </pattern>
           </defs>
 
@@ -59,7 +59,7 @@ export const SemiCircleGauge: React.FC<SemiCircleGaugeProps> = ({
           <path
             d="M 20 100 A 80 80 0 0 1 180 100"
             fill="none"
-            stroke="#e2ebe5"
+            stroke="var(--chart-gauge-track)"
             strokeWidth={compact ? '18' : '16'}
             strokeLinecap="round"
           />
@@ -79,12 +79,12 @@ export const SemiCircleGauge: React.FC<SemiCircleGaugeProps> = ({
                 transition={{ duration: 0.9, ease: [0.16, 1, 0.3, 1] }}
               />
 
-              {/* 2. Snoozed Segment (#0a381e) */}
+              {/* 2. Snoozed Segment */}
               {snoozed > 0 && (
                 <motion.path
                   d="M 20 100 A 80 80 0 0 1 180 100"
                   fill="none"
-                  stroke="#0a381e"
+                  stroke="var(--chart-gauge-snoozed)"
                   strokeWidth={compact ? '18' : '16'}
                   strokeDasharray={`${snoozedLen} ${ARC_LENGTH}`}
                   strokeDashoffset={-completedLen}
@@ -94,12 +94,12 @@ export const SemiCircleGauge: React.FC<SemiCircleGaugeProps> = ({
                 />
               )}
 
-              {/* 3. Completed Segment (#196f45) */}
+              {/* 3. Completed Segment */}
               {completed > 0 && (
                 <motion.path
                   d="M 20 100 A 80 80 0 0 1 180 100"
                   fill="none"
-                  stroke="#196f45"
+                  stroke="var(--chart-gauge-done)"
                   strokeWidth={compact ? '18' : '16'}
                   strokeLinecap="round"
                   strokeDasharray={`${completedLen} ${ARC_LENGTH}`}
@@ -116,19 +116,19 @@ export const SemiCircleGauge: React.FC<SemiCircleGaugeProps> = ({
         {/* Center Percentage Display */}
         <div className="absolute inset-0 flex flex-col items-center justify-end pb-1 pointer-events-none">
           {hasDue ? (
-            <div className={`font-extrabold text-[#0a381e] tracking-tight ${
+            <div className={`font-extrabold text-[var(--text-primary)] tracking-tight ${
               compact ? 'text-xl sm:text-2xl' : 'text-2xl sm:text-3xl'
             }`}>
               <CountUp value={completionPct} suffix="%" />
             </div>
           ) : (
-            <div className={`font-extrabold text-stone-400 ${
+            <div className={`font-extrabold text-stone-400 dark:text-stone-500 ${
               compact ? 'text-xl sm:text-2xl' : 'text-2xl sm:text-3xl'
             }`}>
               —
             </div>
           )}
-          <span className={`font-semibold text-[#1e3f2b] uppercase tracking-wider ${
+          <span className={`font-semibold text-[var(--text-secondary)] uppercase tracking-wider ${
             compact ? 'text-[9px]' : 'text-[10px]'
           }`}>
             {hasDue ? 'Done' : 'No Due Actions'}
@@ -137,19 +137,19 @@ export const SemiCircleGauge: React.FC<SemiCircleGaugeProps> = ({
       </div>
 
       {/* Legend of 3 Dots Underneath - nowrap items wrapping as whole units */}
-      <div className={`flex flex-wrap items-center justify-center font-semibold text-[#14301f] ${
+      <div className={`flex flex-wrap items-center justify-center font-semibold text-[var(--text-primary)] ${
         compact ? 'gap-x-2.5 gap-y-1 mt-1 text-[11px]' : 'gap-x-3.5 gap-y-1.5 mt-2.5 text-xs'
       }`}>
         <div className="flex items-center gap-1 whitespace-nowrap shrink-0">
-          <span className="w-2 h-2 rounded-full bg-[#196f45] shadow-xs" />
+          <span className="w-2 h-2 rounded-full bg-[var(--chart-gauge-done)] shadow-xs" />
           <span>Done ({completed})</span>
         </div>
         <div className="flex items-center gap-1 whitespace-nowrap shrink-0">
-          <span className="w-2 h-2 rounded-full bg-[#0a381e] shadow-xs" />
+          <span className="w-2 h-2 rounded-full bg-[var(--chart-gauge-snoozed)] shadow-xs" />
           <span>Snoozed ({snoozed})</span>
         </div>
         <div className="flex items-center gap-1 whitespace-nowrap shrink-0">
-          <span className="w-2 h-2 rounded-full bg-[#8fa398] border border-stone-400/50 shadow-xs" />
+          <span className="w-2 h-2 rounded-full bg-[var(--chart-gauge-pending-line)] border border-stone-400/50 shadow-xs" />
           <span>Pending ({pending})</span>
         </div>
       </div>

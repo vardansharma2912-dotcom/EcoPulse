@@ -203,7 +203,7 @@ const TourModalContent: React.FC<{ onClose: (action?: 'start' | 'add') => void }
   return createPortal(
     <div
       role="presentation"
-      className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4 bg-emerald-950/45 backdrop-blur-xs select-none"
+      className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4 bg-emerald-950/45 dark:bg-black/60 backdrop-blur-xs select-none"
     >
       <motion.div
         ref={dialogRef}
@@ -214,12 +214,12 @@ const TourModalContent: React.FC<{ onClose: (action?: 'start' | 'add') => void }
         animate={{ opacity: 1, y: 0, scale: 1 }}
         exit={{ opacity: 0, y: isReducedMotion ? 0 : 15, scale: 0.98 }}
         transition={{ duration: isReducedMotion ? 0 : 0.3, ease: [0.22, 1, 0.36, 1] }}
-        className="glass-strong w-full max-w-[520px] rounded-t-3xl sm:rounded-3xl p-5 sm:p-6 shadow-2xl border border-white/80 space-y-4 max-h-[92dvh] overflow-y-auto"
+        className="glass-strong w-full max-w-[520px] rounded-t-3xl sm:rounded-3xl p-5 sm:p-6 shadow-2xl border border-white/80 dark:border-white/10 space-y-4 max-h-[92dvh] overflow-y-auto"
       >
         {/* Header Bar: Step Indicator & Skip Button */}
         <div className="flex items-center justify-between pb-1">
           <div className="flex items-center gap-2">
-            <span className="text-xs font-bold text-emerald-900 tracking-tight">
+            <span className="text-xs font-bold text-emerald-900 dark:text-emerald-200 tracking-tight">
               {currentStep + 1} of {TOUR_STEPS.length}
             </span>
             {/* Progress Dots */}
@@ -229,8 +229,8 @@ const TourModalContent: React.FC<{ onClose: (action?: 'start' | 'add') => void }
                   key={idx}
                   className={`transition-all duration-300 rounded-full ${
                     idx === currentStep
-                      ? 'w-5 h-1.5 bg-emerald-700'
-                      : 'w-1.5 h-1.5 bg-emerald-900/25'
+                      ? 'w-5 h-1.5 bg-emerald-700 dark:bg-emerald-400'
+                      : 'w-1.5 h-1.5 bg-emerald-900/25 dark:bg-emerald-400/20'
                   }`}
                 />
               ))}
@@ -240,7 +240,7 @@ const TourModalContent: React.FC<{ onClose: (action?: 'start' | 'add') => void }
           <button
             type="button"
             onClick={handleSkip}
-            className="text-xs font-semibold text-slate-500 hover:text-emerald-950 transition-colors px-2 py-1 rounded-lg hover:bg-emerald-900/5 cursor-pointer inline-flex items-center gap-1"
+            className="text-xs font-semibold text-slate-500 dark:text-[var(--text-secondary)] hover:text-emerald-950 dark:hover:text-emerald-200 transition-colors px-2 py-1 rounded-lg hover:bg-emerald-900/5 dark:hover:bg-white/10 cursor-pointer inline-flex items-center gap-1"
             aria-label="Skip tour"
           >
             <span>Skip tour</span>
@@ -261,10 +261,10 @@ const TourModalContent: React.FC<{ onClose: (action?: 'start' | 'add') => void }
               className="space-y-4"
             >
               {/* Illustration Area: Soft Green Gradient + Large Lucide Icon + Faint SVG Leaf */}
-              <div className="relative rounded-2xl bg-gradient-to-br from-emerald-100/90 via-emerald-50/70 to-teal-100/80 p-6 flex items-center justify-center overflow-hidden border border-emerald-900/10 shadow-xs">
+              <div className="relative rounded-2xl bg-gradient-to-br from-emerald-100/90 via-emerald-50/70 to-teal-100/80 dark:from-emerald-950/60 dark:via-emerald-900/30 dark:to-teal-950/40 p-6 flex items-center justify-center overflow-hidden border border-emerald-900/10 dark:border-white/10 shadow-xs">
                 {/* Faint Decorative Background SVG Leaf */}
                 <svg
-                  className="absolute right-1 -bottom-4 w-32 h-32 text-emerald-800/15 pointer-events-none"
+                  className="absolute right-1 -bottom-4 w-32 h-32 text-emerald-800/15 dark:text-emerald-400/10 pointer-events-none"
                   viewBox="0 0 24 24"
                   fill="none"
                   stroke="currentColor"
@@ -279,11 +279,11 @@ const TourModalContent: React.FC<{ onClose: (action?: 'start' | 'add') => void }
 
                 {/* Main Illustration Mark */}
                 {currentStep === 0 || isLastStep ? (
-                  <div className="relative z-10 w-16 h-16 rounded-2xl bg-white/90 border border-white/80 flex items-center justify-center shadow-md shadow-emerald-950/10">
+                  <div className="relative z-10 w-16 h-16 rounded-2xl bg-white/90 dark:bg-white/[0.08] border border-white/80 dark:border-white/15 flex items-center justify-center shadow-md shadow-emerald-950/10">
                     <Logo size={48} />
                   </div>
                 ) : (
-                  <div className="relative z-10 w-14 h-14 rounded-2xl bg-emerald-700 text-white flex items-center justify-center shadow-md shadow-emerald-950/20">
+                  <div className="relative z-10 w-14 h-14 rounded-2xl bg-emerald-700 dark:bg-emerald-600 text-white flex items-center justify-center shadow-md shadow-emerald-950/20">
                     <IconComponent className="w-7 h-7" />
                   </div>
                 )}
@@ -293,11 +293,11 @@ const TourModalContent: React.FC<{ onClose: (action?: 'start' | 'add') => void }
               <div className="text-center space-y-2 px-1">
                 <h2
                   id="tour-dialog-title"
-                  className="text-lg sm:text-xl font-extrabold text-[#14301f] tracking-tight"
+                  className="text-lg sm:text-xl font-extrabold text-[var(--text-primary)] tracking-tight"
                 >
                   {stepData.title}
                 </h2>
-                <div className="space-y-1.5 text-xs sm:text-sm text-slate-700 font-medium leading-relaxed max-w-md mx-auto">
+                <div className="space-y-1.5 text-xs sm:text-sm text-slate-700 dark:text-[var(--text-secondary)] font-medium leading-relaxed max-w-md mx-auto">
                   {stepData.lines.map((line, idx) => (
                     <p key={idx}>{line}</p>
                   ))}
@@ -308,7 +308,7 @@ const TourModalContent: React.FC<{ onClose: (action?: 'start' | 'add') => void }
         </div>
 
         {/* Footer Navigation Buttons */}
-        <div className="pt-2 border-t border-emerald-900/10 flex items-center justify-between gap-3">
+        <div className="pt-2 border-t border-emerald-900/10 dark:border-white/10 flex items-center justify-between gap-3">
           {currentStep > 0 ? (
             <Button
               type="button"

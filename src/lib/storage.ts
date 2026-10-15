@@ -1,5 +1,6 @@
-import type { AppState, Completion, CurrencySymbol, Reminder, Settings } from '../types'
+import type { AppState, Completion, CurrencySymbol, Reminder, Settings, ThemeMode } from '../types'
 import { SUPPORTED_CURRENCIES } from './energy'
+import { getStoredTheme, setStoredTheme } from './theme'
 
 export const STORAGE_KEY = 'ecopulse_app_state_v2'
 export const PREVIOUS_STORAGE_KEY = 'ecopulse_app_state_v1'
@@ -19,11 +20,19 @@ export function sanitizeCurrency(currency: unknown): CurrencySymbol {
   return '₹'
 }
 
+export function sanitizeTheme(theme: unknown): ThemeMode {
+  if (theme === 'system' || theme === 'light' || theme === 'dark') {
+    return theme
+  }
+  return 'light'
+}
+
 export const DEFAULT_SETTINGS: Settings = {
   displayName: '', // Empty on first launch to trigger Welcome Screen
   tariffPerKwh: 8, // 8 per unit (placeholder from typical domestic slab)
   currency: '₹',
   notificationsEnabled: false,
+  theme: 'light',
 }
 
 export function isWelcomeHandled(): boolean {
@@ -214,6 +223,7 @@ export function createExportPayload(state: AppState): string {
       tariffPerKwh: state.settings.tariffPerKwh,
       currency: sanitizeCurrency(state.settings.currency),
       notificationsEnabled: Boolean(state.settings.notificationsEnabled),
+      theme: sanitizeTheme(state.settings.theme),
     },
     reminders: state.reminders,
     completions: state.completions,
@@ -258,6 +268,7 @@ export function parseAndValidateImport(jsonString: string): ImportResult {
       tariffPerKwh: parsed.settings.tariffPerKwh,
       currency: sanitizeCurrency(parsed.settings.currency),
       notificationsEnabled: Boolean(parsed.settings.notificationsEnabled),
+      theme: sanitizeTheme(parsed.settings.theme),
     },
     lastUpdated: new Date().toISOString(),
   }
@@ -329,6 +340,7 @@ export function loadState(): AppState {
         settings: {
           ...parsed.settings,
           currency: sanitizeCurrency(parsed.settings?.currency),
+          theme: sanitizeTheme(parsed.settings?.theme || getStoredTheme()),
         },
         completions: migratedCompletions,
       }
@@ -356,9 +368,16 @@ export function saveState(state: AppState): boolean {
   try {
     const dataToSave: AppState = {
       ...state,
+      settings: {
+        ...state.settings,
+        theme: sanitizeTheme(state.settings.theme),
+      },
       lastUpdated: new Date().toISOString(),
     }
     localStorage.setItem(STORAGE_KEY, JSON.stringify(dataToSave))
+    if (dataToSave.settings?.theme) {
+      setStoredTheme(dataToSave.settings.theme)
+    }
     return true
   } catch (err) {
     console.error('[EcoPulse] Failed to write to localStorage:', err)
@@ -380,6 +399,7 @@ export function clearState(): void {
     localStorage.removeItem(CHECKLIST_DISMISSED_KEY)
     localStorage.removeItem(CHECKLIST_FIRST_SEEN_KEY)
     localStorage.removeItem(STREAK_LAST_NOTIFIED_TIER_KEY)
+    setStoredTheme('light')
   } catch (err) {
     console.error('[EcoPulse] Failed to clear localStorage:', err)
   }

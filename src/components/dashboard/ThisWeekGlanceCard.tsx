@@ -63,8 +63,8 @@ export const ThisWeekGlanceCard: React.FC<ThisWeekGlanceCardProps> = ({
       {/* Header */}
       <div className="flex items-center justify-between gap-2">
         <div className="flex items-center gap-2 min-w-0">
-          <CalendarDays className="w-4 h-4 text-emerald-800 shrink-0" />
-          <h3 className="text-sm font-bold text-[#102819] truncate">
+          <CalendarDays className="w-4 h-4 text-emerald-800 dark:text-[#3ecf8e] shrink-0" />
+          <h3 className="text-sm font-bold text-[var(--text-primary)] truncate">
             This Week at a Glance
           </h3>
         </div>
@@ -89,8 +89,8 @@ export const ThisWeekGlanceCard: React.FC<ThisWeekGlanceCardProps> = ({
                 <span
                   className={`text-[10px] sm:text-[11px] leading-tight ${
                     day.isToday
-                      ? 'font-extrabold text-emerald-950 underline decoration-emerald-600 decoration-2 underline-offset-2'
-                      : 'font-semibold text-slate-600'
+                      ? 'font-extrabold text-[var(--text-primary)] underline decoration-emerald-500 decoration-2 underline-offset-2'
+                      : 'font-semibold text-[var(--text-secondary)]'
                   }`}
                 >
                   {day.dayLabel}
@@ -149,49 +149,49 @@ export const ThisWeekGlanceCard: React.FC<ThisWeekGlanceCardProps> = ({
       {/* 3 Small Stat Tiles (or Friendly Empty State) - hidden if left column would end up taller */}
       {!hideStats && (
         stats.isEmpty ? (
-          <div className="rounded-xl border border-dashed border-emerald-800/20 bg-emerald-50/40 p-2.5 text-center">
-            <p className="text-xs text-[#1e3f2b] font-medium">
+          <div className="rounded-xl border border-dashed border-emerald-800/20 bg-emerald-50/40 dark:bg-emerald-950/30 p-2.5 text-center">
+            <p className="text-xs text-[var(--text-secondary)] font-medium">
               Complete your first reminder to see your week here
             </p>
           </div>
         ) : (
           <div className="grid grid-cols-3 gap-2">
           {/* Actions this week */}
-          <div className="rounded-xl border border-white/70 bg-white/60 p-2 text-center shadow-2xs">
-            <span className="text-[10px] font-bold uppercase tracking-wider text-slate-600 block truncate">
+          <div className="rounded-xl border border-white/70 dark:border-white/10 bg-white/60 dark:bg-white/5 p-2 text-center shadow-2xs">
+            <span className="text-[10px] font-bold uppercase tracking-wider text-slate-600 dark:text-[#9db8a6] block truncate">
               Actions
             </span>
-            <p className="text-base sm:text-lg font-extrabold text-[#0f2819] tabular-nums leading-tight mt-0.5">
+            <p className="text-base sm:text-lg font-extrabold text-[var(--text-primary)] tabular-nums leading-tight mt-0.5">
               <CountUp value={stats.actionsThisWeek} />
             </p>
-            <span className="text-[9.5px] font-medium text-emerald-800 block truncate">
+            <span className="text-[9.5px] font-medium text-emerald-800 dark:text-emerald-300 block truncate">
               this week
             </span>
           </div>
 
           {/* kWh avoided this week */}
-          <div className="rounded-xl border border-white/70 bg-white/60 p-2 text-center shadow-2xs">
-            <span className="text-[10px] font-bold uppercase tracking-wider text-slate-600 block truncate">
+          <div className="rounded-xl border border-white/70 dark:border-white/10 bg-white/60 dark:bg-white/5 p-2 text-center shadow-2xs">
+            <span className="text-[10px] font-bold uppercase tracking-wider text-slate-600 dark:text-[#9db8a6] block truncate">
               Energy Avoided
             </span>
-            <p className="text-base sm:text-lg font-extrabold text-[#0f2819] tabular-nums leading-tight mt-0.5">
+            <p className="text-base sm:text-lg font-extrabold text-[var(--text-primary)] tabular-nums leading-tight mt-0.5">
               <CountUp value={stats.kwhAvoidedThisWeek} decimals={2} />
-              <span className="text-[10px] font-bold text-emerald-900 ml-0.5">kWh</span>
+              <span className="text-[10px] font-bold text-emerald-900 dark:text-emerald-300 ml-0.5">kWh</span>
             </p>
-            <span className="text-[9.5px] font-medium text-emerald-800 block truncate">
+            <span className="text-[9.5px] font-medium text-emerald-800 dark:text-emerald-300 block truncate">
               this week
             </span>
           </div>
 
           {/* Best day */}
-          <div className="rounded-xl border border-white/70 bg-white/60 p-2 text-center shadow-2xs">
-            <span className="text-[10px] font-bold uppercase tracking-wider text-slate-600 block truncate">
+          <div className="rounded-xl border border-white/70 dark:border-white/10 bg-white/60 dark:bg-white/5 p-2 text-center shadow-2xs">
+            <span className="text-[10px] font-bold uppercase tracking-wider text-slate-600 dark:text-[#9db8a6] block truncate">
               Best Day
             </span>
-            <p className="text-base sm:text-lg font-extrabold text-[#0f2819] leading-tight mt-0.5">
+            <p className="text-base sm:text-lg font-extrabold text-[var(--text-primary)] leading-tight mt-0.5">
               {stats.bestDay}
             </p>
-            <span className="text-[9.5px] font-medium text-emerald-800 block truncate">
+            <span className="text-[9.5px] font-medium text-emerald-800 dark:text-emerald-300 block truncate">
               most active
             </span>
           </div>
@@ -199,9 +199,9 @@ export const ThisWeekGlanceCard: React.FC<ThisWeekGlanceCardProps> = ({
       ))}
 
       {/* Next Up Line */}
-      <div className="pt-2 border-t border-emerald-900/10 flex items-center justify-between gap-2 text-xs">
-        <div className="flex items-center gap-1.5 min-w-0 text-[#102819]">
-          <Clock className="w-3.5 h-3.5 text-emerald-800 shrink-0" />
+      <div className="pt-2 border-t border-emerald-900/10 dark:border-white/10 flex items-center justify-between gap-2 text-xs">
+        <div className="flex items-center gap-1.5 min-w-0 text-[var(--text-primary)]">
+          <Clock className="w-3.5 h-3.5 text-emerald-800 dark:text-[#3ecf8e] shrink-0" />
           {nextUp ? (
             <p className="truncate font-medium text-[11px] sm:text-xs">
               <span className="font-bold text-emerald-950">Next up:</span>{' '}

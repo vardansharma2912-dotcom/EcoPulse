@@ -29,24 +29,24 @@ export const NextUpFiller: React.FC<NextUpFillerProps> = ({
     >
       <div>
         <div className="flex items-center justify-between gap-2 mb-1.5">
-          <span className="text-[10px] font-bold uppercase tracking-wider text-emerald-800 bg-emerald-100/80 px-2 py-0.5 rounded-full flex items-center gap-1">
-            <Clock className="w-3 h-3 text-emerald-800" />
+          <span className="text-[10px] font-bold uppercase tracking-wider text-emerald-800 dark:text-emerald-300 bg-emerald-100/80 dark:bg-emerald-950/60 px-2 py-0.5 rounded-full flex items-center gap-1 border border-emerald-800/10 dark:border-white/10">
+            <Clock className="w-3 h-3 text-emerald-800 dark:text-emerald-400" />
             Next Up • {reminder.time}
           </span>
-          <span className="text-[10px] text-slate-500 font-medium capitalize">
+          <span className="text-[10px] text-slate-500 dark:text-[var(--text-secondary)] font-medium capitalize">
             {reminder.recurrence}
           </span>
         </div>
 
-        <h3 className="font-bold text-sm text-[#102819] leading-snug line-clamp-2">
+        <h3 className="font-bold text-sm text-[var(--text-primary)] leading-snug line-clamp-2">
           {reminder.title}
         </h3>
 
         {!isCompact && (
-          <div className="flex items-center gap-2 text-xs text-[#1e3f2b] font-medium mt-1.5">
+          <div className="flex items-center gap-2 text-xs text-[var(--text-secondary)] font-medium mt-1.5">
             {reminder.applianceWatts && (
               <span className="flex items-center gap-1 font-mono text-[11px]">
-                <Zap className="w-3 h-3 text-emerald-700" />
+                <Zap className="w-3 h-3 text-emerald-700 dark:text-emerald-400" />
                 {reminder.applianceWatts}W
               </span>
             )}
@@ -55,11 +55,11 @@ export const NextUpFiller: React.FC<NextUpFillerProps> = ({
         )}
       </div>
 
-      <div className="pt-2 border-t border-emerald-900/10 flex items-center justify-between text-xs">
-        <span className="text-[11px] text-[#1e3f2b]">Ready for power down</span>
+      <div className="pt-2 border-t border-emerald-900/10 dark:border-white/10 flex items-center justify-between text-xs">
+        <span className="text-[11px] text-[var(--text-secondary)]">Ready for power down</span>
         <Link
           to="/reminders"
-          className="font-bold text-emerald-800 hover:text-emerald-950 inline-flex items-center gap-1 group"
+          className="font-bold text-emerald-800 dark:text-emerald-400 hover:text-emerald-950 dark:hover:text-emerald-300 inline-flex items-center gap-1 group"
         >
           <span>Open reminders</span>
           <ArrowRight className="w-3 h-3 transition-transform group-hover:translate-x-0.5" />

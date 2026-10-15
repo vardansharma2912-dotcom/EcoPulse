@@ -105,58 +105,58 @@ export const AnalyticsPage: React.FC = () => {
         <motion.div variants={cardVariants} className="h-full flex flex-col">
           <Card variant="glass" padding="none" className="p-3 sm:p-3.5 h-full flex flex-col justify-between">
             <div>
-              <div className="flex items-center justify-between text-[#14301f] mb-0.5">
-                <span className="text-[11px] sm:text-xs font-bold uppercase tracking-wider text-slate-700">Total Saved</span>
-                <Zap className="w-3.5 h-3.5 text-emerald-800" />
+              <div className="flex items-center justify-between text-[var(--text-primary)] mb-0.5">
+                <span className="text-[11px] sm:text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-[var(--text-secondary)]">Total Saved</span>
+                <Zap className="w-3.5 h-3.5 text-emerald-800 dark:text-emerald-400" />
               </div>
-              <p className="text-xl sm:text-2xl lg:text-[26px] font-extrabold text-[#0f2819] tabular-nums tracking-tight">
-                <CountUp value={totalKwhAllTime} decimals={2} /> <span className="text-xs sm:text-sm font-bold text-[#1b4332]">kWh</span>
+              <p className="text-xl sm:text-2xl lg:text-[26px] font-extrabold text-[var(--text-primary)] tabular-nums tracking-tight">
+                <CountUp value={totalKwhAllTime} decimals={2} /> <span className="text-xs sm:text-sm font-bold text-[#1b4332] dark:text-emerald-300">kWh</span>
               </p>
             </div>
-            <p className="text-[10px] sm:text-[11px] text-[#1e3f2b] font-medium mt-1">Estimated all-time energy</p>
+            <p className="text-[10px] sm:text-[11px] text-[var(--text-secondary)] font-medium mt-1">Estimated all-time energy</p>
           </Card>
         </motion.div>
 
         <motion.div variants={cardVariants} className="h-full flex flex-col">
           <Card variant="glass" padding="none" className="p-3 sm:p-3.5 h-full flex flex-col justify-between">
             <div>
-              <div className="flex items-center justify-between text-[#14301f] mb-0.5">
-                <span className="text-[11px] sm:text-xs font-bold uppercase tracking-wider text-slate-700">Cost Avoided</span>
-                <TrendingUp className="w-3.5 h-3.5 text-emerald-800" />
+              <div className="flex items-center justify-between text-[var(--text-primary)] mb-0.5">
+                <span className="text-[11px] sm:text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-[var(--text-secondary)]">Cost Avoided</span>
+                <TrendingUp className="w-3.5 h-3.5 text-emerald-800 dark:text-emerald-400" />
               </div>
-              <p className="text-xl sm:text-2xl lg:text-[26px] font-extrabold text-[#0f2819] tabular-nums tracking-tight">
+              <p className="text-xl sm:text-2xl lg:text-[26px] font-extrabold text-[var(--text-primary)] tabular-nums tracking-tight">
                 <CountUp value={totalCostAllTime} decimals={2} prefix={currency} />
               </p>
             </div>
-            <p className="text-[10px] sm:text-[11px] text-[#1e3f2b] font-medium mt-1">Estimated at active tariffs</p>
+            <p className="text-[10px] sm:text-[11px] text-[var(--text-secondary)] font-medium mt-1">Estimated at active tariffs</p>
           </Card>
         </motion.div>
 
         <motion.div variants={cardVariants} className="h-full flex flex-col">
           <Card variant="glass" padding="none" className="p-3 sm:p-3.5 h-full flex flex-col justify-between">
             <div>
-              <div className="flex items-center justify-between text-[#14301f] mb-0.5">
-                <span className="text-[11px] sm:text-xs font-bold uppercase tracking-wider text-slate-700">Total Actions</span>
-                <CheckCircle2 className="w-3.5 h-3.5 text-emerald-700" />
+              <div className="flex items-center justify-between text-[var(--text-primary)] mb-0.5">
+                <span className="text-[11px] sm:text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-[var(--text-secondary)]">Total Actions</span>
+                <CheckCircle2 className="w-3.5 h-3.5 text-emerald-700 dark:text-emerald-400" />
               </div>
-              <p className="text-xl sm:text-2xl lg:text-[26px] font-extrabold text-[#0f2819] tabular-nums tracking-tight">
+              <p className="text-xl sm:text-2xl lg:text-[26px] font-extrabold text-[var(--text-primary)] tabular-nums tracking-tight">
                 <CountUp value={totalActionsAllTime} />
               </p>
             </div>
-            <p className="text-[10px] sm:text-[11px] text-[#1e3f2b] font-medium mt-1">Checks completed</p>
+            <p className="text-[10px] sm:text-[11px] text-[var(--text-secondary)] font-medium mt-1">Checks completed</p>
           </Card>
         </motion.div>
 
         <motion.div variants={cardVariants} className="h-full flex flex-col">
           <Card variant="glass" padding="none" className="p-3 sm:p-3.5 h-full flex flex-col justify-between">
             <div>
-              <div className="flex items-center justify-between text-[#14301f] mb-0.5">
-                <span className="text-[11px] sm:text-xs font-bold uppercase tracking-wider text-slate-700">Active Streak</span>
-                <Flame className="w-3.5 h-3.5 text-amber-600" />
+              <div className="flex items-center justify-between text-[var(--text-primary)] mb-0.5">
+                <span className="text-[11px] sm:text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-[var(--text-secondary)]">Active Streak</span>
+                <Flame className="w-3.5 h-3.5 text-amber-600 dark:text-amber-400" />
               </div>
               <div className="flex items-center justify-between gap-1">
-                <p className="text-xl sm:text-2xl lg:text-[26px] font-extrabold text-[#0f2819] tabular-nums tracking-tight whitespace-nowrap">
-                  <CountUp value={streaks.currentStreak} /> <span className="text-xs sm:text-sm font-bold text-[#1b4332]">{streaks.currentStreak === 1 ? 'day' : 'days'}</span>
+                <p className="text-xl sm:text-2xl lg:text-[26px] font-extrabold text-[var(--text-primary)] tabular-nums tracking-tight whitespace-nowrap">
+                  <CountUp value={streaks.currentStreak} /> <span className="text-xs sm:text-sm font-bold text-[#1b4332] dark:text-emerald-300">{streaks.currentStreak === 1 ? 'day' : 'days'}</span>
                 </p>
                 <div className="shrink-0 scale-90 sm:scale-95 origin-right">
                   <StreakBadge
@@ -167,7 +167,7 @@ export const AnalyticsPage: React.FC = () => {
                 </div>
               </div>
             </div>
-            <p className="text-[10px] sm:text-[11px] text-[#1e3f2b] font-medium mt-1 truncate">
+            <p className="text-[10px] sm:text-[11px] text-[var(--text-secondary)] font-medium mt-1 truncate">
               {currentTier.name} · Best: {streaks.longestStreak}d
             </p>
           </Card>
@@ -179,14 +179,14 @@ export const AnalyticsPage: React.FC = () => {
         <Card variant="glass-strong" className="p-3 sm:p-4 space-y-2 sm:space-y-2.5">
           <div className="flex items-center justify-between gap-2">
             <div className="flex items-center gap-1.5 min-w-0">
-              <Flame className="w-4 h-4 text-amber-600 shrink-0" />
-              <h2 className="text-xs sm:text-sm font-bold text-[#0f2819] uppercase tracking-wide">
+              <Flame className="w-4 h-4 text-amber-600 dark:text-amber-400 shrink-0" />
+              <h2 className="text-xs sm:text-sm font-bold text-[var(--text-primary)] uppercase tracking-wide">
                 <span className="sm:hidden">Streak Mastery Tiers</span>
                 <span className="hidden sm:inline">Streak Levels &amp; Tier Progression</span>
               </h2>
             </div>
             <div className="flex items-center gap-1.5 shrink-0">
-              <span className="text-[11px] sm:text-xs font-medium text-[#1e3f2b] hidden xs:inline">Current:</span>
+              <span className="text-[11px] sm:text-xs font-medium text-[var(--text-secondary)] hidden xs:inline">Current:</span>
               <span
                 className="px-2 py-0.5 rounded-full text-[10px] sm:text-[11px] font-black uppercase tracking-wider border shadow-xs"
                 style={{
@@ -200,7 +200,7 @@ export const AnalyticsPage: React.FC = () => {
             </div>
           </div>
 
-          <p className="text-[11px] text-[#1e3f2b] leading-tight">
+          <p className="text-[11px] text-[var(--text-secondary)] leading-tight">
             Advance through 8 animated mastery tiers by maintaining daily energy-saving habits.
           </p>
 
@@ -218,8 +218,8 @@ export const AnalyticsPage: React.FC = () => {
                     isCurrent
                       ? 'shadow-sm scale-[1.02] z-10'
                       : isUnlocked
-                      ? 'bg-white/60 border-white/80'
-                      : 'bg-white/20 border-black/5 opacity-50 grayscale-[35%]'
+                      ? 'bg-white/60 dark:bg-white/[0.06] border-white/80 dark:border-white/10'
+                      : 'bg-white/20 dark:bg-white/[0.02] border-black/5 dark:border-white/5 opacity-50 grayscale-[35%]'
                   }`}
                   style={{
                     backgroundColor: isCurrent ? t.colors.bg : undefined,
@@ -245,11 +245,11 @@ export const AnalyticsPage: React.FC = () => {
                     />
                   </div>
 
-                  <p className="text-[11px] sm:text-xs font-bold text-[#0f2819] leading-tight mt-0.5 truncate w-full">
+                  <p className="text-[11px] sm:text-xs font-bold text-[var(--text-primary)] leading-tight mt-0.5 truncate w-full">
                     {t.name}
                   </p>
 
-                  <p className="text-[9.5px] sm:text-[10px] text-[#1e3f2b] font-semibold tabular-nums leading-tight mt-0.5">
+                  <p className="text-[9.5px] sm:text-[10px] text-[var(--text-secondary)] font-semibold tabular-nums leading-tight mt-0.5">
                     {t.nextAt === null
                       ? '100+ d'
                       : t.minDays === 0
@@ -263,11 +263,11 @@ export const AnalyticsPage: React.FC = () => {
                         ★ Active
                       </span>
                     ) : isSurpassed ? (
-                      <span className="text-[9px] sm:text-[9.5px] font-semibold text-emerald-800 flex items-center justify-center gap-0.5">
+                      <span className="text-[9px] sm:text-[9.5px] font-semibold text-emerald-800 dark:text-emerald-400 flex items-center justify-center gap-0.5">
                         <Check className="w-2.5 h-2.5" /> Reached
                       </span>
                     ) : (
-                      <span className="text-[9px] sm:text-[9.5px] text-slate-400 font-semibold">
+                      <span className="text-[9px] sm:text-[9.5px] text-slate-400 dark:text-stone-500 font-semibold">
                         Locked
                       </span>
                     )}
@@ -277,14 +277,14 @@ export const AnalyticsPage: React.FC = () => {
             })}
           </div>
 
-          <div className="mt-2 pt-2 border-t border-emerald-900/10 flex items-center justify-between text-[11px] flex-wrap gap-1.5">
-            <span className="text-[#1e3f2b] font-medium">Keep your habit streak active every day:</span>
+          <div className="mt-2 pt-2 border-t border-emerald-900/10 dark:border-white/10 flex items-center justify-between text-[11px] flex-wrap gap-1.5">
+            <span className="text-[var(--text-secondary)] font-medium">Keep your habit streak active every day:</span>
             <Link
               to="/reminders"
-              className="inline-flex items-center gap-1 font-bold text-emerald-900 hover:text-emerald-950 hover:underline"
+              className="inline-flex items-center gap-1 font-bold text-emerald-900 dark:text-emerald-300 hover:text-emerald-950 dark:hover:text-emerald-200 hover:underline"
             >
               Manage Reminders
-              <ArrowRight className="w-3 h-3 text-emerald-800" />
+              <ArrowRight className="w-3 h-3 text-emerald-800 dark:text-emerald-400" />
             </Link>
           </div>
         </Card>
@@ -325,50 +325,50 @@ export const AnalyticsPage: React.FC = () => {
         <Card variant="glass" className="p-5 sm:p-6 space-y-4">
           <div>
             <div className="flex items-center gap-2">
-              <h2 className="text-base sm:text-lg font-bold text-[#0f2819]">
+              <h2 className="text-base sm:text-lg font-bold text-[var(--text-primary)]">
                 This Week vs Last Week
               </h2>
               <Badge variant="neutral" size="sm">Estimated Comparison</Badge>
             </div>
-            <p className="text-xs text-[#1e3f2b] mt-0.5">
+            <p className="text-xs text-[var(--text-secondary)] mt-0.5">
               Pacing and habit consistency compared to the previous Monday–Sunday window.
             </p>
           </div>
 
           {weekComparison.hasLastWeekData ? (
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div className="rounded-2xl border border-white/60 bg-white/50 p-4">
-                <span className="text-xs font-bold uppercase tracking-wider text-[#1e3f2b]">
+              <div className="rounded-2xl border border-white/60 dark:border-white/10 bg-white/50 dark:bg-white/[0.06] p-4">
+                <span className="text-xs font-bold uppercase tracking-wider text-[var(--text-secondary)]">
                   Energy Saved (kWh)
                 </span>
                 <div className="flex items-baseline gap-3 mt-2">
-                  <span className="text-2xl font-extrabold text-[#0f2819]">
+                  <span className="text-2xl font-extrabold text-[var(--text-primary)]">
                     {weekComparison.thisWeekKwh.toFixed(2)} kWh
                   </span>
-                  <span className="text-xs text-[#1e3f2b]">
+                  <span className="text-xs text-[var(--text-secondary)]">
                     vs {weekComparison.lastWeekKwh.toFixed(2)} kWh last week
                   </span>
                 </div>
-                <p className="text-xs font-medium text-emerald-800 mt-2">
+                <p className="text-xs font-medium text-emerald-800 dark:text-emerald-400 mt-2">
                   {weekComparison.kwhDiff >= 0
                     ? `+${weekComparison.kwhDiff.toFixed(2)} kWh higher than last week`
                     : `${weekComparison.kwhDiff.toFixed(2)} kWh lower than last week`}
                 </p>
               </div>
 
-              <div className="rounded-2xl border border-white/60 bg-white/50 p-4">
-                <span className="text-xs font-bold uppercase tracking-wider text-[#1e3f2b]">
+              <div className="rounded-2xl border border-white/60 dark:border-white/10 bg-white/50 dark:bg-white/[0.06] p-4">
+                <span className="text-xs font-bold uppercase tracking-wider text-[var(--text-secondary)]">
                   Actions Completed
                 </span>
                 <div className="flex items-baseline gap-3 mt-2">
-                  <span className="text-2xl font-extrabold text-[#0f2819]">
+                  <span className="text-2xl font-extrabold text-[var(--text-primary)]">
                     {weekComparison.thisWeekActions} actions
                   </span>
-                  <span className="text-xs text-[#1e3f2b]">
+                  <span className="text-xs text-[var(--text-secondary)]">
                     vs {weekComparison.lastWeekActions} actions last week
                   </span>
                 </div>
-                <p className="text-xs font-medium text-emerald-800 mt-2">
+                <p className="text-xs font-medium text-emerald-800 dark:text-emerald-400 mt-2">
                   {weekComparison.actionsDiff >= 0
                     ? `+${weekComparison.actionsDiff} more actions completed`
                     : `${weekComparison.actionsDiff} fewer actions completed`}
@@ -376,16 +376,16 @@ export const AnalyticsPage: React.FC = () => {
               </div>
             </div>
           ) : (
-            <div className="rounded-2xl border border-white/60 bg-white/40 p-4 flex items-start gap-3">
-              <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-emerald-800/10 text-emerald-900 mt-0.5">
+            <div className="rounded-2xl border border-white/60 dark:border-white/10 bg-white/40 dark:bg-white/[0.04] p-4 flex items-start gap-3">
+              <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-emerald-800/10 dark:bg-emerald-950/60 text-emerald-900 dark:text-emerald-300 mt-0.5">
                 <Info className="h-4 w-4" />
               </div>
               <div>
                 <div className="flex items-center gap-2">
-                  <p className="text-sm font-bold text-[#0f2819]">Not enough history yet</p>
+                  <p className="text-sm font-bold text-[var(--text-primary)]">Not enough history yet</p>
                   <Badge variant="neutral" size="sm">Awaiting Data</Badge>
                 </div>
-                <p className="text-xs text-[#1e3f2b] mt-1">
+                <p className="text-xs text-[var(--text-secondary)] mt-1">
                   Comparative analysis requires activity across two consecutive calendar weeks. Continue checking off your reminders this week and next week to automatically reveal comparative trends.
                 </p>
               </div>
@@ -399,13 +399,13 @@ export const AnalyticsPage: React.FC = () => {
         <Card variant="glass" className="p-5 sm:p-6 space-y-4">
           <div>
             <div className="flex items-center gap-2">
-              <Award className="w-5 h-5 text-emerald-800" />
-              <h2 className="text-base sm:text-lg font-bold text-[#0f2819]">
+              <Award className="w-5 h-5 text-emerald-800 dark:text-emerald-400" />
+              <h2 className="text-base sm:text-lg font-bold text-[var(--text-primary)]">
                 Milestone Badges
               </h2>
               <Badge variant="neutral" size="sm">Derived Dynamically</Badge>
             </div>
-            <p className="text-xs text-[#1e3f2b] mt-0.5">
+            <p className="text-xs text-[var(--text-secondary)] mt-0.5">
               Earned based on authentic completed actions and streaks. Never hardcoded or stored separately.
             </p>
           </div>
@@ -416,8 +416,8 @@ export const AnalyticsPage: React.FC = () => {
                 key={badge.id}
                 className={`rounded-2xl p-4 transition-all border flex flex-col justify-between h-full ${
                   badge.unlocked
-                    ? 'border-emerald-500/40 bg-emerald-800/10 shadow-xs'
-                    : 'border-white/50 bg-white/30 opacity-75'
+                    ? 'border-emerald-500/40 dark:border-emerald-500/30 bg-emerald-800/10 dark:bg-emerald-950/40 shadow-xs'
+                    : 'border-white/50 dark:border-white/10 bg-white/30 dark:bg-white/[0.04] opacity-75'
                 }`}
               >
                 <div className="flex items-start justify-between gap-2">
@@ -425,8 +425,8 @@ export const AnalyticsPage: React.FC = () => {
                     <div
                       className={`flex h-9 w-9 items-center justify-center rounded-xl ${
                         badge.unlocked
-                          ? 'bg-emerald-700 text-white shadow-xs'
-                          : 'bg-black/5 text-[#1e3f2b]'
+                          ? 'bg-emerald-700 dark:bg-emerald-600 text-white shadow-xs'
+                          : 'bg-black/5 dark:bg-white/10 text-[var(--text-secondary)]'
                       }`}
                     >
                       {badge.type === 'streak' ? (
@@ -438,8 +438,8 @@ export const AnalyticsPage: React.FC = () => {
                       )}
                     </div>
                     <div>
-                      <h3 className="text-sm font-bold text-[#0f2819]">{badge.title}</h3>
-                      <p className="text-[11px] text-[#1e3f2b] line-clamp-1">{badge.description}</p>
+                      <h3 className="text-sm font-bold text-[var(--text-primary)]">{badge.title}</h3>
+                      <p className="text-[11px] text-[var(--text-secondary)] line-clamp-1">{badge.description}</p>
                     </div>
                   </div>
 
@@ -452,21 +452,21 @@ export const AnalyticsPage: React.FC = () => {
                 </div>
 
                 {badge.unlocked ? (
-                  <div className="mt-2.5 pt-1.5 border-t border-emerald-800/10 flex items-center justify-between text-[10px] text-emerald-900 font-bold">
+                  <div className="mt-2.5 pt-1.5 border-t border-emerald-800/10 dark:border-white/10 flex items-center justify-between text-[10px] text-emerald-900 dark:text-emerald-300 font-bold">
                     <span>Milestone Achieved</span>
-                    <span className="text-emerald-700 font-extrabold">✓ Completed</span>
+                    <span className="text-emerald-700 dark:text-emerald-400 font-extrabold">✓ Completed</span>
                   </div>
                 ) : (
                   <div className="mt-2.5">
-                    <div className="h-1.5 w-full rounded-full bg-black/10 overflow-hidden">
+                    <div className="h-1.5 w-full rounded-full bg-black/10 dark:bg-white/10 overflow-hidden">
                       <div
-                        className="h-full bg-emerald-700 rounded-full transition-all duration-300"
+                        className="h-full bg-emerald-700 dark:bg-emerald-500 rounded-full transition-all duration-300"
                         style={{
                           width: `${Math.min(100, Math.round((badge.current / badge.target) * 100))}%`,
                         }}
                       />
                     </div>
-                    <p className="text-[10px] text-[#1e3f2b] font-medium text-right mt-1">
+                    <p className="text-[10px] text-[var(--text-secondary)] font-medium text-right mt-1">
                       Progress: {badge.progressText}
                     </p>
                   </div>
@@ -483,12 +483,12 @@ export const AnalyticsPage: React.FC = () => {
           <div className="flex items-center justify-between">
             <div>
               <div className="flex items-center gap-2">
-                <Layers className="w-5 h-5 text-emerald-800" />
-                <h2 className="text-base sm:text-lg font-bold text-[#0f2819]">
+                <Layers className="w-5 h-5 text-emerald-800 dark:text-emerald-400" />
+                <h2 className="text-base sm:text-lg font-bold text-[var(--text-primary)]">
                   Action Completion Log
                 </h2>
               </div>
-              <p className="text-xs text-[#1e3f2b] mt-0.5">
+              <p className="text-xs text-[var(--text-secondary)] mt-0.5">
                 Chronological log of verified energy-saving habits, grouped by date.
               </p>
             </div>
@@ -503,7 +503,7 @@ export const AnalyticsPage: React.FC = () => {
           {groupedHistory.length === 0 ? (
             <div className="py-8">
               <EmptyState
-                icon={<Clock className="w-6 h-6 text-emerald-800" />}
+                icon={<Clock className="w-6 h-6 text-emerald-800 dark:text-emerald-400" />}
                 title="No Actions Logged Yet"
                 description="When you mark reminders as done on the Dashboard or Reminders page, they will be archived here with exact timestamps and estimated savings."
               />
@@ -513,14 +513,14 @@ export const AnalyticsPage: React.FC = () => {
               {visibleGroups.map((group) => (
                 <div key={group.dateKey} className="space-y-2">
                   {/* Date Group Header */}
-                  <div className="flex items-center justify-between border-b border-black/5 pb-1.5 pt-2">
+                  <div className="flex items-center justify-between border-b border-black/5 dark:border-white/10 pb-1.5 pt-2">
                     <div className="flex items-center gap-2">
-                      <Calendar className="w-3.5 h-3.5 text-emerald-800" />
-                      <span className="text-xs font-bold text-[#0f2819] uppercase tracking-wide">
+                      <Calendar className="w-3.5 h-3.5 text-emerald-800 dark:text-emerald-400" />
+                      <span className="text-xs font-bold text-[var(--text-primary)] uppercase tracking-wide">
                         {group.displayDate}
                       </span>
                     </div>
-                    <div className="flex items-center gap-2 text-xs text-[#1e3f2b] font-medium">
+                    <div className="flex items-center gap-2 text-xs text-[var(--text-secondary)] font-medium">
                       <span>{group.totalKwh.toFixed(2)} kWh est.</span>
                       <span>•</span>
                       <span>{currency}{group.totalCost.toFixed(2)} saved</span>
@@ -538,20 +538,20 @@ export const AnalyticsPage: React.FC = () => {
                       return (
                         <div
                           key={comp.id}
-                          className="flex items-center justify-between gap-3 rounded-xl border border-white/60 bg-white/50 px-3.5 py-2.5 transition-all hover:bg-white/70"
+                          className="flex items-center justify-between gap-3 rounded-xl border border-white/60 dark:border-white/10 bg-white/50 dark:bg-white/[0.06] px-3.5 py-2.5 transition-all hover:bg-white/70 dark:hover:bg-white/10"
                         >
                           <div className="flex items-center gap-2.5 min-w-0">
-                            <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-emerald-800/10 text-emerald-800">
+                            <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-emerald-800/10 dark:bg-emerald-950/60 text-emerald-800 dark:text-emerald-300">
                               <CheckCircle2 className="h-3.5 w-3.5" />
                             </div>
                             <div className="min-w-0">
-                              <p className="text-xs font-bold text-[#0f2819] truncate">
+                              <p className="text-xs font-bold text-[var(--text-primary)] truncate">
                                 {comp.title}
                               </p>
-                              <p className="text-[10px] text-[#1e3f2b] flex items-center gap-1.5">
+                              <p className="text-[10px] text-[var(--text-secondary)] flex items-center gap-1.5">
                                 <span>Completed at {timeStr}</span>
                                 {comp.isDemo && (
-                                  <span className="rounded-sm bg-amber-500/20 px-1 py-0.2 text-[9px] font-semibold text-amber-900">
+                                  <span className="rounded-sm bg-amber-500/20 dark:bg-amber-400/20 px-1 py-0.2 text-[9px] font-semibold text-amber-900 dark:text-amber-300">
                                     Demo
                                   </span>
                                 )}
@@ -560,10 +560,10 @@ export const AnalyticsPage: React.FC = () => {
                           </div>
 
                           <div className="text-right shrink-0">
-                            <p className="text-xs font-bold text-[#0f2819] tabular-nums">
+                            <p className="text-xs font-bold text-[var(--text-primary)] tabular-nums">
                               +{comp.kWh.toFixed(2)} kWh
                             </p>
-                            <p className="text-[10px] text-emerald-800 font-semibold tabular-nums">
+                            <p className="text-[10px] text-emerald-800 dark:text-emerald-400 font-semibold tabular-nums">
                               +{currency}{comp.costSaved.toFixed(2)}
                             </p>
                           </div>

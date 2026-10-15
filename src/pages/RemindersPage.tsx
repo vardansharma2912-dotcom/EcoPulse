@@ -261,7 +261,7 @@ export const RemindersPage: React.FC = () => {
         <div className="flex flex-col md:flex-row items-stretch md:items-center gap-3">
           {/* Search Box */}
           <div className="relative flex-1">
-            <Search className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-500 pointer-events-none" />
+            <Search className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-500 dark:text-stone-400 pointer-events-none" />
             <input
               id="reminders-search-input"
               type="text"
@@ -269,13 +269,13 @@ export const RemindersPage: React.FC = () => {
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Search reminders by title..."
               aria-label="Search reminders by title"
-              className="w-full pl-9 pr-3.5 py-2 text-sm rounded-lg bg-white/90 border border-emerald-950/20 text-[#14301f] placeholder:text-slate-500 focus-visible:outline-2 focus-visible:outline-emerald-800"
+              className="w-full pl-9 pr-3.5 py-2 text-sm rounded-lg bg-white/90 dark:bg-white/[0.06] border border-emerald-950/20 dark:border-white/10 text-[var(--text-primary)] placeholder:text-slate-500 dark:placeholder:text-stone-500 focus-visible:outline-2 focus-visible:outline-emerald-800 dark:focus-visible:outline-emerald-400"
             />
             {searchQuery && (
               <button
                 type="button"
                 onClick={() => setSearchQuery('')}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-700"
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-700 dark:hover:text-stone-200"
               >
                 <XCircle className="w-4 h-4" />
               </button>
@@ -284,16 +284,16 @@ export const RemindersPage: React.FC = () => {
 
           {/* Category Filter */}
           <div className="flex items-center gap-2">
-            <Filter className="w-4 h-4 text-emerald-800 shrink-0" />
+            <Filter className="w-4 h-4 text-emerald-800 dark:text-emerald-400 shrink-0" />
             <select
               value={categoryFilter}
               onChange={(e) => setCategoryFilter(e.target.value)}
               aria-label="Filter by category"
-              className="rounded-lg bg-white/90 border border-emerald-950/20 px-3 py-2 text-sm text-[#14301f] focus-visible:outline-2 focus-visible:outline-emerald-800 font-medium"
+              className="rounded-lg bg-white/90 dark:bg-emerald-950/80 border border-emerald-950/20 dark:border-white/10 px-3 py-2 text-sm text-[var(--text-primary)] focus-visible:outline-2 focus-visible:outline-emerald-800 dark:focus-visible:outline-emerald-400 font-medium cursor-pointer"
             >
-              <option value="all">All Categories</option>
+              <option value="all" className="bg-white dark:bg-[#08140d] text-[#14301f] dark:text-[#e8f5ec]">All Categories</option>
               {Object.entries(CATEGORY_LABELS).map(([val, label]) => (
-                <option key={val} value={val}>
+                <option key={val} value={val} className="bg-white dark:bg-[#08140d] text-[#14301f] dark:text-[#e8f5ec]">
                   {label}
                 </option>
               ))}
@@ -302,9 +302,9 @@ export const RemindersPage: React.FC = () => {
         </div>
 
         {/* Status Filter Tabs in Horizontally Scrollable Snap Row with Edge Fade */}
-        <div className="relative pt-1 border-t border-emerald-900/10">
-          <div className="pointer-events-none absolute left-0 top-1 bottom-0 w-3 bg-gradient-to-r from-white/90 to-transparent z-10" />
-          <div className="pointer-events-none absolute right-0 top-1 bottom-0 w-4 bg-gradient-to-l from-white/90 to-transparent z-10" />
+        <div className="relative pt-1 border-t border-emerald-900/10 dark:border-white/10">
+          <div className="pointer-events-none absolute left-0 top-1 bottom-0 w-3 bg-gradient-to-r from-white/90 dark:from-[#08140d] to-transparent z-10" />
+          <div className="pointer-events-none absolute right-0 top-1 bottom-0 w-4 bg-gradient-to-l from-white/90 dark:from-[#08140d] to-transparent z-10" />
 
           <div className="flex items-center gap-1.5 overflow-x-auto snap-x scrollbar-thin py-1 px-1">
             {(
@@ -324,13 +324,13 @@ export const RemindersPage: React.FC = () => {
                   type="button"
                   onClick={() => setStatusFilter(tab.id)}
                   className={`relative px-3 py-1.5 text-xs font-semibold rounded-lg transition-colors cursor-pointer select-none snap-start shrink-0 ${
-                    isActive ? 'text-white' : 'text-[#183624] hover:text-[#0f2819] hover:bg-white/60'
+                    isActive ? 'text-white' : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-white/60 dark:hover:bg-white/[0.06]'
                   }`}
                 >
                   {isActive && (
                     <motion.div
                       layoutId="activeFilterPill"
-                      className="absolute inset-0 bg-emerald-700 rounded-lg -z-10 shadow-xs"
+                      className="absolute inset-0 bg-emerald-700 dark:bg-emerald-600 rounded-lg -z-10 shadow-xs"
                       transition={{ type: 'spring', stiffness: 380, damping: 30 }}
                     />
                   )}
@@ -343,7 +343,7 @@ export const RemindersPage: React.FC = () => {
               <button
                 type="button"
                 onClick={handleClearFilters}
-                className="ml-auto text-xs font-semibold text-emerald-800 hover:text-emerald-950 underline cursor-pointer shrink-0 snap-end pl-2"
+                className="ml-auto text-xs font-semibold text-emerald-800 dark:text-emerald-300 hover:text-emerald-950 dark:hover:text-emerald-100 underline cursor-pointer shrink-0 snap-end pl-2"
               >
                 Clear filters
               </button>

@@ -58,10 +58,10 @@ export const ReminderCard: React.FC<ReminderCardProps> = ({
         isMenuOpen ? 'relative z-20 ' : ''
       }${
         !reminder.active
-          ? 'opacity-65 bg-white/40'
+          ? 'opacity-65 bg-white/40 dark:bg-white/[0.03]'
           : isDone
-          ? 'border-emerald-600/40 bg-emerald-50/70 shadow-sm'
-          : 'hover:bg-white/75'
+          ? 'border-emerald-600/40 dark:border-emerald-500/30 bg-emerald-50/70 dark:bg-emerald-950/30 shadow-sm'
+          : 'hover:bg-white/75 dark:hover:bg-white/[0.08]'
       }`}
     >
       {/* Top Section: Row 1 (Title + ⋮ Menu) and Row 2 (Category + Status Chips) */}
@@ -69,7 +69,7 @@ export const ReminderCard: React.FC<ReminderCardProps> = ({
         {/* Row 1: Title (wraps to 2 lines max, line-clamp-2) & ⋮ Menu Button at top-right (36x36, items-start) */}
         <div className="flex items-start justify-between gap-3">
           <h3
-            className="font-bold text-base text-[#102819] leading-snug flex-1 min-w-0 line-clamp-2 break-words"
+            className="font-bold text-base text-[var(--text-primary)] leading-snug flex-1 min-w-0 line-clamp-2 break-words"
             title={reminder.title}
           >
             {reminder.title}
@@ -82,7 +82,7 @@ export const ReminderCard: React.FC<ReminderCardProps> = ({
               aria-label={`More actions for ${reminder.title}`}
               aria-haspopup="menu"
               aria-expanded={isMenuOpen}
-              className="w-9 h-9 flex items-center justify-center rounded-xl text-slate-600 hover:text-emerald-950 hover:bg-emerald-900/10 transition-colors border border-emerald-950/10 bg-white/70 cursor-pointer"
+              className="w-9 h-9 flex items-center justify-center rounded-xl text-slate-600 dark:text-stone-300 hover:text-emerald-950 dark:hover:text-white hover:bg-emerald-900/10 dark:hover:bg-white/10 transition-colors border border-emerald-950/10 dark:border-white/10 bg-white/70 dark:bg-white/[0.06] cursor-pointer"
             >
               <MoreVertical className="w-4 h-4" />
             </button>
@@ -99,7 +99,7 @@ export const ReminderCard: React.FC<ReminderCardProps> = ({
                     animate={{ opacity: 1, scale: 1, y: 0 }}
                     exit={{ opacity: 0, scale: 0.95 }}
                     transition={{ duration: 0.12 }}
-                    className="absolute right-0 top-full mt-1.5 z-40 w-44 rounded-xl bg-white/95 backdrop-blur-md shadow-xl border border-emerald-950/15 p-1.5 space-y-1 text-xs font-semibold text-[#14301f]"
+                    className="absolute right-0 top-full mt-1.5 z-40 w-44 rounded-xl bg-white/95 dark:bg-[#0c2417] backdrop-blur-md shadow-xl border border-emerald-950/15 dark:border-white/15 p-1.5 space-y-1 text-xs font-semibold text-[var(--text-primary)]"
                   >
                     {reminder.active && !isDone && (
                       <button
@@ -108,9 +108,9 @@ export const ReminderCard: React.FC<ReminderCardProps> = ({
                           onCloseMenu()
                           onOpenSnooze(reminder)
                         }}
-                        className="w-full flex items-center gap-2 px-2.5 py-1.5 rounded-lg hover:bg-emerald-800/10 text-left transition-colors cursor-pointer"
+                        className="w-full flex items-center gap-2 px-2.5 py-1.5 rounded-lg hover:bg-emerald-800/10 dark:hover:bg-white/10 text-left transition-colors cursor-pointer"
                       >
-                        <BellOff className="w-3.5 h-3.5 text-amber-700" />
+                        <BellOff className="w-3.5 h-3.5 text-amber-700 dark:text-amber-400" />
                         <span>Snooze reminder</span>
                       </button>
                     )}
@@ -120,9 +120,9 @@ export const ReminderCard: React.FC<ReminderCardProps> = ({
                         onCloseMenu()
                         onOpenEdit(reminder)
                       }}
-                      className="w-full flex items-center gap-2 px-2.5 py-1.5 rounded-lg hover:bg-emerald-800/10 text-left transition-colors cursor-pointer"
+                      className="w-full flex items-center gap-2 px-2.5 py-1.5 rounded-lg hover:bg-emerald-800/10 dark:hover:bg-white/10 text-left transition-colors cursor-pointer"
                     >
-                      <Edit2 className="w-3.5 h-3.5 text-emerald-800" />
+                      <Edit2 className="w-3.5 h-3.5 text-emerald-800 dark:text-emerald-400" />
                       <span>Edit reminder</span>
                     </button>
                     <button
@@ -131,19 +131,19 @@ export const ReminderCard: React.FC<ReminderCardProps> = ({
                         onCloseMenu()
                         onToggleActive(reminder)
                       }}
-                      className="w-full flex items-center gap-2 px-2.5 py-1.5 rounded-lg hover:bg-emerald-800/10 text-left transition-colors cursor-pointer"
+                      className="w-full flex items-center gap-2 px-2.5 py-1.5 rounded-lg hover:bg-emerald-800/10 dark:hover:bg-white/10 text-left transition-colors cursor-pointer"
                     >
-                      <Clock className="w-3.5 h-3.5 text-slate-600" />
+                      <Clock className="w-3.5 h-3.5 text-slate-600 dark:text-stone-400" />
                       <span>{reminder.active ? 'Deactivate' : 'Activate'}</span>
                     </button>
-                    <div className="h-px bg-emerald-900/10 my-0.5" />
+                    <div className="h-px bg-emerald-900/10 dark:bg-white/10 my-0.5" />
                     <button
                       type="button"
                       onClick={() => {
                         onCloseMenu()
                         onOpenDelete(reminder)
                       }}
-                      className="w-full flex items-center gap-2 px-2.5 py-1.5 rounded-lg hover:bg-rose-900/10 text-rose-700 text-left transition-colors cursor-pointer"
+                      className="w-full flex items-center gap-2 px-2.5 py-1.5 rounded-lg hover:bg-rose-900/10 dark:hover:bg-rose-950/30 text-rose-700 dark:text-rose-400 text-left transition-colors cursor-pointer"
                     >
                       <Trash2 className="w-3.5 h-3.5" />
                       <span>Delete reminder</span>
@@ -175,16 +175,16 @@ export const ReminderCard: React.FC<ReminderCardProps> = ({
       </div>
 
       {/* Row 3 (Combined Meta + Action Row): Stacked Meta on Left, Done / Undo Button on Right */}
-      <div className="border-t border-emerald-900/10 pt-3 mt-auto flex flex-col min-[400px]:flex-row min-[400px]:items-end min-[400px]:justify-between gap-3">
+      <div className="border-t border-emerald-900/10 dark:border-white/10 pt-3 mt-auto flex flex-col min-[400px]:flex-row min-[400px]:items-end min-[400px]:justify-between gap-3">
         {/* Left Column: Two Meta Lines Stacked */}
-        <div className="space-y-1 text-xs text-[#183a26] font-semibold min-w-0 flex-1">
+        <div className="space-y-1 text-xs text-[var(--text-primary)] font-semibold min-w-0 flex-1">
           <div className="flex items-center flex-wrap gap-x-2 gap-y-0.5">
             <span className="flex items-center gap-1.5">
-              <Clock className="w-3.5 h-3.5 text-emerald-800 shrink-0" />
+              <Clock className="w-3.5 h-3.5 text-emerald-800 dark:text-emerald-400 shrink-0" />
               <span>{`${reminder.time} • ${formatRecurrence(reminder)}`}</span>
             </span>
             {reminder.snoozedUntil && status === 'snoozed' && (
-              <span className="text-[11px] text-amber-900 font-bold flex items-center gap-1">
+              <span className="text-[11px] text-amber-900 dark:text-amber-300 font-bold flex items-center gap-1">
                 <BellOff className="w-3 h-3 shrink-0" />
                 <span>
                   Snoozed until {new Date(reminder.snoozedUntil).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
@@ -192,8 +192,8 @@ export const ReminderCard: React.FC<ReminderCardProps> = ({
               </span>
             )}
           </div>
-          <div className="flex items-center gap-1.5 text-[11px] text-[#1b4332]">
-            <Zap className="w-3.5 h-3.5 text-emerald-700 shrink-0" />
+          <div className="flex items-center gap-1.5 text-[11px] text-[var(--text-secondary)]">
+            <Zap className="w-3.5 h-3.5 text-emerald-700 dark:text-emerald-400 shrink-0" />
             <span className="truncate">{formatEnergyEstimate(reminder)}</span>
           </div>
         </div>
